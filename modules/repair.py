@@ -3,7 +3,7 @@
 
 _author__ = 'spir'
 
-from bot_templates import EventBot
+from module_templates import EventBot
 import time
 
 messages = {

@@ -3,7 +3,7 @@
 
 __author__ = 'spir'
 
-from bot_templates import ListenerBot
+from module_templates import ListenerBot
 import Queue
 
 

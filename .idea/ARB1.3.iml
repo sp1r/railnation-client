@@ -4,6 +4,9 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="Test" />
+    <orderEntry type="module" module-name="WebRails" />
+    <orderEntry type="module" module-name="ARB1.2" />
   </component>
 </module>
 

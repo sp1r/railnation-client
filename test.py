@@ -7,13 +7,13 @@ import utils
 import shelve
 import requests
 import json
-from botlib import Monitor
+from modules import Monitor
 import multiprocessing as mp
 
 __author__ = 'spir'
 
 
-# s6
+# s6 old
 URL = "http://s6.railnation.ru/web/rpc/flash.php"
 COOKIE = "PHPSESSID=a5hbtpnefl2kgb9e5vvkvmlsu0"  # s6
 CHECKSUM = "3caf8214532b258daf0118304972727e"  # s6

@@ -18,15 +18,13 @@ class Engine:
     Настраиваем программу на работу с сервером railnation
     Мы будем выдавать себя за браузер Mozilla Firefox из-под Ubuntu
     """
-    def __init__(self, conn):
+    def __init__(self, url, cookie, checksum):
         """
-        conn => кортеж - (server_url, user_cookie, checksum)
-
         Самое важное это наша кука. Добывается из браузера.
         """
-        self.url = conn[0]
-        self.cookie = conn[1]
-        self.checksum = conn[2]
+        self.url = url
+        self.cookie = cookie
+        self.checksum = checksum
         self.session = requests.Session()
         #self.session.params.update({'pool_maxsize': 20, 'max_retries': 20})
         self.session.headers.update({'content-type': 'application/json',

@@ -7,7 +7,7 @@ import utils
 import shelve
 import requests
 import json
-from botlib import Monitor
+from modules import Monitor
 import multiprocessing as mp
 
 __author__ = 'spir'

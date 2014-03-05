@@ -6,7 +6,7 @@ _author__ = 'spir'
 import time
 import random
 
-from bot_templates import SchedulingBot
+from module_templates import SchedulingBot
 
 
 messages = {

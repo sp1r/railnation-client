@@ -3,7 +3,7 @@
 
 __author__ = 'spir'
 
-from bot_templates import Bot
+from module_templates import Bot
 import Tkinter as Tk
 
 bot_names = ['judge', 'game', 'log', 'stranger', 'builder',

@@ -4,7 +4,7 @@
 __author__ = 'spir'
 
 import Tkinter as Tk
-from config import bot_names
+from modules_config import bot_names
 
 root = Tk.Tk()
 

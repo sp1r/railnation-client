@@ -3,7 +3,7 @@
 
 __author__ = 'spir'
 
-from botlib.bot_templates.bot import Bot
+from modules.module_templates.module import Bot
 
 
 class Test(Bot):

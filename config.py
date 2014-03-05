@@ -3,30 +3,63 @@
 
 author__ = 'spir'
 
-import botlib
+import modules
+import modules_config
+
+main_module_name = "root"
 
 ################################################################################
-# Connection parameters
+# Загружаемые модули
 
-webkey = "42cbf556576ddc85a560ff2d7909c020"
-
-url = "http://s6.railnation.ru/web/rpc/flash.php"
-cookie = "PHPSESSID=oga2i95f5qpn2mvmsof5t675e3"
-checksum = "3caf8214532b258daf0118304972727e"
-
-conn = (url, cookie, checksum)
+load_modules = [
+    ('game', modules.WebClient, modules_config.game.configuration),
+    ('logger', modules.FileLogger, modules_config.file_log.configuration),
+    ('collect', modules.Stranger, modules_config.collect.configuration)
+]
 
 ################################################################################
-# Options
+# Архитектура
 
-bots = {
-    'main'      : None,
-    'switch'    : botlib.Switch,
-    'log'       : botlib.Chronicler,
-    'game'      : botlib.Messenger,
-    'collect'   : botlib.Stranger,
-    'judge'     : botlib.Judge,
-    'repair'    : botlib.Mechanic,
-    'test'      : botlib.Test,
-    'research'  : botlib.Scientist,
+# Сервисы, которые предоставляются компонентами бота. Могут быть использованы
+# другими компонентами. В коде бота, нужно использовать указаный ниже
+# краткий алиас.
+service = {
+    # Name Resolution Service - служит для сопоставления имени сервиса и имени
+    # бота предоставляющего этот сервис. Поддерживается головной программой.
+    'Name_Resolution': 'name',
+
+    # Server Query - формирует запросы к серверу игры и возвращает ответы.
+    'Server_Query': 'query',
+
+    # Logging - принимает информационные сообщения от других ботов и записывает
+    # их в лог.
+    'Logging': 'log',
+
+    # GUI Monitor - отвечает за отображение статистической информации в
+    # графическом представлении.
+    'GUI_Monitor': 'monitor',
+
+    # Train Management - отвечает за назначение поездам маршрутов и их ремонт.
+    'Train_Management': 'trains',
+
+    # Money Management - отвечает за выделение денег на нужды других ботов.
+    'Money_Management': 'money',
+
+    # Research Management - отвечает за выделение очков исследования.
+    'Research_Management': 'research',
+
+    # Gold Management - отвечает за выделение золота.
+    'Gold_Management': 'gold',
 }
+
+# Номера портов, на которых должны работать сервисы, предоставляемые модулями.
+service_ports = {
+    'query': 80,
+    'log': 0,
+    'monitor': 0,
+    'trains': 0,
+    'money': 0,
+    'research': 0,
+    'gold': 0,
+}
+

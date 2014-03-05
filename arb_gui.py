@@ -8,7 +8,7 @@ import Tkinter as Tk
 
 __author__ = 'spir'
 
-from config import bot_names
+from modules_config import bot_names
 
 root = Tk.Tk()
 
