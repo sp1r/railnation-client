@@ -213,7 +213,7 @@ class Module:
         """
         Определяет обработчики для входящих сообщений.
         """
-        self.listen[161] = self.change_state
+        self.listen[self.config.service_ports['control']] = self.change_state
 
     def configure(self):
         """

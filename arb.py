@@ -55,8 +55,19 @@ if __name__ == "__main__":
     if clear_to_start:
         for module in subproc.keys():
             subproc[module].start()
-        subproc['switch'].join()
 
+        while True:
+            command = str(raw_input('arb> '))
+            words = command.split(' ')
+            if not words[0] in subproc.keys():
+                continue
+            my_pipe.send((words[0], 'main',
+                          config.service_ports['control'], 0,
+                          words[1:]))
+
+        subproc['switch'].join()
+    else:
+        print 'Check dependencies. May be change modules loading order?'
     # subproc = {}
     #
     # instance = modules.Switch(switch_ports)
@@ -74,11 +85,3 @@ if __name__ == "__main__":
     #     subproc[bot_name] = mp.Process(target=instance, args=())
     #     subproc[bot_name].start()
     #
-    # while True:
-    #     command = str(raw_input('arb> '))
-    #     words = command.split(' ')
-    #     if not words[0] in bots.keys():
-    #         continue
-    #     bot_ports['main'].send((words[0], 'main', 161, 0, words[1:]))
-    #
-    # subproc['switch'].join()

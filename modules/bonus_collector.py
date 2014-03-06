@@ -106,7 +106,7 @@ class Stranger(SchedulerModule):
                               job.player_id, job.building_id)
 
     def change_state(self, data):
-        pass
+        print data
 
 ################################################################################
 #   Служебные функции
@@ -167,7 +167,7 @@ class Stranger(SchedulerModule):
                               'time': time.localtime()})
             # will check again after an hour
             collect_at = int(time.time()) + 3600
-            job = (collect_at, player_id, building_id)
+            job = CollectingJob(collect_at, player_id, building_id)
             self.schedule.put(job)
 
         elif not data["Body"]:

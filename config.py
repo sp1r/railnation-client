@@ -14,7 +14,9 @@ main_module_name = "root"
 load_modules = [
     ('game', modules.WebClient, modules_config.game.configuration),
     ('logger', modules.FileLogger, modules_config.file_log.configuration),
-    ('collect', modules.Stranger, modules_config.collect.configuration)
+    ('collect', modules.Stranger, modules_config.collect.configuration),
+    #('dispatcher', modules.Dispatcher, modules_config.dispatcher.configuration),
+    #('logic', modules.Logistics, modules_config.logistics.configuration),
 ]
 
 ################################################################################
@@ -24,9 +26,9 @@ load_modules = [
 # другими компонентами. В коде бота, нужно использовать указаный ниже
 # краткий алиас.
 service = {
-    # Name Resolution Service - служит для сопоставления имени сервиса и имени
-    # бота предоставляющего этот сервис. Поддерживается головной программой.
-    'Name_Resolution': 'name',
+    # Module Management - используется для передачи команд модулю.
+    # Поддерживается каждым модулем по-умолчанию.
+    'Module_Management': 'control',
 
     # Server Query - формирует запросы к серверу игры и возвращает ответы.
     'Server_Query': 'query',
@@ -54,10 +56,11 @@ service = {
 
 # Номера портов, на которых должны работать сервисы, предоставляемые модулями.
 service_ports = {
+    'control': 169,
     'query': 80,
     'log': 0,
     'monitor': 0,
-    'trains': 0,
+    'trains': 30,
     'money': 0,
     'research': 0,
     'gold': 0,

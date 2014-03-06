@@ -493,7 +493,24 @@ get_train:
     }
 
 ================================================================================
-research:
+get_train_road_map:
+"Body":[
+    {"ID":0,"location_id":"8fca71ab-9194-4230-9875-a0d33703a126",
+    "train_id":"b74c6976-2391-43bc-b95a-a9944ba7017e",
+    "schedule_type":1,
+    "next_stop_id":0,
+    "next_visible_location_id":0,
+    "distance":10,
+    "loading":[{"type":4,"load":3,"unload":0}],
+    "next_wait_time":60},
+    {"ID":1,"location_id":"318d7429-1c80-4e10-b93d-abca948def4b",
+    "train_id":"b74c6976-2391-43bc-b95a-a9944ba7017e",
+    "schedule_type":1,"next_stop_id":1,
+    "next_visible_location_id":0,
+    "distance":10,
+    "loading":[{"type":4,"load":0,"unload":3}],
+    "next_wait_time":60}
+    ]}
 
 ================================================================================
 research:

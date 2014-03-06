@@ -257,6 +257,15 @@ class Oracle:
         return self.srv.produce('TrainInterface', 'getTrack',
                                 [train_id, True, False])
 
+    def get_train_road_map(self, train_id):
+        """
+        Возвращает маршрут поезда
+
+        Параметры:
+        train_id -- id поезда (string)
+        """
+        return self.srv.produce('TrainInterface', 'getRoadMap', [train_id])
+
     def repair_train(self, train_id):
         """
         Ремонтирует поезд

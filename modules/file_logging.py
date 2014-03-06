@@ -37,7 +37,7 @@ class FileLogger(ListenerModule):
         """
         Определяет обработчики для входящих сообщений.
         """
-        #self.listen[161] = self.change_state
+        self.listen[self.config.service_ports['control']] = self.change_state
         self.listen[self.config.service_ports['log']] = self.write_to_log
 
     def write_to_log(self, msg):

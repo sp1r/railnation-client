@@ -31,8 +31,6 @@ class WebClientConfig(ListenerModuleConfig):
 
         # own services:
         self.provided_services.append('query')
-        # required services:
-        #self.required_services.append('log')
 
 
 class WebClient(ListenerModule):
@@ -50,7 +48,7 @@ class WebClient(ListenerModule):
         """
         Определяет обработчики для входящих сообщений.
         """
-        #self.listen[161] = self.change_state
+        self.listen[self.config.service_ports['control']] = self.change_state
         self.listen[self.config.service_ports['query']] = self.make_call
 
     def configure(self):
