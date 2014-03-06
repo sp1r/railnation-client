@@ -8,6 +8,7 @@
     <orderEntry type="module" module-name="WebRails" />
     <orderEntry type="module" module-name="ARB1.2" />
     <orderEntry type="module" module-name="ARB" />
+    <orderEntry type="module" module-name="Map" />
   </component>
 </module>
 
