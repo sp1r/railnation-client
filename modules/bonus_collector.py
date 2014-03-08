@@ -9,9 +9,9 @@ import time
 import random
 import Queue
 
-from module_templates import SchedulerModule
-from module_templates import SchedulerModuleConfig
-from module_templates import SchedulerJob
+from core.templates import SchedulerModule
+from core.templates import SchedulerModuleConfig
+from core.templates import SchedulerJob
 
 
 class StrangerConfig(SchedulerModuleConfig):

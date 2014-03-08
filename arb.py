@@ -8,7 +8,7 @@ __author__ = 'spir'
 
 import multiprocessing as mp
 
-from modules.module_templates import ModuleConfig
+from core.templates import ModuleConfig
 import config
 import modules
 

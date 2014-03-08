@@ -3,8 +3,9 @@
 
 __author__ = 'spir'
 
-from module_templates import ListenerBot
 import Queue
+
+from core.templates import ListenerBot
 
 
 class Scientist(ListenerBot):

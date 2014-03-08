@@ -5,7 +5,7 @@ __author__ = 'spir'
 
 from Queue import PriorityQueue
 
-from module_templates import EventBot
+from core.templates import EventBot
 
 
 class Judge(EventBot):

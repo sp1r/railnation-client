@@ -2,19 +2,13 @@
 """
     Чтобы не забивать сервер большим количеством запросов. Все обращения к игре
     проходят только через этот модуль.
-
-    Сервисы:
-       Порт 530.
-          На входе ожидаются сообщения вида:
-          msg = (method_name, *params)
-          Ответ - dict, который будет получен от сервера.
 """
 
 __author__ = 'spir'
 
-import raillib
-from module_templates import ListenerModule
-from module_templates import ListenerModuleConfig
+import client
+from core.templates import ListenerModule
+from core.templates import ListenerModuleConfig
 
 
 class WebClientConfig(ListenerModuleConfig):
@@ -39,9 +33,9 @@ class WebClient(ListenerModule):
         assert isinstance(config, ListenerModuleConfig)
         ListenerModule.__init__(self, config)
         cookie = "=".join((self.config.cookie_name, self.config.cookie_value))
-        self.game = raillib.Oracle(raillib.Engine(self.config.url,
-                                                  cookie,
-                                                  self.config.checksum))
+        self.game = client.Oracle(client.Engine(self.config.url,
+                                                cookie,
+                                                self.config.checksum))
         self.user_id = ''
 
     def open_ports(self):

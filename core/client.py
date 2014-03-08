@@ -42,7 +42,7 @@ class Engine:
     def _quote(self, item):
         if type(item) is list:
             return self._quote_list(item)
-        if type(item) is dict:
+        elif type(item) is dict:
             return self._quote_dict(item)
         elif type(item) is str:
             return '"' + item + '"'
@@ -62,9 +62,9 @@ class Engine:
         """
         target = {'interface': interface,
                   'method': method}
+        params_str = self._quote_list(params)
         # С какого-то момента сервер хочет от нас в запросе md5-хэш строки
         # параметров.
-        params_str = self._quote_list(params)
         payload = {'ckecksum': self.checksum,
                    'client': 1,
                    'hash': hashlib.md5(params_str).hexdigest(),

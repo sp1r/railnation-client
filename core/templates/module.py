@@ -8,7 +8,6 @@ import random
 class ModuleConfig:
     """
     Переменные, управляющие работой модуля.
-    И процедуры их изменения.
 
     Общение с другими модулями
     self.name -- (string) имя (адрес) модуля
@@ -17,6 +16,7 @@ class ModuleConfig:
     self.service_ports -- (dict) номера портов, на которых работают службы.
     self.service_location -- (dict) имена (адреса) ботов предоставляющих службы.
     self.provided_services -- (dict) службы, которые предоставляет этот модуль.
+    self.required_services -- (dict) службы, которые необходимы для работы этого модуля.
 
     self.hold -- (bool) флаг переводящий модуль в режим ожидания
     """
@@ -26,6 +26,7 @@ class ModuleConfig:
         """
         self.name = None
         self.link = None
+
         self.hold = False
 
         self.service_ports = {}
@@ -198,7 +199,7 @@ class Module:
 
     def __call__(self):
         """
-        Для начала работы, модуль должен быть вызван.
+        Каждый модуль может работать самостоятельно.
         """
         print 'Module', self.config.name, 'started.'  # debugging
         self.open_ports()

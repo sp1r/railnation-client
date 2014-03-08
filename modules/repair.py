@@ -3,8 +3,10 @@
 
 _author__ = 'spir'
 
-from module_templates import EventBot
 import time
+
+from core.templates import EventBot
+
 
 messages = {
     # service messages

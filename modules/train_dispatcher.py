@@ -2,8 +2,8 @@
 __author__ = 'spir'
 
 
-from module_templates import ListenerModule
-from module_templates import ListenerModuleConfig
+from core.templates import ListenerModule
+from core.templates import ListenerModuleConfig
 
 
 class DispatcherConfig(ListenerModuleConfig):

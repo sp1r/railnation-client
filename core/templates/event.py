@@ -5,9 +5,10 @@
 """
 __author__ = 'spir'
 
-from module import Module
-from module import ModuleConfig
 import time
+
+from core.templates.module import Module
+from core.templates.module import ModuleConfig
 
 
 class EventModuleConfig(ModuleConfig):

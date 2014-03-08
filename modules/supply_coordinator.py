@@ -2,8 +2,8 @@ __author__ = 'spir'
 
 import time
 
-from module_templates import EventModule
-from module_templates import EventModuleConfig
+from core.templates import EventModule
+from core.templates import EventModuleConfig
 
 
 class LogisticsConfig(EventModuleConfig):

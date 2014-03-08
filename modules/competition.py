@@ -4,9 +4,8 @@
 _author__ = 'spir'
 
 import time
-import random
 
-from module_templates import SchedulingBot
+from core.templates import SchedulingBot
 
 
 messages = {
