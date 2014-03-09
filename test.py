@@ -1,13 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import raillib
+#import core.client
 import time
 import utils
 import shelve
-import requests
 import json
-from modules import Monitor
 import multiprocessing as mp
 
 __author__ = 'spir'
@@ -20,7 +18,7 @@ CHECKSUM = "3caf8214532b258daf0118304972727e"  # s6
 
 CONN = (URL, COOKIE, CHECKSUM)
 
-game = raillib.Oracle(raillib.Engine(CONN))
+#game = core.client.Oracle(core.client.Engine(CONN))
 
 # Me - 3d4151da-515b-a98a-5d2f-b8b2627b6081
 # Falcon - 1693e387-b36e-4768-93a9-33883b80be42
@@ -161,57 +159,74 @@ game = raillib.Oracle(raillib.Engine(CONN))
 # y = raillib.Engine(CONN)
 # print y._quote_dict(d)
 
-def get_town_num(dict, num):
-    for town in dict['Body']:
-            if town['name'] == num:
-                return town
-    return None
+# def get_town_num(dict, num):
+#     for town in dict['Body']:
+#             if town['name'] == num:
+#                 return town
+#     return None
 
 if __name__ == '__main__':
-    name = 33
-    tpl_cons = "{:08.6f}"
-    tpl_fac = "{0:d}/{1:d}"
-    last_cons = 0
-    while True:
-        t = game.get_town_brief("318d7429-1c80-4e10-b93d-abca948def4b") # нью
-        #t = game.get_town_brief("ef07f109-81bc-4f04-a185-7048a64fa984") # рокс
-        p = game.get_statistics_towns()
-        new_vasuki = get_town_num(p, '33')
-        #print time.strftime('%H:%M:%S'),
-        print t['Body']['town']['level'],
-        print new_vasuki['depots'],
-        # f = game.get_all_locations()
-        # state0_num = 0
-        # state0_lvl = 0
-        # state1_num = 0
-        # state1_lvl = 0
-        # state2_num = 0
-        # state2_lvl = 0
-        # for factory in f['Body']:
-        #     if factory['city_location_id'] == "318d7429-1c80-4e10-b93d-abca948def4b":
-        #         if factory['factoryState'] == 0:
-        #             state0_num += 1
-        #             state0_lvl += factory['level']
-        #         elif factory['factoryState'] == 1:
-        #             state1_num += 1
-        #             state1_lvl += factory['level']
-        #         elif factory['factoryState'] == 2:
-        #             state2_num += 1
-        #             state2_lvl += factory['level']
-        # print tpl_fac.format(state0_lvl, state0_num),
-        # print tpl_fac.format(state1_lvl, state1_num),
-        # print tpl_fac.format(state2_lvl, state2_num),
-        # print tpl_fac.format(state0_lvl+state1_lvl+state2_lvl, state0_num+state1_num+state2_num),
-        for x in t['Body']['resources']:
-            if x['priority'] == 1:
-                print x['consume_amount'],
-                print x['amount'],
-                try:
-                    print tpl_cons.format(x['consume_amount']*1.0/x['amount']),
-                except ZeroDivisionError:
-                    print '-',
-        print
-        time.sleep(60)
+    js = '{"data":2,"name":"hello"}'
+    d = json.loads(js)
+    print d
+    class Test:
+        def __init__(self, some=None, id=None):
+            if some is not None:
+            #print "inside class", some
+                self.data = some['data']
+                self.name = some['name']
+            else:
+                self.data = id
+                self.name = 'empty'
+
+    c = json.loads(js, object_hook=Test)
+    print c.data, c.name
+    b = Test(id=3)
+    print b.data, b.name
+    # name = 33
+    # tpl_cons = "{:08.6f}"
+    # tpl_fac = "{0:d}/{1:d}"
+    # last_cons = 0
+    # while True:
+    #     t = game.get_town_brief("318d7429-1c80-4e10-b93d-abca948def4b") # нью
+    #     #t = game.get_town_brief("ef07f109-81bc-4f04-a185-7048a64fa984") # рокс
+    #     p = game.get_statistics_towns()
+    #     new_vasuki = get_town_num(p, '33')
+    #     #print time.strftime('%H:%M:%S'),
+    #     print t['Body']['town']['level'],
+    #     print new_vasuki['depots'],
+    #     # f = game.get_all_locations()
+    #     # state0_num = 0
+    #     # state0_lvl = 0
+    #     # state1_num = 0
+    #     # state1_lvl = 0
+    #     # state2_num = 0
+    #     # state2_lvl = 0
+    #     # for factory in f['Body']:
+    #     #     if factory['city_location_id'] == "318d7429-1c80-4e10-b93d-abca948def4b":
+    #     #         if factory['factoryState'] == 0:
+    #     #             state0_num += 1
+    #     #             state0_lvl += factory['level']
+    #     #         elif factory['factoryState'] == 1:
+    #     #             state1_num += 1
+    #     #             state1_lvl += factory['level']
+    #     #         elif factory['factoryState'] == 2:
+    #     #             state2_num += 1
+    #     #             state2_lvl += factory['level']
+    #     # print tpl_fac.format(state0_lvl, state0_num),
+    #     # print tpl_fac.format(state1_lvl, state1_num),
+    #     # print tpl_fac.format(state2_lvl, state2_num),
+    #     # print tpl_fac.format(state0_lvl+state1_lvl+state2_lvl, state0_num+state1_num+state2_num),
+    #     for x in t['Body']['resources']:
+    #         if x['priority'] == 1:
+    #             print x['consume_amount'],
+    #             print x['amount'],
+    #             try:
+    #                 print tpl_cons.format(x['consume_amount']*1.0/x['amount']),
+    #             except ZeroDivisionError:
+    #                 print '-',
+    #     print
+    #     time.sleep(60)
     # url = "http://s6.railnation.ru/web/rpc/flash.php"
     # login_url = 'https://railnation-sam.traviangames.com//iframe/login/consumer/railnation-ru-meta/applicationLanguage/ru-RU'
     # login_target = {'className': 'login',

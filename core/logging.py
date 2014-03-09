@@ -1,57 +1,47 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
+__author__ = 'Slava'
 
-__author__ = 'spir'
-
+import sys
 import time
 
-from core.templates import ListenerModule
-from core.templates import ListenerModuleConfig
+
+class Engine:
+    def __init__(self,
+                 log_file_name=None,
+                 log_file_mode='w',
+                 time_format="%H:%M:%S"):
+        self.time_format = time_format
+        try:
+            self.log_file = open(log_file_name,
+                                 log_file_mode)
+        except IOError:
+            print 'ERROR! Log file not found!'
+            sys.exit(1)
+
+    def write_to_log(self,
+                     message,
+                     message_time,
+                     level):
+        log_line = "%s: %s\n" % (time.strftime(self.time_format,
+                                               message_time),
+                                 message)
+        if level == 0:
+            self.log_file.write(log_line)
+            self.log_file.flush()
+        elif level == 1:
+            print log_line
 
 
-class FileLoggerConfig(ListenerModuleConfig):
-    def __init__(self):
-        ListenerModuleConfig.__init__(self)
+class Interface:
+    def __init__(self, engine):
+        assert isinstance(engine, Engine)
+        self.srv = engine
 
-        self.time_format = "%H:%M:%S"
-        self.log_file_name = "arb.log"
-        self.log_file_mode = "w"
+    def write_to_file(self,
+                      message="",
+                      message_time=time.localtime()):
+        self.srv.write_to_log(message, message_time, 0)
 
-        # own services:
-        self.provided_services.append('log')
-
-
-class FileLogger(ListenerModule):
-    """
-    Централизованное управление логами работы ботов.
-    Не фуки-хуяки.
-    """
-    def __init__(self, config):
-        assert isinstance(config, ListenerModuleConfig)
-        ListenerModule.__init__(self, config)
-
-        self.log_file = open(self.config.log_file_name,
-                             self.config.log_file_mode)
-
-    def open_ports(self):
-        """
-        Определяет обработчики для входящих сообщений.
-        """
-        self.listen[self.config.service_ports['control']] = self.change_state
-        self.listen[self.config.service_ports['log']] = self.write_to_log
-
-    def write_to_log(self, msg):
-        assert isinstance(msg, dict)
-        assert 'level' in msg.keys()
-        assert 'time' in msg.keys()
-        assert 'message' in msg.keys()
-        log_line = "%s: %s\n" % (time.strftime(self.config.time_format,
-                                              msg['time']), msg['message'])
-        self.log_file.write(log_line)
-        self.log_file.flush()
-
-    def change_state(self, data):
-        pass
-
-    def configure(self):
-        pass
+    def write_to_screen(self,
+                        message="",
+                        message_time=time.localtime()):
+        self.srv.write_to_log(message, message_time, 1)
