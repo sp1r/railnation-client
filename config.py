@@ -11,13 +11,13 @@ main_module_name = "root"
 ################################################################################
 # Загружаемые модули
 
-load_modules = [
-    ('game', modules.WebClient, modules_config.game.configuration),
-    ('logger', modules.FileLogger, modules_config.file_log.configuration),
-    ('collect', modules.Stranger, modules_config.collect.configuration),
+# load_modules = [
+#     ('game', modules.WebClient, modules_config.game.configuration),
+#     ('logger', modules.FileLogger, modules_config.file_log.configuration),
+#     ('collect', modules.Stranger, modules_config.collect.configuration),
     #('dispatcher', modules.Dispatcher, modules_config.dispatcher.configuration),
     #('logic', modules.Logistics, modules_config.logistics.configuration),
-]
+#]
 
 ################################################################################
 # Архитектура
