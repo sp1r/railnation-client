@@ -72,6 +72,15 @@ class Building(Model):
     def collect(self):
         return self.kernel.collect(self.owner_id, self.type)
 
+    def refresh(self):
+        new_station = self.kernel.get_station(self.owner_id)
+        new_building = new_station.buildings[self.type]
+        self.level = new_building.level
+        self.construction_time = new_building.construction_time
+        self.money_cost = new_building.money_cost
+        self.prestige_gain = new_building.prestige_gain
+        self.production_time = new_building.production_time
+
 
 class Station(Model):
     def __init__(self, kernelgw):

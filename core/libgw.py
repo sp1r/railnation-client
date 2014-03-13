@@ -230,3 +230,8 @@ class KernelGateWay:
         return self.interface.get('query',
                                   ('check_lottery', ),
                                   callback.parse_lottery)
+
+    def grab_ticket(self):
+        return self.interface.get('query',
+                                  ('collect_ticket', ),
+                                  callback.parse_reward)

@@ -74,4 +74,10 @@ def parse_collecting_result(payload):
 
 
 def parse_lottery(payload):
-    pass
+    if payload['Body']['freeSlot']:
+        return True
+    return False
+
+
+def parse_reward(payload):
+    return payload
