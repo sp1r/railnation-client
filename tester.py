@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 __author__ = 'spir'
 
-from core.auth import quick_login
+from raillib.core.auth import quick_login
 from managers.spsq import SPSQ
 from workers.collector import Collector
 from workers.mechanic import Mechanic
