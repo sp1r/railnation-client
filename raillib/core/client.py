@@ -10,40 +10,40 @@ import requests.exceptions
 import hashlib
 import time
 
-__author__ = 'V. Spir'
+from core.base import (
+    config,
+    log
+)
+
+__author__ = 'sp1r'
 
 
 class Engine:
     """
-    Настраиваем программу на работу с сервером railnation
-    Мы будем выдавать себя за браузер Mozilla Firefox из-под Ubuntu
+    Класс реализующий непосредственное общение с сервером rail-nation.
     """
-    def __init__(self, url, cookie, checksum):
+    def __init__(self, session):
         """
-        Самое важное это наша кука. Добывается из браузера.
+        :param session: Экземпляр requests.Session с пройденной аутентификацией.
+        :return: Экземпляр класса, готовый к общению с сервером игры.
         """
-        self.url = url
-        self.cookie = cookie
-        self.checksum = checksum
-        self.session = requests.Session()
+        self.url = config['rpc_url'] + '/web/rpc/flash.php'
+        self.checksum = config['checksum']
+        self.session = session
         #self.session.params.update({'pool_maxsize': 20, 'max_retries': 20})
-        self.session.headers.update({'content-type': 'application/json',
-                                    "Cookie": self.cookie,
-                                    "User-Agent": 'Mozilla/5.0 (X11; Ubuntu; \
-                                    Linux x86_64; rv:26.0) Gecko/20100101 \
-                                    Firefox/26.0'})
-
-    def _quote_list(self, l):
-        return '[' + ','.join([self._quote(i) for i in l]) + ']'
-
-    def _quote_dict(self, d):
-        return '{' + ','.join([self._quote(k) + ':' + self._quote(v) for k, v in d.items()]) + '}'
+        self.session.headers.update({'content-type': 'application/json'})
 
     def _quote(self, item):
+        """
+        Правильная расстановка кавычек и скобочек в стиле json.
+
+        :param item: объект любого типа
+        :return: строка с правильно расставленными кавычками
+        """
         if type(item) is list:
-            return self._quote_list(item)
+            return '[' + ','.join([self._quote(i) for i in item]) + ']'
         elif type(item) is dict:
-            return self._quote_dict(item)
+            return '{' + ','.join([self._quote(k) + ':' + self._quote(v) for k, v in item.items()]) + '}'
         elif type(item) is str:
             return '"' + item + '"'
         else:
@@ -51,52 +51,88 @@ class Engine:
 
     def produce(self, interface, method, params):
         """
-        Игра использует обращения к веб-сервису по паре ключей interface+method.
-        При этом отсылая и принимая json-пакеты с данными.
+        Обращение к серверу.
+        Игра использует обращения к веб-сервису по паре ключей (interface + method).
+        При этом отсылая и принимая json-кодированные данные.
 
-        Ответ обычно имеет следующую структуру:
-            {"Server":"Apollon V1",
-            "Errorcode":0,
-            "Infos":{"Server-Time":0.043523788452148},
-            "Body":JSON_DATA}
+        Ответ имеет следующую структуру:
+            {"Server": "Apollon V1",
+            "Errorcode": 0,
+            "Infos": {"Server-Time": 0.043523788452148},
+            "Body": JSON_DATA}
+
+        :param interface: имя интерфейса (string)
+        :param method: имя метода (string)
+        :param params: параметры вызова (list)
+        :return: ответ сервера (dict)
         """
+        log.debug('Trying: %s %s %s' % (interface, method, params))
         target = {'interface': interface,
                   'method': method}
-        params_str = self._quote_list(params)
-        # С какого-то момента сервер хочет от нас в запросе md5-хэш строки
-        # параметров.
+        params_str = self._quote(params)
         payload = {'ckecksum': self.checksum,
                    'client': 1,
-                   'hash': hashlib.md5(params_str).hexdigest(),
+                   'hash': hashlib.md5(params_str.encode("utf-8")).hexdigest(),
                    'parameters': params}
         while True:
             try:
                 r = self.session.post(self.url,
                                       params=target,
                                       data=json.dumps(payload))
-                return json.loads(r.content)  # works in Ubuntu 12.04/Debian 7
+                log.debug('Response: %s Error: %s Content: %s' % (r.status_code, r.error, r.text))
+                return json.loads(r.text)  # works in Ubuntu 12.04/Debian 7
                 #return json.loads(r.text)  # works in Fedora 19
             except requests.exceptions.ConnectionError:
                 # calm down and try again
-                #print 'got error, will try again after a second'
+                log.error('Got connection error, will try again after a second')
                 time.sleep(1)
 
 
-class Oracle:
+class Client:
     """
-    Методы, с которыми можно обращаться к серверу собраны тут.
+    Уровень абстракции для общения с игрой.
+    Продоставляет доступ к игровой информации.
     """
-    def __init__(self, engine):
-        self.srv = engine
+    def __init__(self):
+        #self.authorized = False
+        self.engine = None
+        self.session = requests.Session()
+        self.session.headers.update({"User-Agent": 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:26.0) Gecko/20100101 Firefox/26.0'})
+
+    def authorize(self):
+        self.engine = Engine(self.session)
+        config['self_id'] = self.get_my_id(config['web_key'])['Body']
+        if config['self_id']:
+            self.get_properties()
+            #self.authorized = True
+
+    def unauthorize(self):
+        self.engine = None
+        #self.authorized = False
+
+    def produce(self, *args):
+        # if self.authorized:
+        #     return self.engine.produce(*args)
+        # else:
+        #     print("Unauthorized!")
+        #     return None
+        return self.engine.produce(*args)
+
+########################################################################################################################
+    # Standard Library Methods
+
+    def get_properties(self):
+        """
+        Загружает свойства.
+        """
+        return self.produce('PropertiesInterface', 'getData', [])
 
     def get_my_id(self, web_key='42cbf556576ddc85a560ff2d7909c020'):
         """
         Проверяет действительна ли наша кука.
         В случае успеха возвращает id игрока, которому она принадлежит.
-
-        Параметр web_key - чистая условность, может быть любой строкой.
         """
-        return self.srv.produce('AccountInterface', 'is_logged_in', [web_key])
+        return self.produce('AccountInterface', 'is_logged_in', [web_key])
 
     def get_user(self, user_id):
         """
@@ -105,8 +141,8 @@ class Oracle:
         Параметры:
         user_id -- id игрока (string)
         """
-        return self.srv.produce('ProfileInterface', 'get_profile_data',
-                                [user_id])
+        return self.produce('ProfileInterface', 'get_profile_data',
+                            [user_id])
 
     def get_corp(self, corp_id):
         """
@@ -115,7 +151,7 @@ class Oracle:
         Параметры:
         corp_id -- id ассоциации (string)
         """
-        return self.srv.produce('CorporationInterface', 'get', [corp_id])
+        return self.produce('CorporationInterface', 'get', [corp_id])
 
     def get_buildings(self, user_id):
         """
@@ -124,7 +160,7 @@ class Oracle:
         Параметры:
         user_id -- id игрока (string)
         """
-        return self.srv.produce('BuildingsInterface', 'getAll', [user_id])
+        return self.produce('BuildingsInterface', 'getAll', [user_id])
 
     def collect(self, user_id, building_id):
         """
@@ -134,9 +170,9 @@ class Oracle:
         user_id -- id игрока (string)
         building_id -- номер здания (int)
         """
-        return self.srv.produce('BuildingsInterface', 'collect',
+        return self.produce('BuildingsInterface', 'collect',
                                 [building_id, user_id])
-    
+
     def collect_self(self, building_id):
         """
         Собирает бонус со своего здания (если готов)
@@ -144,20 +180,20 @@ class Oracle:
         Параметры:
         building_id -- номер здания (int)
         """
-        return self.srv.produce('BuildingsInterface', 'collect', [building_id])
+        return self.produce('BuildingsInterface', 'collect', [building_id])
 
     def check_lottery(self):
         """
         Проверяет доступен ли бесплатный билетик.
         """
-        return self.srv.produce('LotteryInterface', 'isForFree', [])
+        return self.produce('LotteryInterface', 'isForFree', [])
 
     def collect_ticket(self):
         """
         Открывает лотерейный билет (покупает его если нет бесплатного)
         """
-        print self.srv.produce('LotteryInterface', 'buy', [])
-        return self.srv.produce('LotteryInterface', 'rewardLottery', [])
+        print(self.produce('LotteryInterface', 'buy', []))
+        return self.produce('LotteryInterface', 'rewardLottery', [])
 
     def build(self, building_id):
         """
@@ -166,7 +202,7 @@ class Oracle:
         Параметры:
         building_id -- номер здания (int)
         """
-        return self.srv.produce('BuildingsInterface', 'build',
+        return self.produce('BuildingsInterface', 'build',
                                 [building_id, False, False])
 
     def get_resource(self, user_id, resource_id):
@@ -181,7 +217,7 @@ class Oracle:
         этот метод не используется клиентом игры, может быть лучше его не
         использовать?
         """
-        return self.srv.produce('ResourceInterface', 'getResource',
+        return self.produce('ResourceInterface', 'getResource',
                                 [user_id, resource_id])
 
     def get_gui(self):
@@ -189,13 +225,13 @@ class Oracle:
         Этот метод вызывает клиент, сразу после возвращения из режима
         неактивности. Возвращает информацию сразу о всех ресурсах.
         """
-        return self.srv.produce('GUIInterface', 'get_gui', [])
+        return self.produce('GUIInterface', 'get_gui', [])
 
     def get_all_tenders(self):
         """
         Возвращает список всех соревнований (прошедших, текущих и будущих)
         """
-        return self.srv.produce('TenderingInterface', 'getAllTendering', [])
+        return self.produce('TenderingInterface', 'getAllTendering', [])
 
     def accept_tender(self, comp_id):
         """
@@ -204,14 +240,14 @@ class Oracle:
         Параметры:
         comp_id -- id соревнования (string)
         """
-        return self.srv.produce('TenderingInterface', 'acceptTendering',
+        return self.produce('TenderingInterface', 'acceptTendering',
                                 [comp_id, False])
 
     def get_licence_auctions(self):
         """
         Возвращает список всех аукционов на лицензии
         """
-        return self.srv.produce('LicenceInterface', 'getAuctions', [])
+        return self.produce('LicenceInterface', 'getAuctions', [])
 
     def bid_on_licence(self, auc_id, amount):
         """
@@ -221,14 +257,14 @@ class Oracle:
         auc_id -- id аукциона (string)
         amount -- размер ставки (int)
         """
-        return self.srv.produce('LicenceInterface', 'bidOnLicence',
+        return self.produce('LicenceInterface', 'bidOnLicence',
                                 [auc_id, amount])
 
     def get_own_licences(self):
         """
         Возвращает список своих лицензий
         """
-        return self.srv.produce('LicenceInterface', 'getOwnLicences', [])
+        return self.produce('LicenceInterface', 'getOwnLicences', [])
 
     def research(self, tech_id, points):
         """
@@ -238,14 +274,14 @@ class Oracle:
         tech_id -- id технологии (int)
         points -- количество очков исследования, которые нужно вложить (int)
         """
-        return self.srv.produce('ResearchInterface', 'researchTechnology',
+        return self.produce('ResearchInterface', 'researchTechnology',
                                 [tech_id, points])
 
     def get_my_trains(self):
         """
         Возвращает список своих поездов
         """
-        return self.srv.produce('TrainInterface', 'getMyTrains', [True])
+        return self.produce('TrainInterface', 'getMyTrains', [True])
 
     def get_train(self, train_id):
         """
@@ -254,7 +290,7 @@ class Oracle:
         Параметры:
         train_id -- id поезда (string)
         """
-        return self.srv.produce('TrainInterface', 'getTrack',
+        return self.produce('TrainInterface', 'getTrack',
                                 [train_id, True, False])
 
     def repair_train(self, train_id):
@@ -264,13 +300,13 @@ class Oracle:
         Параметры:
         train_id -- id поезда (string)
         """
-        return self.srv.produce('TrainInterface', 'doMaintenance', [train_id])
+        return self.produce('TrainInterface', 'doMaintenance', [train_id])
 
     def get_locations(self):
         """
         Возвращает список всех локаций на карте
         """
-        return self.srv.produce('LocationInterface', 'get', [])
+        return self.produce('LocationInterface', 'get', [])
 
     def get_rails(self, user_id):
         """
@@ -279,7 +315,7 @@ class Oracle:
         Параметры:
         user_id -- id игрока (string)
         """
-        return self.srv.produce('RailInterface', 'get', [user_id])
+        return self.produce('RailInterface', 'get', [user_id])
 
     def get_train_road_map(self, train_id):
         """
@@ -288,7 +324,7 @@ class Oracle:
         Параметры:
         train_id -- id поезда (string)
         """
-        return self.srv.produce('TrainInterface', 'getRoadMap', [train_id])
+        return self.produce('TrainInterface', 'getRoadMap', [train_id])
 
     def set_road_map(self, train_id, road_map):
         """
@@ -311,23 +347,23 @@ class Oracle:
                      0, для разгрузки
                      60, для погрузки
         """
-        return self.srv.produce('TrainInterface', 'setRoadMap',
+        return self.produce('TrainInterface', 'setRoadMap',
                                 [train_id, road_map])
 
 ################################################################################
     # TODO: Write documentation for functions below
 
     def get_town_resource(self, town_id, res_id):
-        return self.srv.produce('TownInterface', 'getTopSuppliers',
+        return self.produce('TownInterface', 'getTopSuppliers',
                                 [town_id, res_id,
                                  "00000000-0000-0000-0000-000000000000"])
 
     def get_town_brief(self, town_id):
-        return self.srv.produce('TownInterface', 'getDetails',
+        return self.produce('TownInterface', 'getDetails',
                                 [town_id])
 
     def get_statistics_towns(self):
-        return self.srv.produce('StatisticsInterface', 'getTowns', [])
+        return self.produce('StatisticsInterface', 'getTowns', [])
 
     def get_all_locations(self):
-        return self.srv.produce('LocationInterface', 'get', [])
+        return self.produce('LocationInterface', 'get', [])
