@@ -1,4 +1,7 @@
 rail-nation-hacking
 ===================
 
-Бот играющий в Rail Nation по конфигам, которые мы ему дадим.
+Currently only python 3 support.
+
+Required modules:
+python3-requests

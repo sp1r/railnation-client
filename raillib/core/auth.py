@@ -15,7 +15,7 @@ __author__ = 'sp1r'
 
 import html.parser
 
-from .. import core
+from . import __init__ as core
 
 
 core.log.info('Authorization module Initialization...')
@@ -129,6 +129,7 @@ def _authorize(username, password, world):
     parser = HTMLAttributeSearch('a', 'class', 'forwardLink', 'href')
     parser.feed(response.text)
     auth_link = parser.result
+
     # авторизуемся через эту ссылку (получаем куку в сессию)
     core.log.debug('Authorizing via link: %s' % auth_link)
 
@@ -148,8 +149,8 @@ def _authorize(username, password, world):
 ###############################################################################
 # Пользовательские методы входа в игру
 def quick_login():
-    name = 'namelessorama@gmail.com'
-    password = 'hqj3o3ww94qjq'
+    name = '***'
+    password = '***'
     world = 354
     _authorize(name, password, world)
 

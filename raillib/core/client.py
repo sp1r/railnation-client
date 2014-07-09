@@ -1,8 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
+Классы предоставляющие доступ к игровой информации на сервере.
+
 Подробные структуры ответов сервера находятся в файле docs/DATA_STRUCTS.
-Значения id ресурсов, товаров и зданий могут быть найдены в модуле constants.py.
+Значения id ресурсов, товаров и зданий могут быть найдены в constants.py.
 """
 import json
 import requests
@@ -10,12 +12,13 @@ import requests.exceptions
 import hashlib
 import time
 
-from core.base import (
-    config,
-    log
-)
+from . import __init__ as core
+
 
 __author__ = 'sp1r'
+
+
+core.log.info('Client module Initialization...')
 
 
 class Engine:
@@ -24,13 +27,12 @@ class Engine:
     """
     def __init__(self, session):
         """
-        :param session: Экземпляр requests.Session с пройденной аутентификацией.
+        :param session: Экземпляр requests.Session с пройденной аутентификацией
         :return: Экземпляр класса, готовый к общению с сервером игры.
         """
-        self.url = config['rpc_url'] + '/web/rpc/flash.php'
-        self.checksum = config['checksum']
+        self.url = core.config['rpc_url'] + '/web/rpc/flash.php'
+        self.checksum = core.config['checksum']
         self.session = session
-        #self.session.params.update({'pool_maxsize': 20, 'max_retries': 20})
         self.session.headers.update({'content-type': 'application/json'})
 
     def _quote(self, item):
@@ -66,7 +68,7 @@ class Engine:
         :param params: параметры вызова (list)
         :return: ответ сервера (dict)
         """
-        log.debug('Trying: %s %s %s' % (interface, method, params))
+        core.log.debug('Trying: %s %s %s' % (interface, method, params))
         target = {'interface': interface,
                   'method': method}
         params_str = self._quote(params)
@@ -79,30 +81,32 @@ class Engine:
                 r = self.session.post(self.url,
                                       params=target,
                                       data=json.dumps(payload))
-                log.debug('Response: %s Error: %s Content: %s' % (r.status_code, r.error, r.text))
+                core.log.debug('Response: %s Error: %s Content: %s' % (r.status_code, r.error, r.text))
                 return json.loads(r.text)  # works in Ubuntu 12.04/Debian 7
                 #return json.loads(r.text)  # works in Fedora 19
             except requests.exceptions.ConnectionError:
                 # calm down and try again
-                log.error('Got connection error, will try again after a second')
+                core.log.error('Got connection error, will try again after a second')
                 time.sleep(1)
 
 
 class Client:
     """
     Уровень абстракции для общения с игрой.
-    Продоставляет доступ к игровой информации.
+
+    Заменяет используемые в игре пары Interface_name+Method_name на
+    короткие человеческие имена.
     """
     def __init__(self):
         #self.authorized = False
         self.engine = None
         self.session = requests.Session()
-        self.session.headers.update({"User-Agent": 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:26.0) Gecko/20100101 Firefox/26.0'})
+
 
     def authorize(self):
         self.engine = Engine(self.session)
-        config['self_id'] = self.get_my_id(config['web_key'])['Body']
-        if config['self_id']:
+        core.config['self_id'] = self.get_my_id(core.config['web_key'])['Body']
+        if core.config['self_id']:
             self.get_properties()
             #self.authorized = True
 
