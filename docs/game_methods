@@ -1,0 +1,43 @@
+PropertiesInterface     getData                 Загружает список (очень большой) свойств игры
+
+AccountInterface        is_logged_in            Возвращает собственный id игрока, если он залогинился в игру
+
+ProfileInterface        get_profile_data        Информация о профиле игрока (имя, престиж, ассоциация и проч.)
+
+CorporationInterface    get                     Информация об ассоциации (имя, престиж, количество игроков, id игроков и проч.)
+
+BuildingsInterface      getAll                  Информация о станции игрока (уровень зданий, время "созревания" бонусов, стоимость улучшений)
+BuildingsInterface      collect                 Собирает бонус со здания досуга
+BuildingsInterface      build                   Строит здание (при наличии средств)
+
+LotteryInterface        isForFree               Проверяет доступен ли бесплатный лотерейный билет
+LotteryInterface        buy                     Покупает лотерейный билет (или активирует бесплатный)
+LotteryInterface        rewardLottery           Определяет приз в купленном лотерейном билете
+
+ResourceInterface       getResource             Информация об одном из ресурсов игрока (деньги, золото, ОИ и др.)
+
+GUIInterface            get_gui                 Полная информация о ресурсах игрока (запускается при загрузке)
+
+TenderingInterface      getAllTendering         Информация о соревнованиях
+TenderingInterface      acceptTendering         Записывается на соревнование
+
+LicenceInterface        getAuctions             Информация об аукционах на лицензии
+LicenceInterface        bidOnLicence            Делает ставку на лицензию
+LicenceInterface        getOwnLicences          Список купленных лицензий
+
+ResearchInterface       researchTechnology      Вкладывает очки исследования в технологию
+
+TrainInterface          getMyTrains             Список своих поездов
+TrainInterface          getTrack                Информация об одном из поездов
+TrainInterface          doMaintenance           Чинит поезд (при наличии средств)
+TrainInterface          getRoadMap              Информация о маршруте поезда
+TrainInterface          setRoadMap              Установить маршрут поезда
+
+LocationInterface       get                     Список всех зданий на карте
+
+RailInterface           get                     Список путей проложенных игроком
+
+TownInterface           getTopSuppliers         Полный список поставщиков ресурса в городе
+TownInterface           getDetails              Информация о городе
+
+StatisticsInterface     getTowns                Рейтинг городов

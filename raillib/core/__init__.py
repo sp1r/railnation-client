@@ -8,22 +8,6 @@ import logging
 import sys
 import requests
 
-from .client import Client
-
-
-# Сессия
-# в нее будут устанавливаться куки при авторизации
-session = requests.Session()
-session.headers.update({"User-Agent":
-                        'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:26.0) '
-                        'Gecko/20100101 Firefox/26.0'})
-
-
-# Эта сущность - точка доступа к игровой информации, которую мы предоставляем
-# наверх.
-client = Client()
-
-
 # Конфигурация
 # TODO: добавить возможность чтения конфигурации из файла
 config = {
@@ -36,7 +20,7 @@ config = {
 # TODO: добавить возможность чтения конфигурации логирования из файла
 log = logging.Logger('rail-nation')
 
-log_format = logging.Formatter(fmt='%(levelname)-10s %(asctime)s %(message)s',
+log_format = logging.Formatter(fmt='%(levelname)-10s %(asctime)s: %(message)s',
                                datefmt='%d.%m %H:%M:%S,%03d',
                                style='%')
 
@@ -51,4 +35,19 @@ file_handler.setLevel(logging.DEBUG)
 log.addHandler(console_handler)
 log.addHandler(file_handler)
 
+# Сессия
+# в нее будут устанавливаться куки при авторизации
+session = requests.Session()
+session.headers.update({"User-Agent":
+                        'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:26.0) '
+                        'Gecko/20100101 Firefox/26.0'})
+
+###############################################################################
+# Start working
 log.info('System started.')
+
+from .client import Client
+
+# Эта сущность - точка доступа к игровой информации, которую мы предоставляем
+# наверх.
+client = Client()

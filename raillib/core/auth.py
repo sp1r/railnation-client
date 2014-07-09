@@ -15,34 +15,36 @@ __author__ = 'sp1r'
 
 import html.parser
 
-from . import __init__ as core
+from . import log
+from . import config
+from . import session
+from . import client
 
 
-core.log.info('Authorization module Initialization...')
+log.info('Authorization module Initialization...')
 
 
 ###############################################################################
 # Загрузка конфигурации SAM
-sam_url = 'http://' + core.config['base_url'] + '/js/sam.config.php'
-core.config['sam'] = {}
+sam_url = 'http://' + config['base_url'] + '/js/sam.config.php'
+config['sam'] = {}
 
-core.log.debug('Downloading SAM config...')
-core.log.debug('SAM config url: %s' % sam_url)
-response = core.client.session.get(sam_url)
-core.log.debug('Response: %s Error: %s' % (response.status_code,
-                                           response.error))
+log.debug('Downloading SAM config...')
+log.debug('SAM config url: %s' % sam_url)
+response = session.get(sam_url)
+log.debug('Response: %s Error: %s' % (response.status_code,
+                                      response.error))
 
 # парсим строки вида:
 # samConfig['applicationId'] = 'railnation';
 for line in response.iter_lines():
-    # iter_lines() returns <bytes> objects
+    # iter_lines() возвращает объекты типа <bytes> - нужно конвертировать
     line = str(line)
     if line.startswith('b"samConfig['):
         fields = line.split("'")
         key, value = fields[1], fields[3]
-        core.config['sam'][key] = value
-        core.log.debug('SAM item: %s = %s' % (key,
-                                              core.config['sam'][key]))
+        config['sam'][key] = value
+        log.debug('SAM item: %s = %s' % (key, config['sam'][key]))
 
 
 ###############################################################################
@@ -51,15 +53,15 @@ def _get_link(action):
     """
     Повторяет функционал из http://www.rail-nation.com/js/sam.js
     """
-    core.log.debug('Constructing url for %s frame' % action)
+    log.debug('Constructing url for %s frame' % action)
     target = "%s/iframe/%s/applicationId/%s/applicationCountryId/%s" \
              "/applicationInstanceId/%s/userParam/undefined/" % \
-             (core.config['sam']['url'],
+             (config['sam']['url'],
               action,
-              core.config['sam']['applicationId'],
-              core.config['sam']['applicationCountryId'],
-              core.config['sam']['applicationInstanceId'])
-    core.log.debug('Link for %s frame is: %s' % (action, target))
+              config['sam']['applicationId'],
+              config['sam']['applicationCountryId'],
+              config['sam']['applicationInstanceId'])
+    log.debug('Link for %s frame is: %s' % (action, target))
     return target
 
 
@@ -74,19 +76,19 @@ def _authorize(username, password, world):
     :param world: id игрового мира
     :return: None
     """
-    core.log.info('Trying to login. User: %s' % username)
+    log.info('Trying to login. User: %s' % username)
 
     # загружаем фрейм с формой ввода пароля
-    core.log.debug('Requesting login frame...')
-    response = core.client.session.get(_get_link('login'))
-    core.log.debug('Response: %s Error: %s' % (response.status_code,
-                                               response.error))
+    log.debug('Requesting login frame...')
+    response = session.get(_get_link('login'))
+    log.debug('Response: %s Error: %s' % (response.status_code,
+                                          response.error))
 
     # находим элемент с id="loginForm" и сохраняем его параметр action
     parser = HTMLAttributeSearch('form', 'id', 'loginForm', 'action')
     parser.feed(response.text)
     login_target = parser.result
-    core.log.debug('Login form submit url: %s' % login_target)
+    log.debug('Login form submit url: %s' % login_target)
 
     login_data = {
         'className': 'login ',
@@ -96,22 +98,22 @@ def _authorize(username, password, world):
     }
 
     # отправляем логин и пароль на сервер
-    core.log.debug('Sending credentials...')
-    response = core.client.session.post(login_target, data=login_data)
-    core.log.debug('Response: %s Error: %s' % (response.status_code,
-                                               response.error))
+    log.debug('Sending credentials...')
+    response = session.post(login_target, data=login_data)
+    log.debug('Response: %s Error: %s' % (response.status_code,
+                                          response.error))
 
     # загружаем фрейм с выбором id мира для входа
-    core.log.debug('Requesting world selection frame...')
-    response = core.client.session.get(_get_link('external-avatar-list'))
-    core.log.debug('Response: %s Error: %s' % (response.status_code,
-                                               response.error))
+    log.debug('Requesting world selection frame...')
+    response = session.get(_get_link('external-avatar-list'))
+    log.debug('Response: %s Error: %s' % (response.status_code,
+                                          response.error))
 
     # ищем элементы класса loginAvatarForm и сохраняем их параметр action
     parser = HTMLAttributeSearch('form', 'class', 'loginAvatarForm', 'action')
     parser.feed(response.text)
     world_target = parser.result
-    core.log.debug('World selection form submit url: %s' % world_target)
+    log.debug('World selection form submit url: %s' % world_target)
 
     # TODO: add 'choose world' feature here.
 
@@ -120,30 +122,26 @@ def _authorize(username, password, world):
     }
 
     # отправляем id мира на сервер
-    core.log.info('Entering world %s...' % world_data['world'])
-    response = core.client.session.post(world_target, data=world_data)
-    core.log.debug('Response: %s Error: %s' % (response.status_code,
-                                               response.error))
+    log.info('Entering world %s...' % world_data['world'])
+    response = session.post(world_target, data=world_data)
+    log.debug('Response: %s Error: %s' % (response.status_code,
+                                          response.error))
 
     # в ответе находим ссылку класса forwardLink и сохраняем href
     parser = HTMLAttributeSearch('a', 'class', 'forwardLink', 'href')
     parser.feed(response.text)
     auth_link = parser.result
 
+    config['rpc_url'], config['web_key'] = auth_link.split('/web/?key=')
+    config['rpc_url'] += '/web/rpc/flash.php'
+    log.debug('RPC url: %s' % config['rpc_url'])
+    log.debug('Web key: %s' % config['web_key'])
+
     # авторизуемся через эту ссылку (получаем куку в сессию)
-    core.log.debug('Authorizing via link: %s' % auth_link)
-
-    response = core.client.session.get(auth_link)
-    core.log.debug('Response: %s Error: %s' % (response.status_code,
-                                               response.error))
-
-    core.config['rpc_url'], core.config['web_key'] = \
-        auth_link.split('/web/?key=')
-
-    core.log.debug('RPC url: %s' % core.config['rpc_url'])
-    core.log.debug('Web key: %s' % core.config['web_key'])
-
-    core.client.authorize()
+    log.debug('Authorizing via link: %s' % auth_link)
+    response = session.get(auth_link)
+    log.debug('Response: %s Error: %s' % (response.status_code,
+                                          response.error))
 
 
 ###############################################################################
@@ -186,7 +184,7 @@ class HTMLAttributeSearch(html.parser.HTMLParser):
 ###############################################################################
 # Секция тестирования
 if __name__ == "__main__":
-    response = core.client.session.get(_get_link('login'))
+    response = session.get(_get_link('login'))
     doc = HTMLAttributeSearch('form', 'id', 'loginForm', 'action')
     doc.feed(response.text)
     print(doc.result)
