@@ -5,7 +5,7 @@
 
 Список всех методов с описанием см в docs/game_methods
 
-Примеры ответов сервера находятся в файле docs/DATA_STRUCTS.
+Примеры ответов сервера находятся в файле docs/server_answers_examples.
 Значения id ресурсов, товаров и зданий могут быть найдены в raillib.constants
 """
 import json
@@ -66,11 +66,7 @@ class Engine:
         """
         Обращение к серверу.
 
-        Ответ имеет следующую структуру:
-            {"Server": "Apollon V1",
-            "Errorcode": 0,
-            "Infos": {"Server-Time": 0.043523788452148},
-            "Body": JSON_DATA}
+        см. docs/server_answers_examples
 
         :param interface: имя интерфейса (string)
         :param method: имя метода (string)
@@ -268,15 +264,15 @@ class Client:
         """
         return self.engine.produce('TenderingInterface', 'getAllTendering', [])
 
-    def accept_tender(self, comp_id):
+    def accept_tender(self, tendering_id):
         """
         Регистрируется на соревнование
 
         Параметры:
-        comp_id -- id соревнования (string)
+        tendering_id -- id соревнования (string)
         """
         return self.engine.produce('TenderingInterface', 'acceptTendering',
-                                   [comp_id, False])
+                                   [tendering_id, False])
 
 ###############################################################################
 # Licence
@@ -288,16 +284,16 @@ class Client:
         return self.engine.produce('LicenceInterface', 'getAuctions',
                                    [])
 
-    def bid_on_licence(self, auc_id, amount):
+    def bid_on_licence(self, auction_id, amount):
         """
         Делает ставку на лицензию
 
         Параметры:
-        auc_id -- id аукциона (string)
+        auction_id -- id аукциона (string)
         amount -- размер ставки (int)
         """
         return self.engine.produce('LicenceInterface', 'bidOnLicence',
-                                   [auc_id, amount])
+                                   [auction_id, amount])
 
     def get_own_licences(self):
         """
@@ -360,7 +356,7 @@ class Client:
         return self.engine.produce('TrainInterface', 'getRoadMap',
                                    [train_id])
 
-    def set_road_map(self, train_id, road_map):
+    def set_train_road_map(self, train_id, road_map):
         """
         Устанавливает маршрут для указанного поезда
 
@@ -410,7 +406,7 @@ class Client:
 ###############################################################################
 # Town
 ###############################################################################
-    def get_town_resource(self, town_id, res_id):
+    def get_town_top_suppliers(self, town_id, res_id):
         """
         Полный список поставщиков ресурса в городе.
 
@@ -422,7 +418,7 @@ class Client:
                                    [town_id, res_id,
                                    "00000000-0000-0000-0000-000000000000"])
 
-    def get_town_brief(self, town_id):
+    def get_town_details(self, town_id):
         """
         Информация о городе.
 

@@ -21,7 +21,7 @@ config = {
 log = logging.Logger('rail-nation')
 
 log_format = logging.Formatter(fmt='%(levelname)-10s %(asctime)s: %(message)s',
-                               datefmt='%d.%m %H:%M:%S,%03d',
+                               datefmt='%d.%m %H:%M:%S',
                                style='%')
 
 console_handler = logging.StreamHandler(sys.stdout)
