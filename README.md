@@ -1,7 +1,9 @@
-rail-nation-hacking
+rail-nation-client
 ===================
 
-Currently only python 3 support.
+This is a Terminal client to http://rail-nation.com game. 
+Use it and forgot about lags and crashes of Flash.
 
-Required modules:
-- python3-requests
+Currently in development...
+
+For now only python 3 support.
