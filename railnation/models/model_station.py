@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from railnation.core.railnation_globals import client, log
+from railnation.core.railnation_globals import log
 
 
-class Station:
-    def __init__(self, owner_id, data):
+class Station():
+    def __init__(self, client, owner_id, data):
         self.owner_id = owner_id
         self.buildings = {
-            building_id: Building(owner_id, building_data)
+            building_id: Building(client, owner_id, building_data)
             for building_id, building_data in data.items()
         }
 
@@ -20,8 +20,8 @@ class Station:
             yield self.buildings[t]
 
 
-class Building:
-    def __init__(self, owner_id, data):
+class Building():
+    def __init__(self, client, owner_id, data):
         self.owner_id = owner_id
         self.type = int(data['type'])
         self.level = int(data['level'])
@@ -39,7 +39,7 @@ class Building:
 
     def collect(self):
         log.debug('Collecting %d for player %s' % (self.type, self.owner_id))
-        result = client.collect(self.owner_id, self.type)
+        result = self.client.collect(self.owner_id, self.type)
 
         if result["Errorcode"] == 10054:
             log.info('%s: Bank overflow' % self.owner_id)
@@ -47,8 +47,8 @@ class Building:
             log.info('%s: Missed' % self.owner_id)
         else:
             log.info('%s: Collected' % self.owner_id)
-            ticket = client.check_lottery()
+            ticket = self.client.check_lottery()
             if ticket['Body']['freeSlot']:
                 log.info('Got ticket!' % self.owner_id)
-                prize = client.collect_ticket()
+                prize = self.client.collect_ticket()
                 log.info('Prize: %s' % str(prize['Infos']))

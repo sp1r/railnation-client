@@ -1,34 +1,35 @@
 #-*- coding: utf-8 -*-
-"""Модуль аутентификации на игровом сервере"""
+"""Модуль аутентификации"""
 
 import getpass
 import html.parser
 
+from railnation.core.railnation_globals import log
+
 # I believe this won`t change every day
-BASE_URL = 'rail-nation.com'
+BASE_URL = 'www.rail-nation.com'
 
 sam_config = {}
 
 
-def authorize_client(client):
+def authorize(client):
     """
     Проводит аутентификацию
 
-    :param client: игровой клиент
+    :param client: класс для общения с игрой
     :type client: railnation.core.railnation_client.Client
     """
     # загружаем конфигурацию SAM
     sam_url = 'http://%s/js/sam.config.php' % BASE_URL
-
-    client.log.debug('Downloading SAM config...')
-    client.log.debug('SAM config url: %s' % sam_url)
-    response = client.engine.session.get(sam_url)
-    client.log.debug('Response: %s Error: %s' % (response.status_code,
-                                                 response.reason))
+    log.debug('Downloading SAM config...')
+    log.debug('SAM config url: %s' % sam_url)
+    response = client.session.get(sam_url)
+    log.debug('Response: %s Message: %s' % (response.status_code,
+                                            response.reason))
 
     if response.status_code != 200:
-        print("Error while getting SAM config from server.")
-        print("Check your internet connection. Will now exit.")
+        log.critical("Error while getting SAM config from server.")
+        print("Connection problems. Will now exit.")
         exit(0)
 
     # парсим строки вида:
@@ -40,24 +41,24 @@ def authorize_client(client):
             fields = line.split("'")
             key, value = fields[1], fields[3]
             sam_config[key] = value
-            client.log.debug('SAM item: %s = %s' % (key, sam_config[key]))
+            log.debug('SAM item: %s = %s' % (key, sam_config[key]))
 
-    # получаем логин/пароль от учетной записи
+    # запрашиваем логин/пароль от учетной записи
     username, password = console_login()
 
-    client.log.info('Trying to login. User: %s' % username)
+    log.info('Trying to login. User: %s' % username)
 
     # загружаем фрейм с формой ввода пароля
-    client.log.debug('Requesting login frame...')
-    response = client.engine.session.get(_get_link(client.log, 'login'))
-    client.log.debug('Response: %s Error: %s' % (response.status_code,
+    log.debug('Requesting login frame...')
+    response = client.session.get(_get_link('login'))
+    log.debug('Response: %s Message: %s' % (response.status_code,
                                                  response.reason))
 
     # находим элемент с id="loginForm" и сохраняем его параметр action
     parser = HTMLAttributeSearch('form', 'id', 'loginForm', 'action')
     parser.feed(response.text)
     login_target = parser.result
-    client.log.debug('Login form submit url: %s' % login_target)
+    log.debug('Login form submit url: %s' % login_target)
 
     login_data = {
         'className': 'login ',
@@ -67,34 +68,38 @@ def authorize_client(client):
     }
 
     # отправляем логин и пароль на сервер
-    client.log.debug('Sending credentials...')
-    response = client.engine.session.post(login_target, data=login_data)
-    client.log.debug('Response: %s Error: %s' % (response.status_code,
+    log.debug('Sending credentials...')
+    response = client.session.post(login_target, data=login_data)
+    log.debug('Response: %s Message: %s' % (response.status_code,
                                                  response.reason))
 
     # загружаем фрейм с выбором id мира для входа
-    client.log.debug('Requesting world selection frame...')
-    response = client.engine.session.get(_get_link(client.log,
-                                                   'external-avatar-list'))
-    client.log.debug('Response: %s Error: %s' % (response.status_code,
+    log.debug('Requesting world selection frame...')
+    response = client.session.get(_get_link('external-avatar-list'))
+    log.debug('Response: %s Message: %s' % (response.status_code,
                                                  response.reason))
+
+    # ищем элементы с id=loginAvatarWorldInput и сохраняем их параметр value
+    parser = HTMLAttributeSearch('input', 'id', 'loginAvatarWorldInput', 'value')
+    parser.feed(response.text)
+    world_id = parser.result
+    log.debug('World id to enter: %s' % world_id)
 
     # ищем элементы класса loginAvatarForm и сохраняем их параметр action
     parser = HTMLAttributeSearch('form', 'class', 'loginAvatarForm', 'action')
     parser.feed(response.text)
     world_target = parser.result
-    client.log.debug('World selection form submit url: %s' % world_target)
+    log.debug('World selection form submit url: %s' % world_target)
 
     # TODO: add 'choose world' feature here.
-    world_id = 0
     world_data = {
         'world': world_id,
     }
 
     # отправляем id мира на сервер
-    client.log.info('Entering world %s...' % world_data['world'])
-    response = client.engine.session.post(world_target, data=world_data)
-    client.log.debug('Response: %s Error: %s' % (response.status_code,
+    log.info('Entering world %s...' % world_data['world'])
+    response = client.session.post(world_target, data=world_data)
+    log.debug('Response: %s Message: %s' % (response.status_code,
                                                  response.reason))
 
     # в ответе находим ссылку класса forwardLink и сохраняем href
@@ -102,26 +107,25 @@ def authorize_client(client):
     parser.feed(response.text)
     auth_link = parser.result
 
-    rpc_url, webkey = auth_link.split('?key=')
-    rpc_url += 'rpc/flash.php'
-    client.log.debug('RPC url: %s' % rpc_url)
-    client.log.debug('Web key: %s' % webkey)
+    client.rpc_url, client.webkey = auth_link.split('?key=')
+    client.rpc_url += 'rpc/flash.php'
+    log.debug('RPC url: %s' % client.rpc_url)
+    log.debug('Web key: %s' % client.webkey)
 
     # авторизуемся через эту ссылку (получаем куку в сессию)
-    client.log.debug('Authorizing via link: %s' % auth_link)
-    response = client.engine.session.get(auth_link)
-    client.log.debug('Response: %s Error: %s' % (response.status_code,
-                                                 response.reason))
+    log.debug('Authorizing via link: %s' % auth_link)
+    response = client.session.get(auth_link)
+    log.debug('Response: %s Message: %s' % (response.status_code,
+                                            response.reason))
 
-    # Устанавливаем нужные для работы параметры
-    client.webkey = webkey
-    client.engine.rpc_url = rpc_url
-    client.engine.session.headers.update({'content-type': 'application/json'})
+    client.session.headers.update({'content-type': 'application/json'})
 
-    # Проверяем, что все ок
-    if not client.is_logged_in():
-        print('Authentication failed. Will now exit')
-        exit(0)
+    client.player_id = client.produce('AccountInterface',
+                                      'is_logged_in',
+                                      [client.webkey])['Body']
+    if not client.player_id:
+        print('Cannot log in to the game.')
+        exit(1)
 
 
 def console_login():
@@ -131,7 +135,7 @@ def console_login():
     return name, password
 
 
-def _get_link(log, action):
+def _get_link(action):
     """
     Повторяет функционал из http://www.rail-nation.com/js/sam.js
     """

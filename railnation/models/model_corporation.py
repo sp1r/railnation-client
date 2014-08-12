@@ -2,11 +2,9 @@
 
 """Корпорация"""
 
-from railnation.core.railnation_globals import client
 
-
-class Corporation:
-    def __init__(self, data):
+class Corporation():
+    def __init__(self, client, data):
         self.id = str(data['ID'])
         self.name = data['name']
         self.description = data['description']
@@ -29,12 +27,12 @@ class Corporation:
     @property
     def members(self):
         for member_id in self.member_ids:
-            yield client.get_user(member_id)
+            yield self.client.get_user(member_id)
 
     @property
     def stations(self):
         for member_id in self.member_ids:
-            yield client.get_station(member_id)
+            yield self.client.get_station(member_id)
 
     @property
     def collectables(self):

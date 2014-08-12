@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 """Игрок railnation"""
 
-from railnation.core.railnation_globals import client
+from railnation.models.railnation_model import Model
 
 
-class Player:
-    """
-    :param data: ответ сервера на get_user()
-    :type data: dict
-    """
+class Player(Model):
     def __init__(self, data):
+        Model.__init__(self)
+        self._parse_data(data)
+
+    def _parse_data(self, data):
         self.id = str(data['user_id'])
         self.params = {
             'hometown_is_public': data['hometown_is_public'],
@@ -42,13 +42,13 @@ class Player:
     @property
     def corporation(self):
         if self.corp_id:
-            return client.get_corp(self.corp_id)
+            return Model.client.get_corp(self.corp_id)
         else:
             return None
 
     @property
     def station(self):
-        return client.get_station(self.id)
+        return Model.client.get_station(self.id)
 
     # def trains(self):
     #     if self.id == config['self_id']:

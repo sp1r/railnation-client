@@ -6,4 +6,7 @@ Use it and forgot about lags and crashes of Flash.
 
 Currently in development and not playable =(
 
-For now only python 3 support.
+Requirements
+=============
+1) python 3
+2) python-requests module
