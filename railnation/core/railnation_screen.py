@@ -57,6 +57,7 @@ class Screen(object):
         self._draw_grid()
         self._draw_menu()
         self._draw_header()
+        self._draw_help()
         data = self.pages[self.current_page].data_for_display()
         log.debug('Page data: %s' % data)
         offset_x = LEFT_BAR + 1
@@ -105,3 +106,7 @@ class Screen(object):
         self.screen.addstr(TOP_BAR - 1, LEFT_BAR + 31, 'Prestige: ')
         self.screen.addstr(TOP_BAR - 2, LEFT_BAR + 62, 'Gold: ')
         self.screen.addstr(TOP_BAR - 1, LEFT_BAR + 62, 'Rank: ')
+
+    def _draw_help(self):
+        max_y, max_x = self.screen.getmaxyx()
+        self.screen.addstr(max_y - 1, 1, "'h' is for help")

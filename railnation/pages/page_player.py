@@ -2,6 +2,7 @@
 """docstring"""
 
 from railnation.pages.railnation_page import BasicPage
+from railnation.core.railnation_models import Player
 
 
 class Page(BasicPage):

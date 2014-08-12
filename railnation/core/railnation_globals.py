@@ -5,21 +5,8 @@ import logging
 import sys
 import os
 
-
-# file log for debug
-log = logging.Logger('rail-nation')
-
-_log_format = logging.Formatter(
-    fmt='%(levelname)-10s %(asctime)s: %(message)s',
-    datefmt='%d/%m %H:%M:%S',
-    style='%')
-_file_handler = logging.StreamHandler(
-    open('/tmp/railnation-debug.log', 'w'))
-_file_handler.setFormatter(_log_format)
-_file_handler.setLevel(logging.DEBUG)
-
-log.addHandler(_file_handler)
-
+# game client
+client = None
 
 # python 3?
 is_py3 = sys.version_info >= (3, 3)
@@ -35,3 +22,18 @@ pages_path = os.path.realpath(os.path.join(work_path, '..', 'pages'))
 # after all pages are imported
 orig_sys_path = sys.path[:]
 sys.path.append(pages_path)
+
+
+# file log for debug
+log = logging.Logger('rail-nation')
+
+_log_format = logging.Formatter(
+    fmt='%(levelname)-10s %(asctime)s: %(message)s',
+    datefmt='%d/%m %H:%M:%S',
+    style='%')
+_file_handler = logging.StreamHandler(
+    open('/tmp/railnation-debug.log', 'w'))
+_file_handler.setFormatter(_log_format)
+_file_handler.setLevel(logging.DEBUG)
+
+log.addHandler(_file_handler)

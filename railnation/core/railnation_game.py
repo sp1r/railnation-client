@@ -3,22 +3,19 @@
 
 import time
 
-from railnation.core.railnation_globals import log
+import railnation.core.railnation_globals as global_vars
+
+from railnation.core.railnation_screen import Screen
 from railnation.core.railnation_client import Client
 from railnation.core.railnation_auth import authorize
-from railnation.core.railnation_screen import Screen
-
-from railnation.models.railnation_model import Model
 
 
 class Game(object):
     def __init__(self):
-        log.info('Game is loading!')
-        self.client = Client()
-        authorize(self.client)
-
-        if Model.client is None:
-            Model.client = self.client
+        global_vars.log.info('Game is starting!')
+        # client = Client()
+        # authorize(client)
+        # global_vars.client = client
 
         self.screen = Screen()
 
