@@ -1,128 +1,128 @@
 ====================================================================================================================================================================================
-Interface               Method                  Params                          Description
+Interface                   Method                  Params                          Description
 ====================================================================================================================================================================================
-AccountInterface        is_logged_in            [web_key]                       Возвращает собственный id игрока, если он залогинился в игру
-AccountInterface        getLanguage             []                              Язык (игры?) вида: ru-RU
-AccountInterface        get                     [user_id]                       Системная информация об аккаунте
-AccountInterface        getTipsMarkedAsRead     []                              Список подсказок, которые не будут показываться
-AccountInterface        getBranding             []                              (?)
-AccountInterface        getByName               [player_name]
+AccountInterface            is_logged_in            [web_key]                       Возвращает собственный id игрока, если он залогинился в игру
+AccountInterface            getLanguage             []                              Язык (игры?) вида: ru-RU
+AccountInterface            get                     [user_id]                       Системная информация об аккаунте
+AccountInterface            getTipsMarkedAsRead     []                              Список подсказок, которые не будут показываться
+AccountInterface            getBranding             []                              (?)
+AccountInterface            getByName               [player_name]
 
-AchievementInterface    getAchievements         [user_id]                       Список полученных ачивок игрока
+AchievementInterface        getAchievements         [user_id]                       Список полученных ачивок игрока
 
-BuildingsInterface      getAll                  [user_id]                       Информация о станции игрока (уровень зданий, время "созревания" бонусов, стоимость улучшений)
-BuildingsInterface      collect                 [building_id]                   Собирает бонус со здания досуга (свое здание)
-BuildingsInterface      collect                 [building_id, user_id]          Собирает бонус со здания досуга (чужое здание)
-BuildingsInterface      build                   [building_id, False, False]     Строит здание (при наличии средств)
-BuildingsInterface      getFinishMTX            [building_id]                   Количество золота, для немедленного завершения строительства
+BuildingsInterface          getAll                  [user_id]                       Информация о станции игрока (уровень зданий, время "созревания" бонусов, стоимость улучшений)
+BuildingsInterface          collect                 [building_id]                   Собирает бонус со здания досуга (свое здание)
+BuildingsInterface          collect                 [building_id, user_id]          Собирает бонус со здания досуга (чужое здание)
+BuildingsInterface          build                   [building_id, False, False]     Строит здание (при наличии средств)
+BuildingsInterface          getFinishMTX            [building_id]                   Количество золота, для немедленного завершения строительства
 
-CorporationInterface    get                     [corp_id]                       Информация об ассоциации (имя, престиж, количество игроков, id игроков и проч.)
-CorporationInterface    getVCard                [[corp_id]]                     Герб в кодировке base64 и еще немного информации
-CorporationInterface    getCentralScreen        [corp_id]                       Информация об ассоциации
-CorporationInterface    getRelationships        []                              Страница отношений ассоциации
+CorporationInterface        get                     [corp_id]                       Информация об ассоциации (имя, престиж, количество игроков, id игроков и проч.)
+CorporationInterface        getVCard                [[corp_id]]                     Герб в кодировке base64 и еще немного информации
+CorporationInterface        getCentralScreen        [corp_id]                       Информация об ассоциации
+CorporationInterface        getRelationships        []                              Страница отношений ассоциации
 
-CorporationForumInterface   getThreads          []                              Список тем на форуме ассоциации
-CorporationForumInterface   getThread           [thread_id, amount_of_msgs_to_show, first_msg_number]   Сообщения в теме
-CorporationForumInterface   markAs              [[{status:'1', message_id:'...']]                       Отметить как прочитанное
+CorporationForumInterface   getThreads              []                              Список тем на форуме ассоциации
+CorporationForumInterface   getThread               [thread_id, amount_of_msgs_to_show, first_msg_number]   Сообщения в теме
+CorporationForumInterface   markAs                  [[{status:'1', message_id:'...']]                       Отметить как прочитанное
 
-DepotInterface          getAll                  []                              Список городов, до которых у игрока есть пути
-DepotInterface          getBalanceData          [1]                             Страница финансов
-DepotInterface          getGraph                [user_id]                       График оборота
-DepotInterface          getAllWaggon            []                              Список всех вагонов
+DepotInterface              getAll                  []                              Список городов, до которых у игрока есть пути
+DepotInterface              getBalanceData          [1]                             Страница финансов
+DepotInterface              getGraph                [user_id]                       График оборота
+DepotInterface              getAllWaggon            []                              Список всех вагонов
 
-EventInterface          getAll                  []                              Список игровых событий
+EventInterface              getAll                  []                              Список игровых событий
 
-FactoryInterface        getChaining             [user_id]                       Информация об интеграции по всем производствах (величина поставок)
-FactoryInterface        getMajorityInvestmentCorps  [[list of locations...]]    Информация о том, какие ассоциации владеет КП на производствах
-FactoryInterface        getDetails              [location_id]                   Много инфы о производстве
-FactoryInterface        getTopSuppliers         [location_id, res_id, const*]   5 лучших поставщиков
-FactoryInterface        getInvestmentScreen     [location_id, 1]                Информация о инвестициях игроков
-FactoryInterface        getInvestmentScreen     [location_id, 0]                Информация о инвестициях ассоциаций
-FactoryInterface        invest                  [location_id]                   Инвестирует производство
+FactoryInterface            getChaining             [user_id]                       Информация об интеграции по всем производствах (величина поставок)
+FactoryInterface            getMajorityInvestmentCorps  [[list of locations...]]    Информация о том, какие ассоциации владеет КП на производствах
+FactoryInterface            getDetails              [location_id]                   Много инфы о производстве
+FactoryInterface            getTopSuppliers         [location_id, res_id, zeros*]   5 лучших поставщиков
+FactoryInterface            getInvestmentScreen     [location_id, 1]                Информация о инвестициях игроков
+FactoryInterface            getInvestmentScreen     [location_id, 0]                Информация о инвестициях ассоциаций
+FactoryInterface            invest                  [location_id]                   Инвестирует производство
 
-GUIInterface            get_gui                 []                              Полная информация о ресурсах игрока (запускается при загрузке)
-GUIInterface            get_initial_gui         []                              Немного более подробная информация, чем get_gui
-GUIInterface            getUnreadMessages       []                              Новые сообщения в личке, в ассе и от системы
+GUIInterface                get_gui                 []                              Полная информация о ресурсах игрока (запускается при загрузке)
+GUIInterface                get_initial_gui         []                              Немного более подробная информация, чем get_gui
+GUIInterface                getUnreadMessages       []                              Новые сообщения в личке, в ассе и от системы
 
-HighscoreInterface      search                  [corp_id, 9, 5]                 Рейтинг ассоциаций
-HighscoreInterface      search                  [player_id, 0, 5, const*]       Поиск игрока в рейтинге
-HighscoreInterface      getList                 [9, starting_place, amount_of_corps_to_show, 0] Рейтинг ассоциаций (без списка игроков)
-HighscoreInterface      getList                 [9, starting_place, amount_of_corps_to_show, 0, const*] Рейтинг ассоциаций
-HighscoreInterface      getList                 [9, starting_place, amount_of_corps_to_show, 1, const*] Рейтинг ассоциаций, которые ищут участников
-HighscoreInterface      getList                 [9, starting_place, amount_of_corps_to_show, 0, const*, country_id] Рейтинг ассоциаций определенной страны
-HighscoreInterface      getList                 [9, starting_place, amount_of_corps_to_show, 0, town_id] Рейтинг ассоциаций города
-HighscoreInterface      getList                 [0, starting_place, amount_of_corps_to_show, const*] Рейтинг игроков
-HighscoreInterface      getList                 [2, starting_place, amount_of_corps_to_show, const*] Рейтинг среди друзей
-HighscoreInterface      getList                 [3, starting_place, amount_of_corps_to_show, corp_id] Рейтинг в ассоциации
-HighscoreInterface      getList                 [18, starting_place, amount_of_corps_to_show, town_id] Рейтинг в городе
-HighscoreInterface      getTitle                [0]                             Титул скупердяя
-HighscoreInterface      getTitle                [resource_id]                   Титул лучшего перевозчика ресурса
+HighscoreInterface          search                  [corp_id, 9, 5]                 Рейтинг ассоциаций
+HighscoreInterface          search                  [player_id, 0, 5, zeros*]       Поиск игрока в рейтинге
+HighscoreInterface          getList                 [9, starting_place, amount_of_corps_to_show, 0]             Рейтинг ассоциаций (без списка игроков)
+HighscoreInterface          getList                 [9, starting_place, amount_of_corps_to_show, 0, zeros*]     Рейтинг ассоциаций
+HighscoreInterface          getList                 [9, starting_place, amount_of_corps_to_show, 1, zeros*]     Рейтинг ассоциаций, которые ищут участников
+HighscoreInterface          getList                 [9, starting_place, amount_of_corps_to_show, 0, zeros*, country_id]     Рейтинг ассоциаций определенной страны
+HighscoreInterface          getList                 [9, starting_place, amount_of_corps_to_show, 0, town_id]    Рейтинг ассоциаций города
+HighscoreInterface          getList                 [0, starting_place, amount_of_corps_to_show, zeros*]        Рейтинг игроков
+HighscoreInterface          getList                 [2, starting_place, amount_of_corps_to_show, zeros*]        Рейтинг среди друзей
+HighscoreInterface          getList                 [3, starting_place, amount_of_corps_to_show, corp_id]       Рейтинг в ассоциации
+HighscoreInterface          getList                 [18, starting_place, amount_of_corps_to_show, town_id]      Рейтинг в городе
+HighscoreInterface          getTitle                [0]                             Титул скупердяя
+HighscoreInterface          getTitle                [resource_id]                   Титул лучшего перевозчика ресурса
 
-KontagentInterface      getData                 []                              IP, с которого ты подключился, и еще какой-то странный id
+KontagentInterface          getData                 []                              IP, с которого ты подключился, и еще какой-то странный id
 
-LicenceInterface        getAuctions             []                              Информация об аукционах на лицензии
-LicenceInterface        bidOnLicence            [auction_id, amount]            Делает ставку на лицензию
-LicenceInterface        getOwnLicences          []                              Список купленных лицензий
+LicenceInterface            getAuctions             []                              Информация об аукционах на лицензии
+LicenceInterface            bidOnLicence            [auction_id, amount]            Делает ставку на лицензию
+LicenceInterface            getOwnLicences          []                              Список купленных лицензий
 
-LocationInterface       get                     []                              Список всех зданий на карте
+LocationInterface           get                     []                              Список всех зданий на карте
 
-LotteryInterface        isForFree               []                              Проверяет доступен ли бесплатный лотерейный билет
-LotteryInterface        buy                     []                              Покупает лотерейный билет (или активирует бесплатный)
-LotteryInterface        rewardLottery           []                              Определяет приз в купленном лотерейном билете
+LotteryInterface            isForFree               []                              Проверяет доступен ли бесплатный лотерейный билет
+LotteryInterface            buy                     []                              Покупает лотерейный билет (или активирует бесплатный)
+LotteryInterface            rewardLottery           []                              Определяет приз в купленном лотерейном билете
 
-MessageInterface        getAllConversations     []                              Список разговоров в личке
-MessageInterface        getUnreadMessages       []                              Непрочитанные сообщения
-MessageInterface        getConversation         [[const*], 10, 0]
+MessageInterface            getAllConversations     []                              Список разговоров в личке
+MessageInterface            getUnreadMessages       []                              Непрочитанные сообщения
+MessageInterface            getConversation         [[zeros*], 10, 0]
 
-PersonalityInterface    getAuctions             []                              Информация об аукционах на рабочих
-PersonalityInterface    getInvestorList         [auction_id]                    Кто сколько внес на рабочего
+PersonalityInterface        getAuctions             []                              Информация об аукционах на рабочих
+PersonalityInterface        getInvestorList         [auction_id]                    Кто сколько внес на рабочего
 
-ProfileInterface        get_profile_data        [user_id]                       Информация о профиле игрока (имя, престиж, ассоциация и проч.)
-ProfileInterface        getVCard                [[user_id, user_id, ...]]       Внешний вид персонажа, престиж, количество звезд и проч.
-ProfileInterface        get_options             []                              Какие-то неименованные параметры и url подписи.
+ProfileInterface            get_profile_data        [user_id]                       Информация о профиле игрока (имя, престиж, ассоциация и проч.)
+ProfileInterface            getVCard                [[user_id, user_id, ...]]       Внешний вид персонажа, престиж, количество звезд и проч.
+ProfileInterface            get_options             []                              Какие-то неименованные параметры и url подписи.
 
-PropertiesInterface     getData                 []                              Загружает список (очень большой) свойств игры
+PropertiesInterface         getData                 []                              Загружает список (очень большой) свойств игры
 
-RailInterface           get                     [user_id]                       Список путей проложенных игроком
+RailInterface               get                     [user_id]                       Список путей проложенных игроком
 
-ResearchInterface       researchTechnology      [tech_id, points]               Вкладывает очки исследования в технологию
+ResearchInterface           researchTechnology      [tech_id, points]               Вкладывает очки исследования в технологию
 
-ResourceInterface       getResource             [user_id, resource_id]          Информация об одном из ресурсов игрока (деньги, золото, ОИ и др.)
+ResourceInterface           getResource             [user_id, resource_id]          Информация об одном из ресурсов игрока (деньги, золото, ОИ и др.)
 
-SkinInterface           getAllReleasedSkins     []                              Список доступных внешних видов поездов
+SkinInterface               getAllReleasedSkins     []                              Список доступных внешних видов поездов
 
-StatisticsInterface     getTowns                []                              Рейтинг городов
-StatisticsInterface     getFactories            [-1, const*]                    Информация о производствах
-StatisticsInterface     getFactories            [-1, town_id]                   Информация о производствах определенного города
-StatisticsInterface     getFactories            [resource_id, const*]           Информация о производствах определенного ресурса
-StatisticsInterface     getRoutes               [user_id, -1]                   Информация о прибыльных маршрутах
+StatisticsInterface         getTowns                []                              Рейтинг городов
+StatisticsInterface         getFactories            [-1, zeros*]                    Информация о производствах
+StatisticsInterface         getFactories            [-1, town_id]                   Информация о производствах определенного города
+StatisticsInterface         getFactories            [resource_id, zeros*]           Информация о производствах определенного ресурса
+StatisticsInterface         getRoutes               [user_id, -1]                   Информация о прибыльных маршрутах
 
-TenderingInterface      getAllTendering         []                              Информация о соревнованиях
-TenderingInterface      acceptTendering         [tendering_id, False]           Записывается на соревнование
+TenderingInterface          getAllTendering         []                              Информация о соревнованиях
+TenderingInterface          acceptTendering         [tendering_id, False]           Записывается на соревнование
 
-TownInterface           getTopSuppliers         [town_id, res_id, zeros*]       Полный список поставщиков ресурса в городе
-TownInterface           getDetails              [town_id]                       Информация о городе
-TownInterface           getDetails              [town_id, corp_id]              Информация о поставках ассоциации
+TownInterface               getTopSuppliers         [town_id, res_id, zeros*]       Полный список поставщиков ресурса в городе
+TownInterface               getDetails              [town_id]                       Информация о городе
+TownInterface               getDetails              [town_id, corp_id]              Информация о поставках ассоциации
 
-TownForumInterface      getUnreadThreads        [town_id]                       Новые сообщения на форуме
-TownForumInterface      getThreads              [town_id]                       Список тем на городском форуме
-TownForumInterface      getThread               [town_id, thread_id, amount_of_msgs_to_show, first_msg_number]      Сообщения в теме
-TownForumInterface      markAs                  [[{status:'1', message_id:'...']]                                   Отметить как прочитанное
-TownForumInterface      send                    [town_id, thread_name, message, parent_message]                     Отправить сообщение
+TownForumInterface          getUnreadThreads        [town_id]                       Новые сообщения на форуме
+TownForumInterface          getThreads              [town_id]                       Список тем на городском форуме
+TownForumInterface          getThread               [town_id, thread_id, amount_of_msgs_to_show, first_msg_number]      Сообщения в теме
+TownForumInterface          markAs                  [[{status:'1', message_id:'...']]                                   Отметить как прочитанное
+TownForumInterface          send                    [town_id, thread_name, message, parent_message]                     Отправить сообщение
 
-TrainInterface          getMyTrains             [True]                          Список своих поездов
-TrainInterface          getTrack                [train_id, True, False]         Информация об одном из поездов
-TrainInterface          doMaintenance           [train_id]                      Чинит поезд (при наличии средств)
-TrainInterface          getRoadMap              [train_id]                      Информация о маршруте поезда
-TrainInterface          setRoadMap              [train_id, road_map]            Установить маршрут поезда
-TrainInterface          getSchedule             [train_id]                      Подробная информация о маршруте поезда
-TrainInterface          cancelWaitCosts         []                              ???
-TrainInterface          getTimeUntilTrainStop   [train_id]                      Секунды до 0% (?)
+TrainInterface              getMyTrains             [True]                          Список своих поездов
+TrainInterface              getTrack                [train_id, True, False]         Информация об одном из поездов
+TrainInterface              doMaintenance           [train_id]                      Чинит поезд (при наличии средств)
+TrainInterface              getRoadMap              [train_id]                      Информация о маршруте поезда
+TrainInterface              setRoadMap              [train_id, road_map]            Установить маршрут поезда
+TrainInterface              getSchedule             [train_id]                      Подробная информация о маршруте поезда
+TrainInterface              cancelWaitCosts         []                              ???
+TrainInterface              getTimeUntilTrainStop   [train_id]                      Секунды до 0% (?)
 
-TutorialInterface       solveTutorial           [21]                            (?)
-TutorialInterface       getTutorials            []                              (?)
+TutorialInterface           solveTutorial           [21]                            (?)
+TutorialInterface           getTutorials            []                              (?)
 
-WelcomeInterface        get                     []                              Информация из окошка, которое появляется при логине
+WelcomeInterface            get                     []                              Информация из окошка, которое появляется при логине
 
-
+_________________________________________________________
 * zeros = "00000000-0000-0000-0000-000000000000"
