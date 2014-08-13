@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-"""Доступ к игровой информации по паре Интерфейс + Метод"""
+"""Клиент сервера railnation"""
 
 import hashlib
 import json
@@ -20,6 +20,10 @@ class Client:
         self.rpc_url = ''
         self.webkey = ''
         self.session = requests.Session()
+
+    @property
+    def is_authorized(self):
+        return self.rpc_url == ''
 
     def produce(self, interface, method, params):
         """

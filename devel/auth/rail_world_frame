@@ -1,0 +1,2773 @@
+<!DOCTYPE html>
+<html lang="de" xml:lang="de" dir="" xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>SAM</title>
+		<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+		<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+		<META HTTP-EQUIV="EXPIRES" CONTENT="0">
+		<META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
+<!--
+		<link type="text/css" rel="stylesheet" media="screen" href="https://railnation-sam.traviangames.com//css/logout.css?daagad">
+		<link type="text/css" rel="stylesheet" media="screen" href="https://railnation-sam.traviangames.com//css/register.css?daagad56">
+		<link type="text/css" rel="stylesheet" media="screen" href="https://railnation-sam.traviangames.com//css/jquery-ui-1.10.0.custom.min.css">
+		<script src="https://railnation-sam.traviangames.com//js/jquery-1.9.0.js?893579823" type="text/javascript"></script>
+		<script src="https://railnation-sam.traviangames.com//js/jquery.selectbox-0.5.js?893579823" type="text/javascript"></script>
+		<script src="https://railnation-sam.traviangames.com//js/jquery.placeholder.min.js?893579823" type="text/javascript"></script>
+		<script src="https://railnation-sam.traviangames.com//js/jquery-ui-1.10.0.custom.min.js?893579823" type="text/javascript"></script>
+		<script src="https://railnation-sam.traviangames.com//js/jquery.number.min.js?893579823" type="text/javascript"></script>
+		<script src="https://railnation-sam.traviangames.com//js/stacktrace-min-0.4.js?893579823" type="text/javascript"></script>
+		<script src="https://railnation-sam.traviangames.com//mbox.js?893579823" type="text/javascript"></script>
+-->
+		<link type="text/css" rel="stylesheet" media="screen" href="https://railnation-sam.traviangames.com//css/combined.css?4829842">
+		<script src="https://railnation-sam.traviangames.com//js/combined.js?392715" type="text/javascript"></script>
+							<link type="text/css" rel="stylesheet" media="screen" href="/cache/railnation//sam_meta.css?92375293">
+							<script>
+			function closeSelection() {
+				var div = document.getElementById('selectBoxContainer');
+				div.style.display = 'none';
+			}
+			
+			function openSelection(event) {
+				var div = document.getElementById('selectBoxContainer');
+				div.style.display = 'inline-block';
+				document.onclick = closeSelection;
+			    event.stopPropagation();
+			    if(typeof(window.event) != 'undefined')
+			    	window.event.cancelBubble = true;
+			}
+	
+			function selectServer(identifier) {
+				var sel = document.getElementById('selection');
+				//var value = sel.options[sel.selectedIndex].value;
+				var value = identifier;
+				var targetDiv = document.getElementById('selectedServer');
+				targetDiv.innerHTML = servers[value];
+				var targetInput = document.getElementById('chosenServer');
+				targetInput.value = value;
+				closeSelection();
+			}
+	
+			function $el(id) {
+				return document.getElementById(id);
+			}
+
+		 	$(function() {
+				$(".tabs").tabs();
+			});
+
+		 	window.onerror = function(message, url, lineNo) {
+		 		var data = {'exception': message, 'url': url, 'line': lineNo};
+		 		$.ajax({
+		 		        url: 'https://railnation-sam.traviangames.com//error/log',
+		 		        dataType: 'json',
+		 		        data: data,
+		 		        type: 'POST'
+		 			});
+	 			return false;
+		 	};
+		</script>
+	</head>
+<body onload="$('input, textarea').placeholder();" class="lang en">
+	<div class="page_margins">
+		<div class="page">
+			<div id="main">
+				<div id="col3" role="main">
+					<div id="col3_content" class="clearfix">
+						
+<script type="text/javascript">	
+	var server = {"europe":{"tr":{"aviableServers":{"railnation-tr-tr2":{"consumers_id":"418","country_name":"tr","world_start_time":"1406116800","world_name":"Ate\u015fleme Oca\u011f\u0131","world_capacity":"9000","players_active":"7023","players_online":"127","world_status":"2","customData":{"playerOnline":"127","playerActive":"4934","era":2,"status":"online","supportedLanguages":["tr"],"scenario":"classic"},"register_with_avatar_name":"0","age":21,"age_trans":"20 days"},"railnation-tr-tr3":{"consumers_id":"397","country_name":"tr","world_start_time":"1404820800","world_name":"Duman Odas\u0131","world_capacity":"9000","players_active":"7522","players_online":"110","world_status":"2","customData":{"playerOnline":"110","playerActive":"5217","era":3,"status":"online","supportedLanguages":["tr"],"scenario":"classic"},"register_with_avatar_name":"0","age":36,"age_trans":"35 days"},"railnation-tr-tr1":{"consumers_id":"367","country_name":"tr","world_start_time":"1402488000","world_name":"Buhar Kazan\u0131","world_capacity":"9000","players_active":"10704","players_online":"130","world_status":"2","customData":{"playerOnline":"130","playerActive":"7584","era":5,"status":"online","supportedLanguages":["tr"],"scenario":"classic"},"register_with_avatar_name":"0","age":63,"age_trans":"62 days"}}},"de":{"aviableServers":{"railnation-de-de4":{"consumers_id":"430","country_name":"de","world_start_time":"1407585600","world_name":"Kohlekasten","world_capacity":"9000","players_active":"2580","players_online":"443","world_status":"2","customData":{"playerOnline":"443","playerActive":"2278","era":1,"status":"online","supportedLanguages":["de"],"scenario":"classic"},"register_with_avatar_name":"0","age":4,"age_trans":"3 days"},"railnation-de-de6":{"consumers_id":"423","country_name":"de","world_start_time":"1407153600","world_name":"Zylinderkopf","world_capacity":"9000","players_active":"3465","players_online":"388","world_status":"2","customData":{"playerOnline":"388","playerActive":"2964","era":1,"status":"online","supportedLanguages":["de"],"scenario":"classic"},"register_with_avatar_name":"0","age":9,"age_trans":"8 days"},"railnation-de-de1":{"consumers_id":"420","country_name":"de","world_start_time":"1406548800","world_name":"Dampfkessel","world_capacity":"9000","players_active":"4544","players_online":"491","world_status":"2","customData":{"playerOnline":"491","playerActive":"3811","era":2,"status":"online","supportedLanguages":["de"],"scenario":"classic"},"register_with_avatar_name":"0","age":16,"age_trans":"15 days"},"railnation-de-de10":{"consumers_id":"416","country_name":"de","world_start_time":"1406116800","world_name":"Kompressor","world_capacity":"9000","players_active":"4406","players_online":"319","world_status":"2","customData":{"playerOnline":"319","playerActive":"3495","era":2,"status":"online","supportedLanguages":["de"],"scenario":"classic"},"register_with_avatar_name":"0","age":21,"age_trans":"20 days"},"railnation-de-de106":{"consumers_id":"411","country_name":"de","world_start_time":"1405944000","world_name":"Yellowstone","world_capacity":"9000","players_active":"6996","players_online":"399","world_status":"2","customData":{"playerOnline":"399","playerActive":"5101","era":2,"status":"online","supportedLanguages":["de"],"scenario":"america"},"register_with_avatar_name":"0","age":23,"age_trans":"22 days"},"railnation-de-de5":{"consumers_id":"406","country_name":"de","world_start_time":"1405425600","world_name":"Kurbelwelle","world_capacity":"9000","players_active":"5603","players_online":"453","world_status":"2","customData":{"playerOnline":"453","playerActive":"4642","era":3,"status":"online","supportedLanguages":["de"],"scenario":"classic"},"register_with_avatar_name":"0","age":29,"age_trans":"28 days"},"railnation-de-de9":{"consumers_id":"395","country_name":"de","world_start_time":"1404734400","world_name":"Regulator","world_capacity":"9000","players_active":"5245","players_online":"319","world_status":"2","customData":{"playerOnline":"319","playerActive":"4185","era":3,"status":"online","supportedLanguages":["de"],"scenario":"classic"},"register_with_avatar_name":"0","age":37,"age_trans":"36 days"},"railnation-de-de105":{"consumers_id":"394","country_name":"de","world_start_time":"1404388800","world_name":"Grand Canyon","world_capacity":"9000","players_active":"7890","players_online":"362","world_status":"2","customData":{"playerOnline":"362","playerActive":"5764","era":3,"status":"online","supportedLanguages":["de"],"scenario":"america"},"register_with_avatar_name":"0","age":41,"age_trans":"40 days"},"railnation-de-de3":{"consumers_id":"389","country_name":"de","world_start_time":"1404216000","world_name":"Rauchkammer","world_capacity":"9000","players_active":"3618","players_online":"325","world_status":"2","customData":{"playerOnline":"325","playerActive":"3047","era":4,"status":"online","supportedLanguages":["de"],"scenario":"classic"},"register_with_avatar_name":"0","age":43,"age_trans":"42 days"},"railnation-de-de8":{"consumers_id":"384","country_name":"de","world_start_time":"1403524800","world_name":"Kuppelstange","world_capacity":"9000","players_active":"4082","players_online":"274","world_status":"2","customData":{"playerOnline":"274","playerActive":"3296","era":4,"status":"online","supportedLanguages":["de"],"scenario":"classic"},"register_with_avatar_name":"0","age":51,"age_trans":"50 days"},"railnation-de-de15":{"consumers_id":"371","country_name":"de","world_start_time":"1402920000","world_name":"Bogenweiche","world_capacity":"9000","players_active":"4290","players_online":"251","world_status":"2","customData":{"playerOnline":"251","playerActive":"3464","era":5,"status":"online","supportedLanguages":["de"],"scenario":"classic"},"register_with_avatar_name":"0","age":58,"age_trans":"57 days"},"railnation-de-de7":{"consumers_id":"366","country_name":"de","world_start_time":"1402142400","world_name":"Drehgestell","world_capacity":"9000","players_active":"4699","players_online":"243","world_status":"2","customData":{"playerOnline":"243","playerActive":"3872","era":5,"status":"online","supportedLanguages":["de"],"scenario":"classic"},"register_with_avatar_name":"0","age":67,"age_trans":"66 days"},"railnation-de-de104":{"consumers_id":"350","country_name":"de","world_start_time":"1401710400","world_name":"Mount Rushmore","world_capacity":"9000","players_active":"7664","players_online":"235","world_status":"2","customData":{"playerOnline":"235","playerActive":"5376","era":6,"status":"online","supportedLanguages":["de"],"scenario":"america"},"register_with_avatar_name":"0","age":72,"age_trans":"71 days"},"railnation-de-de2":{"consumers_id":"342","country_name":"de","world_start_time":"1401278400","world_name":"Feuerb\u00fcchse","world_capacity":"9000","players_active":"4922","players_online":"215","world_status":"2","customData":{"playerOnline":"215","playerActive":"3817","era":6,"status":"online","supportedLanguages":["de"],"scenario":"classic"},"register_with_avatar_name":"0","age":77,"age_trans":"76 days"},"railnation-de-de103":{"consumers_id":"334","country_name":"de","world_start_time":"1401192000","world_name":"Route 66","world_capacity":"9000","players_active":"7598","players_online":"229","world_status":"2","customData":{"playerOnline":"229","playerActive":"5825","era":6,"status":"online","supportedLanguages":["de"],"scenario":"america"},"register_with_avatar_name":"0","age":78,"age_trans":"77 days"},"railnation-de-de12":{"consumers_id":"331","country_name":"de","world_start_time":"1401105600","world_name":"Generator","world_capacity":"9000","players_active":"6467","players_online":"223","world_status":"2","customData":{"playerOnline":"223","playerActive":"4949","era":6,"status":"online","supportedLanguages":["de"],"scenario":"classic"},"register_with_avatar_name":"0","age":79,"age_trans":"78 days"},"railnation-de-de102":{"consumers_id":"326","country_name":"de","world_start_time":"1400760000","world_name":"Grand Central","world_capacity":"9000","players_active":"5889","players_online":"298","world_status":"2","customData":{"playerOnline":"298","playerActive":"5225","era":6,"status":"online","supportedLanguages":["de"],"scenario":"america"},"register_with_avatar_name":"0","age":83,"age_trans":"82 days"}}},"cz":{"aviableServers":{"railnation-cz-cz4":{"consumers_id":"409","country_name":"cz","world_start_time":"1405512000","world_name":"Ojnice","world_capacity":"9000","players_active":"8450","players_online":"379","world_status":"2","customData":{"playerOnline":"379","playerActive":"6599","era":2,"status":"online","supportedLanguages":["cz"],"scenario":"classic"},"register_with_avatar_name":"0","age":28,"age_trans":"27 days"},"railnation-cz-cz3":{"consumers_id":"392","country_name":"cz","world_start_time":"1404302400","world_name":"Kom\u00edn","world_capacity":"9000","players_active":"5750","players_online":"190","world_status":"2","customData":{"playerOnline":"190","playerActive":"4321","era":3,"status":"online","supportedLanguages":["cz"],"scenario":"classic"},"register_with_avatar_name":"0","age":42,"age_trans":"41 days"},"railnation-cz-cz2":{"consumers_id":"379","country_name":"cz","world_start_time":"1403092800","world_name":"Ventil","world_capacity":"9000","players_active":"4291","players_online":"171","world_status":"2","customData":{"playerOnline":"171","playerActive":"3221","era":4,"status":"online","supportedLanguages":["cz"],"scenario":"classic"},"register_with_avatar_name":"0","age":56,"age_trans":"55 days"},"railnation-cz-cz1":{"consumers_id":"352","country_name":"cz","world_start_time":"1401796800","world_name":"Kotel","world_capacity":"9000","players_active":"4189","players_online":"141","world_status":"2","customData":{"playerOnline":"141","playerActive":"3154","era":6,"status":"online","supportedLanguages":["cz"],"scenario":"classic"},"register_with_avatar_name":"0","age":71,"age_trans":"70 days"},"railnation-cz-cz6":{"consumers_id":"340","country_name":"cz","world_start_time":"1401278400","world_name":"P\u00ed\u0161\u0165ala","world_capacity":"9000","players_active":"4759","players_online":"129","world_status":"2","customData":{"playerOnline":"129","playerActive":"3600","era":6,"status":"online","supportedLanguages":["cz"],"scenario":"classic"},"register_with_avatar_name":"0","age":77,"age_trans":"76 days"}}},"es,br,ar,pt":{"aviableServers":{"railnation-ii-comm2-2":{"consumers_id":"402","country_name":"es,br,ar,pt","world_start_time":"1404907200","world_name":"Interrail West 2","world_capacity":"9000","players_active":"13044","players_online":"380","world_status":"2","customData":{"playerOnline":"380","playerActive":"9059","era":3,"status":"online","supportedLanguages":["es","pt"],"scenario":"classic"},"register_with_avatar_name":"0","age":35,"age_trans":"34 days"},"railnation-ii-comm2_1":{"consumers_id":"353","country_name":"es,br,ar,pt","world_start_time":"1401796800","world_name":"Interrail West","world_capacity":"9000","players_active":"13404","players_online":"206","world_status":"2","customData":{"playerOnline":"206","playerActive":"8534","era":6,"status":"online","supportedLanguages":["es","pt"],"scenario":"classic"},"register_with_avatar_name":"0","age":71,"age_trans":"70 days"}}},"ru":{"aviableServers":{"railnation-ru-ru4":{"consumers_id":"431","country_name":"ru","world_start_time":"1407844800","world_name":"\u0423\u0433\u043e\u043b\u044c\u043d\u044b\u0439 \u044f\u0449\u0438\u043a","world_capacity":"9000","players_active":"880","players_online":"340","world_status":"2","customData":{"playerOnline":"340","playerActive":"822","era":1,"status":"online","supportedLanguages":["ru"],"scenario":"classic"},"register_with_avatar_name":"0","age":1,"age_trans":"Today"},"railnation-ru-ru9":{"consumers_id":"415","country_name":"ru","world_start_time":"1406116800","world_name":"\u0420\u0435\u0433\u0443\u043b\u044f\u0442\u043e\u0440","world_capacity":"9000","players_active":"4010","players_online":"247","world_status":"2","customData":{"playerOnline":"247","playerActive":"3060","era":2,"status":"online","supportedLanguages":["ru"],"scenario":"classic"},"register_with_avatar_name":"0","age":21,"age_trans":"20 days"},"railnation-ru-ru104":{"consumers_id":"413","country_name":"ru","world_start_time":"1406030400","world_name":"\u0413\u043e\u0440\u0430 \u0420\u0430\u0448\u043c\u043e\u0440","world_capacity":"15000","players_active":"9524","players_online":"315","world_status":"2","customData":{"playerOnline":"315","playerActive":"6580","era":2,"status":"online","supportedLanguages":["ru"],"scenario":"america"},"register_with_avatar_name":"0","age":22,"age_trans":"21 days"},"railnation-ru-ru2":{"consumers_id":"407","country_name":"ru","world_start_time":"1405425600","world_name":"\u0423\u0433\u043e\u043b\u044c\u043d\u0430\u044f \u0442\u043e\u043f\u043a\u0430","world_capacity":"9000","players_active":"5605","players_online":"297","world_status":"2","customData":{"playerOnline":"297","playerActive":"4324","era":3,"status":"online","supportedLanguages":["ru"],"scenario":"classic"},"register_with_avatar_name":"0","age":29,"age_trans":"28 days"},"railnation-ru-ru8":{"consumers_id":"398","country_name":"ru","world_start_time":"1404822600","world_name":"\u0421\u0446\u0435\u043f\u043d\u0430\u044f \u0448\u0442\u0430\u043d\u0433\u0430","world_capacity":"9000","players_active":"7740","players_online":"309","world_status":"2","customData":{"playerOnline":"309","playerActive":"5677","era":3,"status":"online","supportedLanguages":["ru"],"scenario":"classic"},"register_with_avatar_name":"0","age":36,"age_trans":"35 days"},"railnation-ru-ru1":{"consumers_id":"390","country_name":"ru","world_start_time":"1404216000","world_name":"\u041f\u0430\u0440\u043e\u0432\u043e\u0439 \u043a\u043e\u0442\u0435\u043b","world_capacity":"9000","players_active":"5915","players_online":"251","world_status":"2","customData":{"playerOnline":"251","playerActive":"4611","era":4,"status":"online","supportedLanguages":["ru"],"scenario":"classic"},"register_with_avatar_name":"0","age":43,"age_trans":"42 days"},"railnation-ru-ru7":{"consumers_id":"376","country_name":"ru","world_start_time":"1403006400","world_name":"\u041a\u043e\u043b\u0435\u0441\u043d\u0430\u044f \u043f\u0430\u0440\u0430","world_capacity":"9000","players_active":"7228","players_online":"252","world_status":"2","customData":{"playerOnline":"252","playerActive":"5357","era":5,"status":"online","supportedLanguages":["ru"],"scenario":"classic"},"register_with_avatar_name":"0","age":57,"age_trans":"56 days"},"railnation-ru-ru6":{"consumers_id":"359","country_name":"ru","world_start_time":"1401883200","world_name":"\u0411\u043b\u043e\u043a \u0446\u0438\u043b\u0438\u043d\u0434\u0440\u043e\u0432","world_capacity":"9000","players_active":"7244","players_online":"185","world_status":"2","customData":{"playerOnline":"185","playerActive":"5342","era":5,"status":"online","supportedLanguages":["ru"],"scenario":"classic"},"register_with_avatar_name":"0","age":70,"age_trans":"69 days"},"railnation-ru-rn21rus5":{"consumers_id":"343","country_name":"ru","world_start_time":"1401278400","world_name":"\u041a\u043e\u043b\u0435\u043d\u0447\u0430\u0442\u044b\u0439 \u0432\u0430\u043b","world_capacity":"9000","players_active":"8947","players_online":"176","world_status":"2","customData":{"playerOnline":"176","playerActive":"6423","era":6,"status":"online","supportedLanguages":["ru"],"scenario":"classic"},"register_with_avatar_name":"0","age":77,"age_trans":"76 days"},"railnation-ru-ru10":{"consumers_id":"322","country_name":"ru","world_start_time":"1400673600","world_name":"\u041a\u043e\u043c\u043f\u0440\u0435\u0441\u0441\u043e\u0440","world_capacity":"9000","players_active":"10202","players_online":"120","world_status":"2","customData":{"playerOnline":"120","playerActive":"7289","era":6,"status":"online","supportedLanguages":["ru"],"scenario":"classic"},"register_with_avatar_name":"0","age":84,"age_trans":"83 days"}},"avatars":{"railnation-ru-ru3":{"consumers_id":"421","country_name":"ru","world_start_time":"1406635200","world_name":"\u0414\u044b\u043c\u043e\u0432\u0430\u044f \u043a\u043e\u0440\u043e\u0431\u043a\u0430","world_capacity":"9000","players_active":"7442","players_online":"424","world_status":"2","customData":{"playerOnline":"424","playerActive":"5769","era":2,"status":"online","supportedLanguages":["ru"],"scenario":"classic"},"avatar":{"avatars_id":"3492997","avatar_name":"Dr.Frankenstein","accounts_id":"2209696","name_is_temporary":"0","track_code":"0","activated":"1407572251","last_login":"1407862421","consumers_id":"421","country_id":"5","consumer_identifier":"railnation-ru-ru3","consumer_status":"2","world_name":"\u0414\u044b\u043c\u043e\u0432\u0430\u044f \u043a\u043e\u0440\u043e\u0431\u043a\u0430","players_active":"7442","players_online":"0","world_capacity":"9000","world_start_time":"1406635200","country_name":"ru","countryName":"ru","regionName":"europe","worldData":"{\"playerOnline\":\"424\",\"playerActive\":\"5769\",\"era\":2,\"status\":\"online\",\"supportedLanguages\":[\"ru\"],\"scenario\":\"classic\"}","avatar_status":[],"age":4}}},"avatarCount":1},"pl":{"aviableServers":{"railnation-pl-pl2":{"consumers_id":"432","country_name":"pl","world_start_time":"1407844800","world_name":"Palenisko","world_capacity":"9000","players_active":"448","players_online":"145","world_status":"2","customData":{"playerOnline":"145","playerActive":"412","era":1,"status":"online","supportedLanguages":["pl"],"scenario":"classic"},"register_with_avatar_name":"0","age":1,"age_trans":"Today"},"railnation-pl-pl8":{"consumers_id":"429","country_name":"pl","world_start_time":"1407326400","world_name":"Wi\u0105zar","world_capacity":"9000","players_active":"2148","players_online":"181","world_status":"2","customData":{"playerOnline":"181","playerActive":"1780","era":1,"status":"online","supportedLanguages":["pl"],"scenario":"classic"},"register_with_avatar_name":"0","age":7,"age_trans":"6 days"},"railnation-pl-pl1":{"consumers_id":"422","country_name":"pl","world_start_time":"1406635200","world_name":"Kocio\u0142 parowy","world_capacity":"9000","players_active":"2990","players_online":"191","world_status":"2","customData":{"playerOnline":"191","playerActive":"2438","era":2,"status":"online","supportedLanguages":["pl"],"scenario":"classic"},"register_with_avatar_name":"0","age":15,"age_trans":"14 days"},"railnation-pl-pl7":{"consumers_id":"417","country_name":"pl","world_start_time":"1406116800","world_name":"W\u00f3zek","world_capacity":"9000","players_active":"2723","players_online":"178","world_status":"2","customData":{"playerOnline":"178","playerActive":"2270","era":2,"status":"online","supportedLanguages":["pl"],"scenario":"classic"},"register_with_avatar_name":"0","age":21,"age_trans":"20 days"},"railnation-pl-pl6":{"consumers_id":"401","country_name":"pl","world_start_time":"1404907200","world_name":"G\u0142owica cylindra","world_capacity":"9000","players_active":"5381","players_online":"160","world_status":"2","customData":{"playerOnline":"160","playerActive":"4282","era":3,"status":"online","supportedLanguages":["pl"],"scenario":"classic"},"register_with_avatar_name":"0","age":35,"age_trans":"34 days"},"railnation-pl-pl103":{"consumers_id":"393","country_name":"pl","world_start_time":"1404302400","world_name":"Route 66","world_capacity":"15000","players_active":"12413","players_online":"154","world_status":"2","customData":{"playerOnline":"154","playerActive":"8175","era":3,"status":"online","supportedLanguages":["pl"],"scenario":"america"},"register_with_avatar_name":"0","age":42,"age_trans":"41 days"},"railnation-pl-pl5":{"consumers_id":"387","country_name":"pl","world_start_time":"1403697600","world_name":"Wa\u0142 korbowy","world_capacity":"9000","players_active":"5191","players_online":"155","world_status":"2","customData":{"playerOnline":"155","playerActive":"4041","era":4,"status":"online","supportedLanguages":["pl"],"scenario":"classic"},"register_with_avatar_name":"0","age":49,"age_trans":"48 days"},"railnation-pl-pl4":{"consumers_id":"368","country_name":"pl","world_start_time":"1402488000","world_name":"W\u0119glarka","world_capacity":"9000","players_active":"5522","players_online":"165","world_status":"2","customData":{"playerOnline":"165","playerActive":"4352","era":5,"status":"online","supportedLanguages":["pl"],"scenario":"classic"},"register_with_avatar_name":"0","age":63,"age_trans":"62 days"},"railnation-pl-pl3":{"consumers_id":"344","country_name":"pl","world_start_time":"1401278400","world_name":"Komora dymna","world_capacity":"9000","players_active":"9571","players_online":"167","world_status":"2","customData":{"playerOnline":"167","playerActive":"7250","era":6,"status":"online","supportedLanguages":["pl"],"scenario":"classic"},"register_with_avatar_name":"0","age":77,"age_trans":"76 days"},"railnation-pl-pl9":{"consumers_id":"323","country_name":"pl","world_start_time":"1400673600","world_name":"Regulator","world_capacity":"9000","players_active":"9666","players_online":"105","world_status":"2","customData":{"playerOnline":"105","playerActive":"7488","era":6,"status":"online","supportedLanguages":["pl"],"scenario":"classic"},"register_with_avatar_name":"0","age":84,"age_trans":"83 days"}}},"jp":{"aviableServers":{"railnation-jp-jp2":{"consumers_id":"428","country_name":"jp","world_start_time":"1407319200","world_name":"\u706b\u5ba4","world_capacity":"9000","players_active":"767","players_online":"50","world_status":"2","customData":{"playerOnline":"50","playerActive":"630","era":1,"status":"online","supportedLanguages":["jp"],"scenario":"classic"},"register_with_avatar_name":"0","age":7,"age_trans":"6 days"},"railnation-jp-jp1":{"consumers_id":"396","country_name":"jp","world_start_time":"1404813600","world_name":"\u84b8\u6c17\u30dc\u30a4\u30e9\u30fc","world_capacity":"9000","players_active":"2093","players_online":"90","world_status":"2","customData":{"playerOnline":"90","playerActive":"1720","era":3,"status":"online","supportedLanguages":["jp"],"scenario":"classic"},"register_with_avatar_name":"0","age":36,"age_trans":"35 days"}}},"en":{"aviableServers":{"railnation-ii-com3":{"consumers_id":"424","country_name":"en","world_start_time":"1407240000","world_name":"Smoke Chamber","world_capacity":"9000","players_active":"3717","players_online":"352","world_status":"2","customData":{"playerOnline":"352","playerActive":"3072","era":1,"status":"online","supportedLanguages":["ii"],"scenario":"classic"},"register_with_avatar_name":"0","age":8,"age_trans":"7 days"},"railnation-ii-com2":{"consumers_id":"400","country_name":"en","world_start_time":"1404907200","world_name":"Firebox","world_capacity":"9000","players_active":"8166","players_online":"269","world_status":"2","customData":{"playerOnline":"269","playerActive":"5957","era":3,"status":"online","supportedLanguages":["ii"],"scenario":"classic"},"register_with_avatar_name":"0","age":35,"age_trans":"34 days"},"railnation-ii-com1":{"consumers_id":"377","country_name":"en","world_start_time":"1403006400","world_name":"Steam Boiler","world_capacity":"9000","players_active":"8343","players_online":"247","world_status":"2","customData":{"playerOnline":"247","playerActive":"5960","era":5,"status":"online","supportedLanguages":["ii"],"scenario":"classic"},"register_with_avatar_name":"0","age":57,"age_trans":"56 days"},"railnation-ii-com102":{"consumers_id":"362","country_name":"en","world_start_time":"1401969600","world_name":"Grand Central","world_capacity":"15000","players_active":"10484","players_online":"139","world_status":"2","customData":{"playerOnline":"139","playerActive":"6208","era":5,"status":"online","supportedLanguages":["ii"],"scenario":"america"},"register_with_avatar_name":"0","age":69,"age_trans":"68 days"},"railnation-ii-com4":{"consumers_id":"336","country_name":"en","world_start_time":"1401192000","world_name":"Coal box","world_capacity":"9000","players_active":"12058","players_online":"158","world_status":"2","customData":{"playerOnline":"158","playerActive":"8186","era":6,"status":"online","supportedLanguages":["ii"],"scenario":"classic"},"register_with_avatar_name":"0","age":78,"age_trans":"77 days"},"railnation-ii-com101":{"consumers_id":"325","country_name":"en","world_start_time":"1400760000","world_name":"Golden Gate","world_capacity":"15000","players_active":"7814","players_online":"166","world_status":"2","customData":{"playerOnline":"166","playerActive":"6239","era":6,"status":"online","supportedLanguages":["ii"],"scenario":"america"},"register_with_avatar_name":"0","age":83,"age_trans":"82 days"}}},"nl":{"aviableServers":{"railnation-nl-nl1":{"consumers_id":"425","country_name":"nl","world_start_time":"1407240000","world_name":"Stoomketel","world_capacity":"19000","players_active":"1711","players_online":"283","world_status":"2","customData":{"playerOnline":"283","playerActive":"1534","era":1,"status":"online","supportedLanguages":["nl"],"scenario":"classic"},"register_with_avatar_name":"0","age":8,"age_trans":"7 days"}}},"fr":{"aviableServers":{"railnation-fr-fr1":{"consumers_id":"426","country_name":"fr","world_start_time":"1407240000","world_name":"Chaudi\u00e8re \u00e0 vapeur","world_capacity":"9000","players_active":"1968","players_online":"228","world_status":"2","customData":{"playerOnline":"228","playerActive":"1714","era":1,"status":"online","supportedLanguages":["fr"],"scenario":"classic"},"register_with_avatar_name":"0","age":8,"age_trans":"7 days"},"railnation-fr-fr2":{"consumers_id":"399","country_name":"fr","world_start_time":"1404907200","world_name":"Foyer de Locomotive","world_capacity":"9000","players_active":"5007","players_online":"231","world_status":"2","customData":{"playerOnline":"231","playerActive":"4068","era":3,"status":"online","supportedLanguages":["fr"],"scenario":"classic"},"register_with_avatar_name":"0","age":35,"age_trans":"34 days"},"railnation-fr-fr3":{"consumers_id":"356","country_name":"fr","world_start_time":"1401883200","world_name":"Boite \u00e0 fum\u00e9e","world_capacity":"9000","players_active":"4103","players_online":"88","world_status":"2","customData":{"playerOnline":"88","playerActive":"3186","era":5,"status":"online","supportedLanguages":["fr"],"scenario":"classic"},"register_with_avatar_name":"0","age":70,"age_trans":"69 days"},"railnation-fr-fr101":{"consumers_id":"341","country_name":"fr","world_start_time":"1401278400","world_name":"Golden Gate","world_capacity":"9000","players_active":"6417","players_online":"127","world_status":"2","customData":{"playerOnline":"127","playerActive":"4881","era":6,"status":"online","supportedLanguages":["fr"],"scenario":"america"},"register_with_avatar_name":"0","age":77,"age_trans":"76 days"}}},"dk,no,se,fi":{"aviableServers":{"railnation-ii-comm1-101":{"consumers_id":"427","country_name":"dk,no,se,fi","world_start_time":"1407240000","world_name":"Golden Gate","world_capacity":"9000","players_active":"798","players_online":"89","world_status":"2","customData":{"playerOnline":"89","playerActive":"664","era":1,"status":"online","supportedLanguages":["no","dk","se","fi"],"scenario":"america"},"register_with_avatar_name":"0","age":8,"age_trans":"7 days"},"railnation-ii-comm1_1":{"consumers_id":"385","country_name":"dk,no,se,fi","world_start_time":"1403611200","world_name":"Nordic Rail","world_capacity":"9000","players_active":"4148","players_online":"254","world_status":"2","customData":{"playerOnline":"254","playerActive":"3486","era":4,"status":"online","supportedLanguages":["no","dk","se","fi"],"scenario":"classic"},"register_with_avatar_name":"0","age":50,"age_trans":"49 days"}}},"ua":{"aviableServers":{"railnation-ua-ua1":{"consumers_id":"419","country_name":"ua","world_start_time":"1406203200","world_name":"\u041f\u0430\u0440\u043e\u0432\u0438\u0439 \u043a\u043e\u0442\u0435\u043b","world_capacity":"9000","players_active":"4439","players_online":"320","world_status":"2","customData":{"playerOnline":"320","playerActive":"3424","era":2,"status":"online","supportedLanguages":["ua"],"scenario":"classic"},"register_with_avatar_name":"0","age":20,"age_trans":"19 days"},"railnation-ua-ua2":{"consumers_id":"380","country_name":"ua","world_start_time":"1403092800","world_name":"\u0412\u0443\u0433\u0456\u043b\u044c\u043d\u0430 \u0442\u043e\u043f\u043a\u0430","world_capacity":"9000","players_active":"10128","players_online":"292","world_status":"2","customData":{"playerOnline":"292","playerActive":"7115","era":4,"status":"online","supportedLanguages":["ua"],"scenario":"classic"},"register_with_avatar_name":"0","age":56,"age_trans":"55 days"}}},"it":{"aviableServers":{"railnation-it-it2":{"consumers_id":"414","country_name":"it","world_start_time":"1406030400","world_name":"Focolare","world_capacity":"9000","players_active":"5796","players_online":"207","world_status":"2","customData":{"playerOnline":"207","playerActive":"4449","era":2,"status":"online","supportedLanguages":["it"],"scenario":"classic"},"register_with_avatar_name":"0","age":22,"age_trans":"21 days"},"railnation-it-it1":{"consumers_id":"391","country_name":"it","world_start_time":"1404216000","world_name":"Caldaia","world_capacity":"9000","players_active":"3503","players_online":"156","world_status":"2","customData":{"playerOnline":"156","playerActive":"2671","era":4,"status":"online","supportedLanguages":["it"],"scenario":"classic"},"register_with_avatar_name":"0","age":43,"age_trans":"42 days"},"railnation-it-it3":{"consumers_id":"360","country_name":"it","world_start_time":"1401969600","world_name":"Camino","world_capacity":"9000","players_active":"3446","players_online":"135","world_status":"2","customData":{"playerOnline":"135","playerActive":"2626","era":5,"status":"online","supportedLanguages":["it"],"scenario":"classic"},"register_with_avatar_name":"0","age":69,"age_trans":"68 days"},"railnation-it-it101":{"consumers_id":"355","country_name":"it","world_start_time":"1401796800","world_name":"Golden Gate","world_capacity":"9000","players_active":"6199","players_online":"158","world_status":"2","customData":{"playerOnline":"158","playerActive":"4689","era":6,"status":"online","supportedLanguages":["it"],"scenario":"america"},"register_with_avatar_name":"0","age":71,"age_trans":"70 days"}}},"ro":{"aviableServers":{"railnation-ro-ro2":{"consumers_id":"404","country_name":"ro","world_start_time":"1404993600","world_name":"Cutia de foc","world_capacity":"9000","players_active":"5455","players_online":"217","world_status":"2","customData":{"playerOnline":"217","playerActive":"4383","era":3,"status":"online","supportedLanguages":["ro"],"scenario":"classic"},"register_with_avatar_name":"0","age":34,"age_trans":"33 days"},"railnation-ro-ro3":{"consumers_id":"370","country_name":"ro","world_start_time":"1402574400","world_name":"Camera de ardere","world_capacity":"9000","players_active":"8443","players_online":"120","world_status":"2","customData":{"playerOnline":"120","playerActive":"6323","era":5,"status":"online","supportedLanguages":["ro"],"scenario":"classic"},"register_with_avatar_name":"0","age":62,"age_trans":"61 days"},"railnation-ro-ro1":{"consumers_id":"345","country_name":"ro","world_start_time":"1401278400","world_name":"Cazanul de aburi","world_capacity":"9000","players_active":"9781","players_online":"208","world_status":"2","customData":{"playerOnline":"208","playerActive":"7691","era":6,"status":"online","supportedLanguages":["ro"],"scenario":"classic"},"register_with_avatar_name":"0","age":77,"age_trans":"76 days"}}},"gr,it":{"aviableServers":{"railnation-ii-comm3-2":{"consumers_id":"405","country_name":"gr,it","world_start_time":"1404993600","world_name":"Interrail South 2","world_capacity":"9000","players_active":"1950","players_online":"100","world_status":"2","customData":{"playerOnline":"100","playerActive":"1539","era":3,"status":"online","supportedLanguages":["it","gr"],"scenario":"classic"},"register_with_avatar_name":"0","age":34,"age_trans":"33 days"},"railnation-ii-comm3_1":{"consumers_id":"369","country_name":"gr,it","world_start_time":"1402574400","world_name":"Interrail South","world_capacity":"9000","players_active":"2172","players_online":"116","world_status":"2","customData":{"playerOnline":"116","playerActive":"1838","era":5,"status":"online","supportedLanguages":["it","gr"],"scenario":"classic"},"register_with_avatar_name":"0","age":62,"age_trans":"61 days"}}},"ptr":{"aviableServers":{"railnation-ii-rn17ptr":{"consumers_id":"388","country_name":"ptr","world_start_time":"1403706600","world_name":"Public Test Realm","world_capacity":"9000","players_active":"1071","players_online":"96","world_status":"2","customData":{"playerOnline":"96","playerActive":"1037","era":4,"status":"online","supportedLanguages":["en"],"scenario":"america"},"register_with_avatar_name":"0","age":49,"age_trans":"48 days"}}},"us":{"aviableServers":{"railnation-us-us102":{"consumers_id":"378","country_name":"us","world_start_time":"1403006400","world_name":"Grand Central","world_capacity":"15000","players_active":"13520","players_online":"206","world_status":"2","customData":{"playerOnline":"206","playerActive":"7486","era":5,"status":"online","supportedLanguages":["us"],"scenario":"america"},"register_with_avatar_name":"0","age":57,"age_trans":"56 days"}}},"uk":{"aviableServers":{"railnation-uk-uk101":{"consumers_id":"324","country_name":"uk","world_start_time":"1400673600","world_name":"Golden Gate","world_capacity":"9000","players_active":"5858","players_online":"88","world_status":"2","customData":{"playerOnline":"88","playerActive":"4457","era":6,"status":"online","supportedLanguages":["gb"],"scenario":"america"},"register_with_avatar_name":"0","age":84,"age_trans":"83 days"}}}}};
+	var translations = {"europe":"Europe","tr":"Turkey","de":"Germany","cz":"Czech Republic","es,br,ar,pt":"Spain \/ Brazil \/ Argentina \/ Portugal","ru":"Russia","pl":"Poland","jp":"Japan","en":"International","nl":"Netherlands","fr":"France","dk,no,se,fi":"Denmark \/ Norway \/ Sweden \/ Finland","ua":"Ukraine","it":"Italy","ro":"Romania","gr,it":"Greece \/ Italy","ptr":"Public Test Realm","us":"USA","uk":"United Kingdom"}; 
+	
+	var selectedRegion = null;
+	var selectedRegionName = null;
+	var selectedCountry = null;
+	var selectedCouontryName = null;
+	var selectedServer = null;
+
+	var preSelect = {"region":"europe","country":"en"};
+
+	function formatToDate(timestamp, withTime) {
+		if(typeof(withTime) == 'undefined') {
+			withTime = false;
+		}
+		var date = new Date(timestamp*1000);
+		var string = '';
+		string = date.getDate()+'.'+(date.getMonth()+1)+'.'+date.getFullYear();
+		if(withTime) {
+			string += ' '+date.getHours()+':'+date.getMinutes()+':'+date.getSeconds();
+		}
+		return string;
+	}
+	
+	function initServerSelection() {
+		var first = '';
+		var regionCount=0;
+		for(var region in server) {
+			var r = document.createElement('option');
+			r.id ='region-'+region;
+			r.className = 'region option';
+			r.innerHTML = translations[region];
+			r.value = region;
+			if(preSelect != null && region == preSelect.reion) {
+				r.selected = true;
+			}
+			$('#regions')[0].appendChild(r);
+			if(first == '') first = region;
+			regionCount++;
+		}
+		if(regionCount <= 1) {
+			$('#regionContainer').css('display', 'none');
+		} else {
+			$('#regionContainer').css('display', 'block');
+		}
+		if(preSelect != null && typeof(server[preSelect.region]) != 'undefined') {
+			selectRegion(preSelect.region);
+		} else {
+			selectRegion(first);
+		}
+		$('#serverTpl').css('display', 'none');
+	}
+
+	function selectRegion(regionName) {
+		if(typeof(regionName) == 'undefined') {
+			//Select country from select value
+			regionName = $('#regions').val();
+		}
+		var region = server[regionName];
+		if(typeof(region) == 'undefined') {
+			console.log("Region not found "+regionName);
+			return false;
+		}
+		if(selectedRegion != null) {
+			$('#region-'+selectedRegionName).removeClass('active');
+		}
+		selectedRegion = region;
+		selectedRegionName = regionName;
+		$('#region-'+selectedRegionName).addClass('active');
+		$('#countries')[0].innerHTML = '';
+		var first = '';
+		var i=0;
+		for(var country in region) {
+			var c = document.createElement('option');
+			c.id = 'country-'+country;
+			c.className = 'country option';
+			c.value = country;
+			if(preSelect != null && country == preSelect.country) {
+				c.selected = true;
+			}
+			c.innerHTML = translations[country];
+			$('#countries')[0].appendChild(c);
+			if(first == '') first = country;
+			i++;
+		}
+		if(i <= 1) {
+			$('#countryContainer').css('display', 'none');
+		} else {
+			$('#countryContainer').css('display', 'block');
+		}
+		if(preSelect != null && typeof(region[preSelect.country]) != 'undefined') {
+			selectCountry(preSelect.country);
+		} else {
+			selectCountry(first);
+		}
+		return true;
+	};
+
+	function selectCountry(countryName) {
+		if(typeof(countryName) == 'undefined') {
+			//Select country from select value
+			countryName = $('#countries').val();
+		}
+		var country = selectedRegion[countryName];
+		if(typeof(country) == 'undefined') {
+			console.log("Country not found "+selectedRegion+" - "+countryName);
+			return false;
+		}
+		selectedCountry = country;
+		selectedCountryName = countryName;
+		
+		$('#servers')[0].innerHTML = '';
+		var worlds = country['aviableServers'];
+		var i=0;
+		for(var worldName in worlds) {
+			i++;
+			var world = worlds[worldName];
+			var row =  createServerRow(worldName, world);
+			$('#servers').append(row);
+		}	
+		if(i==0) {
+			var row = document.createElement('tr');
+			row.className = 'server newServer';
+			row.innerHTML = '<td colspan=5>Sorry, there is currently no server available in this country.</td>';
+			$('#servers')[0].appendChild(row);
+		}
+	};
+
+	function createLabelValueDiv(label, value, className) {
+		var div = document.createElement('div');
+		div.className = className;
+		var labelSpan = document.createElement('span');
+		labelSpan.className='serverLabel';
+		labelSpan.innerHTML = label;
+		div.appendChild(labelSpan);
+		var valueSpan = document.createElement('span');
+		valueSpan.className='serverValue';
+		valueSpan.innerHTML = value;
+		div.appendChild(valueSpan);
+		return div;
+	}
+
+	function addColumn(row, content, className) {
+		var column = document.createElement('td');
+		if(typeof(content) == 'object') {
+			column.appendChild(content);
+		} else {
+			column.innerHTML = content;
+		}
+		if(typeof(className) != 'undefined') {
+			column.className = className;
+		}
+		row.appendChild(column);
+	}
+
+	function createServerRow(worldName, server) {
+		var tpl = $('#server_id_'+server['consumers_id']);
+		return tpl.clone();
+	}
+
+	function createAvatar(worldName) {
+		var server = selectedCountry['aviableServers'][worldName];
+		if(typeof(server) == 'undefined') {
+			console.log(selectedCountry['aviableServers']);
+			console.log('could not find: '+worldName);
+			return;
+		} 
+		selectedServer = server;
+		$('#createAvatarWorldInput').val(selectedServer['consumers_id']);
+		if(selectedServer['register_with_avatar_name'] == 1 || selectedServer['world_status'] == 1) {
+			//Mï¿½ssen das Formular noch anzeigen.
+			$('#createAvatarWorldSoloInput').val(selectedServer['consumers_id']);
+			$('#createAvatarFormHeadlineValue').html(selectedServer['world_name']);
+			$('#worldSelection').css('display', 'none');
+			if(selectedServer['register_with_avatar_name'] == 1){
+				$('#avatarNameInput').css('display', 'block');
+			} else {
+				$('#avatarNameInput').css('display', 'none');
+			}
+			if(selectedServer['world_status'] == 1) {
+				$('#betaCodeInput').css('display', 'block');
+			} else {
+				$('#betaCodeInput').css('display', 'none');
+			}
+			$('#createAvatarFormSoloContainer').css('display','block');
+		} else {
+			//Wir haben alle Daten
+			$('#createAvatarForm').submit();
+		}
+	};
+
+	function login(elem) {
+		$(elem).find('.loginAvatarForm').submit();
+	};
+
+	function register(elem) {
+		$(elem).find('.createAvatarForm').submit();
+	};
+
+	$(document).ready(initServerSelection);
+
+</script>
+
+	<div id="quickStart" onclick="login(this);">
+		<div id="quickStartButtonContainer">
+			<span id="quickLoginBtn" class="submit">Resume last game</span> 
+		</div>
+		<div class="worldInformation">
+			<div class="selectedWorld">
+				<span class="serverLabel">World:</span>
+				<span class="serverValue informationValue">ÐÑÐ¼Ð¾Ð²Ð°Ñ ÐºÐ¾ÑÐ¾Ð±ÐºÐ°</span>
+			</div>
+			<div class="detailInformation">
+									<div id="nameDetailInformation" class="information">
+						<span id="nameLabel">Avatar name:</span>
+						<span id="nameValue" class="informationValue">Dr.Frankenstein</span>
+					</div>
+							</div>
+			<div class="lastLogin">
+				<span class="lastLoginLabel">Last login:</span>
+				<span class="lastLoginValue">19 minutes ago</span>
+			</div>
+		</div>
+		<div class="actionColumn">
+			<form class="loginAvatarForm" method="POST"  action="https://railnation-sam.traviangames.com//iframe/log-into/consumer/railnation-com-meta/applicationLanguage/en">
+				<input id="loginAvatarWorldInput" type="hidden" name="world" value="421">
+				<input class="submit login" type="submit" value="Play now!">
+							</form>
+		</div>
+	</div>
+
+<div id="worldSelection" style="display: block;">
+	<div id="worldSelectionHeader"></div>
+	<div id="avatarListContainer">
+		<div id="ownAvatarHeadline" class="containerHeadline">
+			Your avatars:
+		</div>
+		<div id="avatarListTableContainer">
+			<div class="serverRow scenario classic" onclick="login(this);">
+				<div class="serverData">
+					<div class="serverStatus">
+						<div class="status status-online"></div>
+					</div>
+					<div class="serverNameColumn">
+						<div class="serverNameLabel">ÐÑÐ¼Ð¾Ð²Ð°Ñ ÐºÐ¾ÑÐ¾Ð±ÐºÐ°</div>
+						<div class="serverEraLabel">Era 2</div>
+					</div>
+					<div class="flagColumn">
+						<img src="https://railnation-sam.traviangames.com//flags/ru.png">
+					</div>
+				</div>
+				<div class="serverStats">
+					<div class="loginColumn">19 minutes ago</div>
+					<div class="serverAgeColumn">14 days</div>
+					<div class="serverPopColumn">
+					    <div class="playerCount">
+									<span class="playersActive">7,442 Players</span>
+									<span class="playersOnline">(424 Online)</span>
+						</div>
+						<div class="loadBar p80" title="7442"></div>
+					</div>
+				</div>
+				<div class="actionColumn">
+						<form class="loginAvatarForm" method="POST"  action="https://railnation-sam.traviangames.com//iframe/log-into/consumer/railnation-com-meta/applicationLanguage/en">
+							<input id="loginAvatarWorldInput" type="hidden" name="world" value="421">
+							<input class="submit login" type="submit" value="Play now!">
+													</form>
+				</div>
+			</div>
+			<div class="serverRow emptyRow"></div>
+			<div class="serverRow emptyRow"></div>
+			<div class="serverRow emptyRow"></div>
+		</div>
+	</div>
+
+	<div id="newServerListContainer">
+		<div id="newServerHeadline" class="containerHeadline">
+			Create new avatar:		</div>
+		<div id="regionContainer" class="optionContainer">
+			<div id="regionHeadline" class="selectHeadline">Select your region:</div>
+			<select id="regions" onchange="selectRegion();">					
+			</select>
+		</div>
+		<div id="countryContainer" class="optionContainer">
+			<div id="countryHeadline" class="selectHeadline">Select your country:</div>
+			<select id="countries" onchange="selectCountry();">
+			</select>
+		</div>
+		<div id="newServerListTableContainer">
+			<div id="newServerList" class="avatarTable">
+				<div id="servers"></div>
+				<div id="serverTpl">
+										<div class="serverRow scenario classic" id="server_id_431" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Ð£Ð³Ð¾Ð»ÑÐ½ÑÐ¹ ÑÑÐ¸Ðº</div>
+																	<div class="serverEraLabel">Era 1</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/ru.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">1</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">880 Players</span>
+											<span class="playersOnline">(340 Online)</span>
+										</div>
+										<div class="loadBar p0" title="880"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="431">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_432" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Palenisko</div>
+																	<div class="serverEraLabel">Era 1</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/pl.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">1</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">448 Players</span>
+											<span class="playersOnline">(145 Online)</span>
+										</div>
+										<div class="loadBar p0" title="448"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="432">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_430" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Kohlekasten</div>
+																	<div class="serverEraLabel">Era 1</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/de.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">4</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">2,580 Players</span>
+											<span class="playersOnline">(443 Online)</span>
+										</div>
+										<div class="loadBar p20" title="2580"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="430">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_429" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">WiÄzar</div>
+																	<div class="serverEraLabel">Era 1</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/pl.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">7</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">2,148 Players</span>
+											<span class="playersOnline">(181 Online)</span>
+										</div>
+										<div class="loadBar p20" title="2148"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="429">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_428" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">ç«å®¤</div>
+																	<div class="serverEraLabel">Era 1</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/jp.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">7</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">767 Players</span>
+											<span class="playersOnline">(50 Online)</span>
+										</div>
+										<div class="loadBar p0" title="767"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="428">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_424" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Smoke Chamber</div>
+																	<div class="serverEraLabel">Era 1</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/ii.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">8</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">3,717 Players</span>
+											<span class="playersOnline">(352 Online)</span>
+										</div>
+										<div class="loadBar p40" title="3717"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="424">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_425" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Stoomketel</div>
+																	<div class="serverEraLabel">Era 1</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/nl.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">8</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">1,711 Players</span>
+											<span class="playersOnline">(283 Online)</span>
+										</div>
+										<div class="loadBar p0" title="1711"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="425">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_426" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">ChaudiÃ¨re Ã  vapeur</div>
+																	<div class="serverEraLabel">Era 1</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/fr.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">8</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">1,968 Players</span>
+											<span class="playersOnline">(228 Online)</span>
+										</div>
+										<div class="loadBar p20" title="1968"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="426">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario america" id="server_id_427" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Golden Gate</div>
+																	<div class="serverEraLabel">Era 1</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/no.png">
+																		<img src="https://railnation-sam.traviangames.com//flags/dk.png">
+																		<img src="https://railnation-sam.traviangames.com//flags/se.png">
+																		<img src="https://railnation-sam.traviangames.com//flags/fi.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">8</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">798 Players</span>
+											<span class="playersOnline">(89 Online)</span>
+										</div>
+										<div class="loadBar p0" title="798"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="427">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_423" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Zylinderkopf</div>
+																	<div class="serverEraLabel">Era 1</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/de.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">9</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">3,465 Players</span>
+											<span class="playersOnline">(388 Online)</span>
+										</div>
+										<div class="loadBar p30" title="3465"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="423">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_422" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">KocioÅ parowy</div>
+																	<div class="serverEraLabel">Era 2</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/pl.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">15</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">2,990 Players</span>
+											<span class="playersOnline">(191 Online)</span>
+										</div>
+										<div class="loadBar p30" title="2990"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="422">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_420" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Dampfkessel</div>
+																	<div class="serverEraLabel">Era 2</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/de.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">16</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">4,544 Players</span>
+											<span class="playersOnline">(491 Online)</span>
+										</div>
+										<div class="loadBar p50" title="4544"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="420">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_419" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">ÐÐ°ÑÐ¾Ð²Ð¸Ð¹ ÐºÐ¾ÑÐµÐ»</div>
+																	<div class="serverEraLabel">Era 2</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/ua.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">20</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">4,439 Players</span>
+											<span class="playersOnline">(320 Online)</span>
+										</div>
+										<div class="loadBar p40" title="4439"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="419">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_415" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Ð ÐµÐ³ÑÐ»ÑÑÐ¾Ñ</div>
+																	<div class="serverEraLabel">Era 2</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/ru.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">21</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">4,010 Players</span>
+											<span class="playersOnline">(247 Online)</span>
+										</div>
+										<div class="loadBar p40" title="4010"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="415">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_416" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Kompressor</div>
+																	<div class="serverEraLabel">Era 2</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/de.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">21</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">4,406 Players</span>
+											<span class="playersOnline">(319 Online)</span>
+										</div>
+										<div class="loadBar p40" title="4406"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="416">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_417" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">WÃ³zek</div>
+																	<div class="serverEraLabel">Era 2</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/pl.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">21</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">2,723 Players</span>
+											<span class="playersOnline">(178 Online)</span>
+										</div>
+										<div class="loadBar p30" title="2723"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="417">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_418" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">AteÅleme OcaÄÄ±</div>
+																	<div class="serverEraLabel">Era 2</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/tr.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">21</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">7,023 Players</span>
+											<span class="playersOnline">(127 Online)</span>
+										</div>
+										<div class="loadBar p70" title="7023"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="418">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario america" id="server_id_413" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">ÐÐ¾ÑÐ° Ð Ð°ÑÐ¼Ð¾Ñ</div>
+																	<div class="serverEraLabel">Era 2</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/ru.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">22</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">9,524 Players</span>
+											<span class="playersOnline">(315 Online)</span>
+										</div>
+										<div class="loadBar p60" title="9524"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="413">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_414" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Focolare</div>
+																	<div class="serverEraLabel">Era 2</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/it.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">22</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">5,796 Players</span>
+											<span class="playersOnline">(207 Online)</span>
+										</div>
+										<div class="loadBar p60" title="5796"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="414">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario america" id="server_id_411" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Yellowstone</div>
+																	<div class="serverEraLabel">Era 2</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/de.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">23</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">6,996 Players</span>
+											<span class="playersOnline">(399 Online)</span>
+										</div>
+										<div class="loadBar p70" title="6996"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="411">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_409" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Ojnice</div>
+																	<div class="serverEraLabel">Era 2</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/cz.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">28</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">8,450 Players</span>
+											<span class="playersOnline">(379 Online)</span>
+										</div>
+										<div class="loadBar p90" title="8450"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="409">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_406" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Kurbelwelle</div>
+																	<div class="serverEraLabel">Era 3</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/de.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">29</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">5,603 Players</span>
+											<span class="playersOnline">(453 Online)</span>
+										</div>
+										<div class="loadBar p60" title="5603"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="406">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_407" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Ð£Ð³Ð¾Ð»ÑÐ½Ð°Ñ ÑÐ¾Ð¿ÐºÐ°</div>
+																	<div class="serverEraLabel">Era 3</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/ru.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">29</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">5,605 Players</span>
+											<span class="playersOnline">(297 Online)</span>
+										</div>
+										<div class="loadBar p60" title="5605"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="407">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_404" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Cutia de foc</div>
+																	<div class="serverEraLabel">Era 3</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/ro.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">34</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">5,455 Players</span>
+											<span class="playersOnline">(217 Online)</span>
+										</div>
+										<div class="loadBar p60" title="5455"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="404">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_405" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Interrail South 2</div>
+																	<div class="serverEraLabel">Era 3</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/it.png">
+																		<img src="https://railnation-sam.traviangames.com//flags/gr.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">34</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">1,950 Players</span>
+											<span class="playersOnline">(100 Online)</span>
+										</div>
+										<div class="loadBar p20" title="1950"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="405">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_399" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Foyer de Locomotive</div>
+																	<div class="serverEraLabel">Era 3</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/fr.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">35</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">5,007 Players</span>
+											<span class="playersOnline">(231 Online)</span>
+										</div>
+										<div class="loadBar p50" title="5007"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="399">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_400" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Firebox</div>
+																	<div class="serverEraLabel">Era 3</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/ii.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">35</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">8,166 Players</span>
+											<span class="playersOnline">(269 Online)</span>
+										</div>
+										<div class="loadBar p90" title="8166"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="400">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_401" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">GÅowica cylindra</div>
+																	<div class="serverEraLabel">Era 3</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/pl.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">35</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">5,381 Players</span>
+											<span class="playersOnline">(160 Online)</span>
+										</div>
+										<div class="loadBar p50" title="5381"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="401">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_402" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Interrail West 2</div>
+																	<div class="serverEraLabel">Era 3</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/es.png">
+																		<img src="https://railnation-sam.traviangames.com//flags/pt.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">35</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">13,044 Players</span>
+											<span class="playersOnline">(380 Online)</span>
+										</div>
+										<div class="loadBar p100" title="13044"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="402">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_398" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Ð¡ÑÐµÐ¿Ð½Ð°Ñ ÑÑÐ°Ð½Ð³Ð°</div>
+																	<div class="serverEraLabel">Era 3</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/ru.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">36</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">7,740 Players</span>
+											<span class="playersOnline">(309 Online)</span>
+										</div>
+										<div class="loadBar p80" title="7740"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="398">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_397" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Duman OdasÄ±</div>
+																	<div class="serverEraLabel">Era 3</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/tr.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">36</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">7,522 Players</span>
+											<span class="playersOnline">(110 Online)</span>
+										</div>
+										<div class="loadBar p80" title="7522"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="397">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_396" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">è¸æ°ãã¤ã©ã¼</div>
+																	<div class="serverEraLabel">Era 3</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/jp.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">36</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">2,093 Players</span>
+											<span class="playersOnline">(90 Online)</span>
+										</div>
+										<div class="loadBar p20" title="2093"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="396">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_395" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Regulator</div>
+																	<div class="serverEraLabel">Era 3</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/de.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">37</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">5,245 Players</span>
+											<span class="playersOnline">(319 Online)</span>
+										</div>
+										<div class="loadBar p50" title="5245"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="395">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario america" id="server_id_394" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Grand Canyon</div>
+																	<div class="serverEraLabel">Era 3</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/de.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">41</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">7,890 Players</span>
+											<span class="playersOnline">(362 Online)</span>
+										</div>
+										<div class="loadBar p80" title="7890"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="394">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_392" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">KomÃ­n</div>
+																	<div class="serverEraLabel">Era 3</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/cz.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">42</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">5,750 Players</span>
+											<span class="playersOnline">(190 Online)</span>
+										</div>
+										<div class="loadBar p60" title="5750"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="392">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario america" id="server_id_393" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Route 66</div>
+																	<div class="serverEraLabel">Era 3</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/pl.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">42</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">12,413 Players</span>
+											<span class="playersOnline">(154 Online)</span>
+										</div>
+										<div class="loadBar p80" title="12413"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="393">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_389" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Rauchkammer</div>
+																	<div class="serverEraLabel">Era 4</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/de.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">43</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">3,618 Players</span>
+											<span class="playersOnline">(325 Online)</span>
+										</div>
+										<div class="loadBar p40" title="3618"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="389">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_390" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">ÐÐ°ÑÐ¾Ð²Ð¾Ð¹ ÐºÐ¾ÑÐµÐ»</div>
+																	<div class="serverEraLabel">Era 4</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/ru.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">43</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">5,915 Players</span>
+											<span class="playersOnline">(251 Online)</span>
+										</div>
+										<div class="loadBar p60" title="5915"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="390">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_391" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Caldaia</div>
+																	<div class="serverEraLabel">Era 4</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/it.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">43</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">3,503 Players</span>
+											<span class="playersOnline">(156 Online)</span>
+										</div>
+										<div class="loadBar p30" title="3503"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="391">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario america" id="server_id_388" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Public Test Realm</div>
+																	<div class="serverEraLabel">Era 4</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/en.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">49</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">1,071 Players</span>
+											<span class="playersOnline">(96 Online)</span>
+										</div>
+										<div class="loadBar p10" title="1071"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="388">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_387" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">WaÅ korbowy</div>
+																	<div class="serverEraLabel">Era 4</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/pl.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">49</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">5,191 Players</span>
+											<span class="playersOnline">(155 Online)</span>
+										</div>
+										<div class="loadBar p50" title="5191"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="387">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_385" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Nordic Rail</div>
+																	<div class="serverEraLabel">Era 4</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/no.png">
+																		<img src="https://railnation-sam.traviangames.com//flags/dk.png">
+																		<img src="https://railnation-sam.traviangames.com//flags/se.png">
+																		<img src="https://railnation-sam.traviangames.com//flags/fi.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">50</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">4,148 Players</span>
+											<span class="playersOnline">(254 Online)</span>
+										</div>
+										<div class="loadBar p40" title="4148"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="385">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_384" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Kuppelstange</div>
+																	<div class="serverEraLabel">Era 4</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/de.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">51</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">4,082 Players</span>
+											<span class="playersOnline">(274 Online)</span>
+										</div>
+										<div class="loadBar p40" title="4082"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="384">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_379" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Ventil</div>
+																	<div class="serverEraLabel">Era 4</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/cz.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">56</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">4,291 Players</span>
+											<span class="playersOnline">(171 Online)</span>
+										</div>
+										<div class="loadBar p40" title="4291"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="379">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_380" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">ÐÑÐ³ÑÐ»ÑÐ½Ð° ÑÐ¾Ð¿ÐºÐ°</div>
+																	<div class="serverEraLabel">Era 4</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/ua.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">56</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">10,128 Players</span>
+											<span class="playersOnline">(292 Online)</span>
+										</div>
+										<div class="loadBar p100" title="10128"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="380">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_376" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">ÐÐ¾Ð»ÐµÑÐ½Ð°Ñ Ð¿Ð°ÑÐ°</div>
+																	<div class="serverEraLabel">Era 5</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/ru.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">57</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">7,228 Players</span>
+											<span class="playersOnline">(252 Online)</span>
+										</div>
+										<div class="loadBar p80" title="7228"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="376">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_377" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Steam Boiler</div>
+																	<div class="serverEraLabel">Era 5</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/ii.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">57</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">8,343 Players</span>
+											<span class="playersOnline">(247 Online)</span>
+										</div>
+										<div class="loadBar p90" title="8343"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="377">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario america" id="server_id_378" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Grand Central</div>
+																	<div class="serverEraLabel">Era 5</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/us.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">57</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">13,520 Players</span>
+											<span class="playersOnline">(206 Online)</span>
+										</div>
+										<div class="loadBar p90" title="13520"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="378">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_371" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Bogenweiche</div>
+																	<div class="serverEraLabel">Era 5</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/de.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">58</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">4,290 Players</span>
+											<span class="playersOnline">(251 Online)</span>
+										</div>
+										<div class="loadBar p40" title="4290"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="371">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_369" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Interrail South</div>
+																	<div class="serverEraLabel">Era 5</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/it.png">
+																		<img src="https://railnation-sam.traviangames.com//flags/gr.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">62</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">2,172 Players</span>
+											<span class="playersOnline">(116 Online)</span>
+										</div>
+										<div class="loadBar p20" title="2172"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="369">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_370" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Camera de ardere</div>
+																	<div class="serverEraLabel">Era 5</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/ro.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">62</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">8,443 Players</span>
+											<span class="playersOnline">(120 Online)</span>
+										</div>
+										<div class="loadBar p90" title="8443"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="370">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_367" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Buhar KazanÄ±</div>
+																	<div class="serverEraLabel">Era 5</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/tr.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">63</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">10,704 Players</span>
+											<span class="playersOnline">(130 Online)</span>
+										</div>
+										<div class="loadBar p100" title="10704"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="367">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_368" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">WÄglarka</div>
+																	<div class="serverEraLabel">Era 5</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/pl.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">63</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">5,522 Players</span>
+											<span class="playersOnline">(165 Online)</span>
+										</div>
+										<div class="loadBar p60" title="5522"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="368">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_366" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Drehgestell</div>
+																	<div class="serverEraLabel">Era 5</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/de.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">67</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">4,699 Players</span>
+											<span class="playersOnline">(243 Online)</span>
+										</div>
+										<div class="loadBar p50" title="4699"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="366">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_360" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Camino</div>
+																	<div class="serverEraLabel">Era 5</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/it.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">69</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">3,446 Players</span>
+											<span class="playersOnline">(135 Online)</span>
+										</div>
+										<div class="loadBar p30" title="3446"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="360">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario america" id="server_id_362" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Grand Central</div>
+																	<div class="serverEraLabel">Era 5</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/ii.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">69</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">10,484 Players</span>
+											<span class="playersOnline">(139 Online)</span>
+										</div>
+										<div class="loadBar p60" title="10484"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="362">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_356" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Boite Ã  fumÃ©e</div>
+																	<div class="serverEraLabel">Era 5</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/fr.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">70</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">4,103 Players</span>
+											<span class="playersOnline">(88 Online)</span>
+										</div>
+										<div class="loadBar p40" title="4103"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="356">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_359" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">ÐÐ»Ð¾Ðº ÑÐ¸Ð»Ð¸Ð½Ð´ÑÐ¾Ð²</div>
+																	<div class="serverEraLabel">Era 5</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/ru.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">70</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">7,244 Players</span>
+											<span class="playersOnline">(185 Online)</span>
+										</div>
+										<div class="loadBar p80" title="7244"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="359">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_352" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Kotel</div>
+																	<div class="serverEraLabel">Era 6</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/cz.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">71</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">4,189 Players</span>
+											<span class="playersOnline">(141 Online)</span>
+										</div>
+										<div class="loadBar p40" title="4189"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="352">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_353" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Interrail West</div>
+																	<div class="serverEraLabel">Era 6</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/es.png">
+																		<img src="https://railnation-sam.traviangames.com//flags/pt.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">71</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">13,404 Players</span>
+											<span class="playersOnline">(206 Online)</span>
+										</div>
+										<div class="loadBar p100" title="13404"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="353">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario america" id="server_id_355" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Golden Gate</div>
+																	<div class="serverEraLabel">Era 6</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/it.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">71</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">6,199 Players</span>
+											<span class="playersOnline">(158 Online)</span>
+										</div>
+										<div class="loadBar p60" title="6199"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="355">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario america" id="server_id_350" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Mount Rushmore</div>
+																	<div class="serverEraLabel">Era 6</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/de.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">72</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">7,664 Players</span>
+											<span class="playersOnline">(235 Online)</span>
+										</div>
+										<div class="loadBar p80" title="7664"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="350">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_340" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">PÃ­Å¡Å¥ala</div>
+																	<div class="serverEraLabel">Era 6</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/cz.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">77</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">4,759 Players</span>
+											<span class="playersOnline">(129 Online)</span>
+										</div>
+										<div class="loadBar p50" title="4759"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="340">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario america" id="server_id_341" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Golden Gate</div>
+																	<div class="serverEraLabel">Era 6</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/fr.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">77</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">6,417 Players</span>
+											<span class="playersOnline">(127 Online)</span>
+										</div>
+										<div class="loadBar p70" title="6417"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="341">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_342" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">FeuerbÃ¼chse</div>
+																	<div class="serverEraLabel">Era 6</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/de.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">77</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">4,922 Players</span>
+											<span class="playersOnline">(215 Online)</span>
+										</div>
+										<div class="loadBar p50" title="4922"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="342">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_343" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">ÐÐ¾Ð»ÐµÐ½ÑÐ°ÑÑÐ¹ Ð²Ð°Ð»</div>
+																	<div class="serverEraLabel">Era 6</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/ru.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">77</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">8,947 Players</span>
+											<span class="playersOnline">(176 Online)</span>
+										</div>
+										<div class="loadBar p90" title="8947"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="343">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_344" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Komora dymna</div>
+																	<div class="serverEraLabel">Era 6</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/pl.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">77</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">9,571 Players</span>
+											<span class="playersOnline">(167 Online)</span>
+										</div>
+										<div class="loadBar p100" title="9571"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="344">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_345" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Cazanul de aburi</div>
+																	<div class="serverEraLabel">Era 6</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/ro.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">77</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">9,781 Players</span>
+											<span class="playersOnline">(208 Online)</span>
+										</div>
+										<div class="loadBar p100" title="9781"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="345">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario america" id="server_id_334" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Route 66</div>
+																	<div class="serverEraLabel">Era 6</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/de.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">78</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">7,598 Players</span>
+											<span class="playersOnline">(229 Online)</span>
+										</div>
+										<div class="loadBar p80" title="7598"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="334">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_336" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Coal box</div>
+																	<div class="serverEraLabel">Era 6</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/ii.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">78</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">12,058 Players</span>
+											<span class="playersOnline">(158 Online)</span>
+										</div>
+										<div class="loadBar p100" title="12058"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="336">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_331" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Generator</div>
+																	<div class="serverEraLabel">Era 6</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/de.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">79</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">6,467 Players</span>
+											<span class="playersOnline">(223 Online)</span>
+										</div>
+										<div class="loadBar p70" title="6467"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="331">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario america" id="server_id_325" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Golden Gate</div>
+																	<div class="serverEraLabel">Era 6</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/ii.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">83</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">7,814 Players</span>
+											<span class="playersOnline">(166 Online)</span>
+										</div>
+										<div class="loadBar p50" title="7814"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="325">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario america" id="server_id_326" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Grand Central</div>
+																	<div class="serverEraLabel">Era 6</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/de.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">83</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">5,889 Players</span>
+											<span class="playersOnline">(298 Online)</span>
+										</div>
+										<div class="loadBar p60" title="5889"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="326">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_322" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">ÐÐ¾Ð¼Ð¿ÑÐµÑÑÐ¾Ñ</div>
+																	<div class="serverEraLabel">Era 6</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/ru.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">84</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">10,202 Players</span>
+											<span class="playersOnline">(120 Online)</span>
+										</div>
+										<div class="loadBar p100" title="10202"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="322">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario classic" id="server_id_323" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Regulator</div>
+																	<div class="serverEraLabel">Era 6</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/pl.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">84</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">9,666 Players</span>
+											<span class="playersOnline">(105 Online)</span>
+										</div>
+										<div class="loadBar p100" title="9666"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="323">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+										<div class="serverRow scenario america" id="server_id_324" onclick="register(this);">
+						<div class="serverData">
+							<div class="serverStatus">
+																<div class="status status-online"></div>
+							</div>
+							<div class="serverNameColumn">
+								<div class="serverNameLabel">Golden Gate</div>
+																	<div class="serverEraLabel">Era 6</div>
+															</div>
+							<div class="flagColumn">
+																		<img src="https://railnation-sam.traviangames.com//flags/gb.png">
+															</div>
+						</div>
+						<div class="serverStats">
+							<div class="serverAgeColumn">84</div>
+							<div class="serverPopColumn">
+								<div class="serverPopColumn">										<div class="playerCount">
+											<span class="playersActive">5,858 Players</span>
+											<span class="playersOnline">(88 Online)</span>
+										</div>
+										<div class="loadBar p60" title="5858"></div>
+																		</div>
+							</div>
+						</div>
+						<div class="actionColumn">
+							<form class="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+								<input type="hidden" name="world" value="324">
+																<input class="submit create" type="submit" value="Create avatar">
+							</form>
+						</div>
+					</div>
+									</div>
+			</div>
+			<form id="createAvatarForm" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+				<input id="createAvatarWorldInput" type="hidden" name="world" value="">
+							</form>
+		</div>
+	</div>
+</div>
+
+
+
+
+<div id="createAvatarFormSoloContainer" style="display: none;">
+		<form id="createAvatarFormSolo" class="yform" method="GET" action="https://railnation-sam.traviangames.com//iframe/create-avatar/consumer/railnation-com-meta/applicationLanguage/en">
+		<div id="createAvatarFormHeadlineContainer">
+			<span id="createAvatarFormHeadline">Create new avatar on world:</span>
+			<span id="createAvatarFormHeadlineValue">
+							</span>
+		</div>
+					<div id="avatarNameInput" class="type-text ">
+										<input id="avatarName" name="avatarName" type="text" value="" placeholder="Avatar name">
+											</div>
+							<div id="betaCodeInput" class="type-text ">
+									<input id="inviteCode" name="inviteCode" type="text" value="" placeholder="Beta key (required)">
+								<div class="inviteCodeTeaser">Don&#039;t have a Beta key yet? <a href="http://forum.rail-nation.com/showthread.php?t=551" target="_blank" class="external">Sign up here!</a></div>
+							</div>
+				<input id="createAvatarWorldSoloInput" type="hidden" name="world" value="23">
+				<input class="submit" type="submit" value="Create avatar">
+	</form>
+</div>					</div>
+				</div>
+			</div>
+			<div id="footer" role="contentinfo"></div>
+		</div>
+	</div>
+</body>
+
+</html>

@@ -8,6 +8,9 @@ import os
 # game client
 client = None
 
+# game properties
+properties = {}
+
 # python 3?
 is_py3 = sys.version_info >= (3, 3)
 

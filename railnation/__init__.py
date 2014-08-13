@@ -13,6 +13,10 @@ import sys
 
 # import own libs
 from railnation.core.railnation_game import Game
+from railnation.core.railnation_errors import (
+    ConnectionProblem,
+    LoginIncorrect,
+)
 
 
 def _signal_handler(signal, frame):
@@ -27,7 +31,15 @@ def main():
     # Share global var
     global game
 
-    game = Game()
+    try:
+        game = Game()
+    except ConnectionProblem as err:
+        print('Got connection problem.')
+        print(err)
+        return 1
+    except LoginIncorrect as err:
+        print(err)
+        return 1
 
     # Catch the CTRL-C signal
     signal.signal(signal.SIGINT, _signal_handler)

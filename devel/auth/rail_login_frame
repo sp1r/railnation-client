@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="de" xml:lang="de" dir="" xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>SAM</title>
+		<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+		<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+		<META HTTP-EQUIV="EXPIRES" CONTENT="0">
+		<META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
+<!--
+		<link type="text/css" rel="stylesheet" media="screen" href="https://railnation-sam.traviangames.com//css/logout.css?daagad">
+		<link type="text/css" rel="stylesheet" media="screen" href="https://railnation-sam.traviangames.com//css/register.css?daagad56">
+		<link type="text/css" rel="stylesheet" media="screen" href="https://railnation-sam.traviangames.com//css/jquery-ui-1.10.0.custom.min.css">
+		<script src="https://railnation-sam.traviangames.com//js/jquery-1.9.0.js?893579823" type="text/javascript"></script>
+		<script src="https://railnation-sam.traviangames.com//js/jquery.selectbox-0.5.js?893579823" type="text/javascript"></script>
+		<script src="https://railnation-sam.traviangames.com//js/jquery.placeholder.min.js?893579823" type="text/javascript"></script>
+		<script src="https://railnation-sam.traviangames.com//js/jquery-ui-1.10.0.custom.min.js?893579823" type="text/javascript"></script>
+		<script src="https://railnation-sam.traviangames.com//js/jquery.number.min.js?893579823" type="text/javascript"></script>
+		<script src="https://railnation-sam.traviangames.com//js/stacktrace-min-0.4.js?893579823" type="text/javascript"></script>
+		<script src="https://railnation-sam.traviangames.com//mbox.js?893579823" type="text/javascript"></script>
+-->
+		<link type="text/css" rel="stylesheet" media="screen" href="https://railnation-sam.traviangames.com//css/combined.css?4829842">
+		<script src="https://railnation-sam.traviangames.com//js/combined.js?392715" type="text/javascript"></script>
+							<link type="text/css" rel="stylesheet" media="screen" href="/cache/railnation//sam_meta.css?92375293">
+							<script>
+			function closeSelection() {
+				var div = document.getElementById('selectBoxContainer');
+				div.style.display = 'none';
+			}
+			
+			function openSelection(event) {
+				var div = document.getElementById('selectBoxContainer');
+				div.style.display = 'inline-block';
+				document.onclick = closeSelection;
+			    event.stopPropagation();
+			    if(typeof(window.event) != 'undefined')
+			    	window.event.cancelBubble = true;
+			}
+	
+			function selectServer(identifier) {
+				var sel = document.getElementById('selection');
+				//var value = sel.options[sel.selectedIndex].value;
+				var value = identifier;
+				var targetDiv = document.getElementById('selectedServer');
+				targetDiv.innerHTML = servers[value];
+				var targetInput = document.getElementById('chosenServer');
+				targetInput.value = value;
+				closeSelection();
+			}
+	
+			function $el(id) {
+				return document.getElementById(id);
+			}
+
+		 	$(function() {
+				$(".tabs").tabs();
+			});
+
+		 	window.onerror = function(message, url, lineNo) {
+		 		var data = {'exception': message, 'url': url, 'line': lineNo};
+		 		$.ajax({
+		 		        url: 'https://railnation-sam.traviangames.com//error/log',
+		 		        dataType: 'json',
+		 		        data: data,
+		 		        type: 'POST'
+		 			});
+	 			return false;
+		 	};
+		</script>
+	</head>
+<body onload="$('input, textarea').placeholder();" class="lang en">
+	<div class="page_margins">
+		<div class="page">
+			<div id="main">
+				<div id="col3" role="main">
+					<div id="col3_content" class="clearfix">
+						<script type="text/javascript">
+<!--
+if(typeof(window.localStorage)!="undefined" && window.localStorage != null && window.localStorage.session != ''){
+	// try to Login with session from local storage:
+	var forward = '';
+	var data = {'sam_sess' : window.localStorage.session, 'internalForward' : forward };
+	var url = 'https://railnation-sam.traviangames.com//iframe/session-login/consumer/railnation-com-meta/applicationLanguage/en';	
+	$.post(url, data, function(data) {
+		if(data != 'false') {
+			$('#col3_content').html(data);
+			//console.log(data);
+		} else {
+			window.localStorage.session = '';
+		}
+	});
+}
+
+//-->
+</script>
+
+	<div id="login" class="login ">
+		<div id="loginHeader"></div>
+		<form id="loginForm" enctype="application/x-www-form-urlencoded" action="https://railnation-sam.traviangames.com//iframe/login/consumer/railnation-com-meta/applicationLanguage/en" class="yform" method="post">
+							<input type="hidden" name="className" value="login ">
+						
+						<div class="type-text">
+				<label for="email" class="required">Email address:</label>
+				<input name="email" id="email" value="" type="text">
+			</div>
+			<div class="type-text">
+				<label for="password" class="required">Password:</label>
+				<input name="password" id="password" value="" type="password">
+			</div>
+			<div class="type-check">
+				<label for="remember_me" class="optional label_check">
+					<input name="remember_me" value="0" type="hidden">
+					<input name="remember_me" id="remember_me" value="1" type="checkbox">
+					<span class="labelText">Remember me</span>
+				</label>
+			</div>
+							<div class="type-button">
+								<input name="submit" id="submit" value="Login" class="submit" type="submit">
+				<input name="showLostPasswordForm" id="showLostPasswordForm" value="Lost password?" class="submit" type="submit">
+			</div>
+						 				<div class="type-text facebookLogin">
+					<a href="https://railnation-sam.traviangames.com//iframe/fb-login/consumer/railnation-com-meta/applicationLanguage/en">
+						<img class="facebookConnectButton" src='https://railnation-sam.traviangames.com//img/fb_connect.png'>
+					</a>
+				</div>
+								</form>
+		<div id="loginFooter"></div>
+	</div>
+					</div>
+				</div>
+			</div>
+			<div id="footer" role="contentinfo"></div>
+		</div>
+	</div>
+</body>
+
+</html>

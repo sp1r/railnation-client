@@ -5,6 +5,10 @@ import getpass
 import html.parser
 
 from railnation.core.railnation_globals import log
+from railnation.core.railnation_errors import (
+    ConnectionProblem,
+    LoginIncorrect,
+)
 
 # I believe this won`t change every day
 BASE_URL = 'www.rail-nation.com'
@@ -21,7 +25,7 @@ def authorize(client):
     """
     # загружаем конфигурацию SAM
     sam_url = 'http://%s/js/sam.config.php' % BASE_URL
-    log.debug('Downloading SAM config...')
+    log.info('Downloading SAM config...')
     log.debug('SAM config url: %s' % sam_url)
     response = client.session.get(sam_url)
     log.debug('Response: %s Message: %s' % (response.status_code,
@@ -29,8 +33,7 @@ def authorize(client):
 
     if response.status_code != 200:
         log.critical("Error while getting SAM config from server.")
-        print("Connection problems. Will now exit.")
-        exit(0)
+        raise ConnectionProblem("Could not download SAM config.")
 
     # парсим строки вида:
     # samConfig['applicationId'] = 'railnation';
@@ -43,22 +46,22 @@ def authorize(client):
             sam_config[key] = value
             log.debug('SAM item: %s = %s' % (key, sam_config[key]))
 
-    # запрашиваем логин/пароль от учетной записи
-    username, password = console_login()
-
-    log.info('Trying to login. User: %s' % username)
-
     # загружаем фрейм с формой ввода пароля
     log.debug('Requesting login frame...')
     response = client.session.get(_get_link('login'))
     log.debug('Response: %s Message: %s' % (response.status_code,
-                                                 response.reason))
+                                            response.reason))
 
     # находим элемент с id="loginForm" и сохраняем его параметр action
     parser = HTMLAttributeSearch('form', 'id', 'loginForm', 'action')
     parser.feed(response.text)
     login_target = parser.result
     log.debug('Login form submit url: %s' % login_target)
+
+    # спрашиваем имя и пароль у пользователя
+    username = input("Enter your email (login): ")
+    log.info('Trying to login. User: %s' % username)
+    password = getpass.getpass("Password for %s: " % username)
 
     login_data = {
         'className': 'login ',
@@ -71,19 +74,40 @@ def authorize(client):
     log.debug('Sending credentials...')
     response = client.session.post(login_target, data=login_data)
     log.debug('Response: %s Message: %s' % (response.status_code,
-                                                 response.reason))
+                                            response.reason))
+
+    # проверяем успешна ли авторизация
+    parser = HTMLAttributeSearch('a', 'class', 'forwardLink', 'href')
+    parser.feed(response.text)
+    if parser.result is None:
+        log.critical('Username or password is incorrect.')
+        raise LoginIncorrect('You entered wrong username and password.')
 
     # загружаем фрейм с выбором id мира для входа
     log.debug('Requesting world selection frame...')
     response = client.session.get(_get_link('external-avatar-list'))
     log.debug('Response: %s Message: %s' % (response.status_code,
-                                                 response.reason))
+                                            response.reason))
+
+    frame = response.text
+
+    # ищем миры, в которых у нас есть персонажи
+    parser = GrepWorldsInformation()
+    parser.feed(frame)
+    print('List of your games:')
+    for world, data in parser.result.items():
+        print('[%d] %s (%s) last login: %s' % (world,
+                                               data['name'],
+                                               data['era'],
+                                               data['last_login']))
+
+    world_id = int(input('Print world id to enter: '))
 
     # ищем элементы с id=loginAvatarWorldInput и сохраняем их параметр value
-    parser = HTMLAttributeSearch('input', 'id', 'loginAvatarWorldInput', 'value')
-    parser.feed(response.text)
-    world_id = parser.result
-    log.debug('World id to enter: %s' % world_id)
+    # parser = HTMLAttributeSearch('input', 'id', 'loginAvatarWorldInput', 'value')
+    # parser.feed(response.text)
+    # world_id = parser.result
+    # log.debug('World id to enter: %s' % world_id)
 
     # ищем элементы класса loginAvatarForm и сохраняем их параметр action
     parser = HTMLAttributeSearch('form', 'class', 'loginAvatarForm', 'action')
@@ -100,7 +124,7 @@ def authorize(client):
     log.info('Entering world %s...' % world_data['world'])
     response = client.session.post(world_target, data=world_data)
     log.debug('Response: %s Message: %s' % (response.status_code,
-                                                 response.reason))
+                                            response.reason))
 
     # в ответе находим ссылку класса forwardLink и сохраняем href
     parser = HTMLAttributeSearch('a', 'class', 'forwardLink', 'href')
@@ -117,22 +141,6 @@ def authorize(client):
     response = client.session.get(auth_link)
     log.debug('Response: %s Message: %s' % (response.status_code,
                                             response.reason))
-
-    client.session.headers.update({'content-type': 'application/json'})
-
-    client.player_id = client.produce('AccountInterface',
-                                      'is_logged_in',
-                                      [client.webkey])['Body']
-    if not client.player_id:
-        print('Cannot log in to the game.')
-        exit(1)
-
-
-def console_login():
-    print("Please enter you credentials.")
-    name = input("Enter name (email): ")
-    password = getpass.getpass("Password for %s: " % name)
-    return name, password
 
 
 def _get_link(action):
@@ -152,7 +160,7 @@ def _get_link(action):
 
 
 ###############################################################################
-# Парсер html
+# Парсеры html
 class HTMLAttributeSearch(html.parser.HTMLParser):
     """
     We need to locate some attributes in html-pages we got from server
@@ -169,6 +177,54 @@ class HTMLAttributeSearch(html.parser.HTMLParser):
     def handle_starttag(self, tag, attrs):
         if tag == self.interesting_tag:
             attributes = {k: v for k, v in attrs}
-            if self.filter in attributes and \
-                    attributes[self.filter] == self.filter_value:
-                self.result = attributes[self.target]
+            try:
+                if attributes[self.filter] == self.filter_value:
+                    self.result = attributes[self.target]
+            except KeyError:
+                pass
+
+
+class GrepWorldsInformation(html.parser.HTMLParser):
+    """More complex logic to extract worlds information"""
+    def __init__(self):
+        html.parser.HTMLParser.__init__(self)
+        self.in_target_block = False
+        self.grep_data = False
+        self.grep_data_into = ''
+        self.current_world = {}
+        self.result = {}
+
+    def handle_starttag(self, tag, attrs):
+        if tag == 'div':
+            attributes = {k: v for k, v in attrs}
+            try:
+                if attributes['id'] == 'avatarListContainer':
+                    self.in_target_block = True
+            except KeyError:
+                pass
+            if self.in_target_block:
+                try:
+                    if attributes['class'] == 'serverNameLabel':
+                        self.grep_data = True
+                        self.grep_data_into = 'name'
+                    elif attributes['class'] == 'serverEraLabel':
+                        self.grep_data = True
+                        self.grep_data_into = 'era'
+                    elif attributes['class'] == 'loginColumn':
+                        self.grep_data = True
+                        self.grep_data_into = 'last_login'
+                except KeyError:
+                    pass
+        if tag == 'input' and self.in_target_block:
+            attributes = {k: v for k, v in attrs}
+            try:
+                if attributes['id'] == 'loginAvatarWorldInput':
+                    self.result[attributes['value']] = self.current_world
+                    self.current_world = {}
+            except KeyError:
+                pass
+
+    def handle_data(self, data):
+        if self.grep_data:
+            self.current_world[self.grep_data_into] = data
+            self.grep_data = False
