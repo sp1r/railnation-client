@@ -5,9 +5,10 @@ import getpass
 import html.parser
 
 from railnation.core.railnation_globals import log
+from railnation.core.railnation_client import client
 from railnation.core.railnation_errors import (
     ConnectionProblem,
-    LoginIncorrect,
+    NotAuthorized,
 )
 
 # I believe this won`t change every day
@@ -16,12 +17,9 @@ BASE_URL = 'www.rail-nation.com'
 sam_config = {}
 
 
-def authorize(client):
+def authorize():
     """
-    Проводит аутентификацию
-
-    :param client: класс для общения с игрой
-    :type client: railnation.core.railnation_client.Client
+    Проводит аутентификацию.
     """
     # загружаем конфигурацию SAM
     sam_url = 'http://%s/js/sam.config.php' % BASE_URL
@@ -81,7 +79,7 @@ def authorize(client):
     parser.feed(response.text)
     if parser.result is None:
         log.critical('Username or password is incorrect.')
-        raise LoginIncorrect('You entered wrong username and password.')
+        raise NotAuthorized('You entered wrong username and password.')
 
     # загружаем фрейм с выбором id мира для входа
     log.debug('Requesting world selection frame...')
@@ -103,19 +101,12 @@ def authorize(client):
 
     world_id = int(input('Print world id to enter: '))
 
-    # ищем элементы с id=loginAvatarWorldInput и сохраняем их параметр value
-    # parser = HTMLAttributeSearch('input', 'id', 'loginAvatarWorldInput', 'value')
-    # parser.feed(response.text)
-    # world_id = parser.result
-    # log.debug('World id to enter: %s' % world_id)
-
     # ищем элементы класса loginAvatarForm и сохраняем их параметр action
     parser = HTMLAttributeSearch('form', 'class', 'loginAvatarForm', 'action')
     parser.feed(response.text)
     world_target = parser.result
     log.debug('World selection form submit url: %s' % world_target)
 
-    # TODO: add 'choose world' feature here.
     world_data = {
         'world': world_id,
     }

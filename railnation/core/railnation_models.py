@@ -24,8 +24,8 @@ class Player():
 
     def update(self):
         data = client.produce('ProfileInterface',
-                                    'get_profile_data',
-                                    [self.id])['Body']
+                              'get_profile_data',
+                              [self.id])['Body']
         self.id = str(data['user_id'])
         self.params = {
             'hometown_is_public': data['hometown_is_public'],

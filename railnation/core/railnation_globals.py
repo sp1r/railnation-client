@@ -1,15 +1,9 @@
 # -*- coding:utf-8 -*-
-"""Сущности, используемые всеми остальными модулями"""
+"""Информационные сущности, используемые всеми остальными модулями"""
 
 import logging
 import sys
 import os
-
-# game client
-client = None
-
-# game properties
-properties = {}
 
 # python 3?
 is_py3 = sys.version_info >= (3, 3)

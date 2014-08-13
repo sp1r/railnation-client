@@ -6,5 +6,5 @@ class ConnectionProblem(Exception):
     pass
 
 
-class LoginIncorrect(Exception):
+class NotAuthorized(Exception):
     pass

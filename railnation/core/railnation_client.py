@@ -100,3 +100,7 @@ def _quote(item):
 def _make_hash(item):
     """Сокращение"""
     return hashlib.md5(_quote(item).encode("utf-8")).hexdigest()
+
+
+client = Client()
+log.info('Client created.')

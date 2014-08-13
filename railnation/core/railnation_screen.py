@@ -11,6 +11,7 @@ from railnation.core.railnation_globals import (
     log,
 )
 
+from railnation.modules.module_main import MainModule
 
 LEFT_BAR = 20
 TOP_BAR = 3
@@ -22,7 +23,10 @@ class Screen(object):
         self.pages = {}
         self.pages_switch = {}
         self._load_all_pages()
-        self.current_page = 'test'
+        self.current_page = 'player'
+        self.modules = [
+            MainModule(),
+        ]
 
     def _init_curses(self):
         # Init the curses screen
@@ -34,7 +38,7 @@ class Screen(object):
         # Set curses options
         curses.noecho()  # don`t print typed characters back to screen
         curses.cbreak()  # react on keypress instantly
-        self.screen.keypad(1)  # enable keypad shortcuts
+        self.screen.keypad(True)  # enable keypad shortcuts
 
     def _load_all_pages(self):
         """import all pages in railnation.pages dir"""
@@ -44,9 +48,7 @@ class Screen(object):
                 log.debug("Importing file %s" % item)
                 page_module = __import__(os.path.basename(item)[:-3])
                 page_name = os.path.basename(item)[len(header):-3].lower()
-                page = page_module.Page()
-                self.pages[page_name] = page
-                self.pages_switch[page.switch_key] = page_name
+                self.pages[page_name] = page_module
         # Restore system path
         sys.path = orig_sys_path
 
@@ -58,20 +60,43 @@ class Screen(object):
         self._draw_menu()
         self._draw_header()
         self._draw_help()
-        data = self.pages[self.current_page].data_for_display()
-        log.debug('Page data: %s' % data)
+        # data = self.pages[self.current_page].data_for_display()
+        # log.debug('Page data: %s' % data)
         offset_x = LEFT_BAR + 1
         offset_y = TOP_BAR + 1
-        for line in data['layout']:
+        # for line in data['layout']:
+        #     self.screen.addstr(line[0] + offset_y,
+        #                        line[1] + offset_x,
+        #                        line[2])
+
+        layout, navigation, calls = self.modules[0].get_profile_page()
+        for line in layout:
             self.screen.addstr(line[0] + offset_y,
                                line[1] + offset_x,
                                line[2])
+
         self.screen.refresh()
-        key = self.screen.getkey()
-        if key in data['callbacks']:
-            data['callbacks'][key]()
-        elif key in self.pages_switch:
-            self.current_page = self.pages_switch[key]
+        x = 10
+        y = 10
+        self.screen.move(y, x)
+        # curses.curs_set(0)  # make cursor invisible
+        while True:
+            ch = self.screen.getch()
+            if ch == curses.KEY_UP:
+                y -= 1
+            elif ch == curses.KEY_DOWN:
+                y += 1
+            elif ch == curses.KEY_LEFT:
+                x -= 1
+            elif ch == curses.KEY_RIGHT:
+                x += 1
+            self.screen.move(y, x)
+
+
+        # if key in calls:
+        #     calls[key]()
+        # elif key in self.pages_switch:
+        #     self.current_page = self.pages_switch[key]
 
     def end(self):
         """restore normal terminal settings"""

@@ -3,13 +3,13 @@
 http://s3.railnation.ru/web/?key=c45185d183f9303132a3da216d65c1c3
 
 http://s3.railnation.ru/web/rpc/flash.php?interface=AccountInterface&method=is_logged_in
-http://s3.railnation.ru/web/rpc/flash.php?interface=PropertiesInterface&method=getData
+http://s3.railnation.ru/web/rpc/flash.php?interface=PropertiesInterface&method=getData         <----- this one is cool!
 
 http://s3.railnation.ru/web/rpc/flash.php?interface=KontagentInterface&method=getData
 http://s3.railnation.ru/web/rpc/flash.php?interface=AccountInterface&method=getLanguage
 
 http://api.geo.kontagent.net/crossdomain.xml
-http://s3.railnation.ru/web/assets/ea24d4af2c566004782f750f940615e5/languagedata.ru-RU.zip
+http://s3.railnation.ru/web/assets/ea24d4af2c566004782f750f940615e5/languagedata.ru-RU.zip     <----- this one is really cool!!!
 http://s3.railnation.ru/web/assets/ea24d4af2c566004782f750f940615e5/languagedata.city-Names.zip
 
 http://s3.railnation.ru/web/rpc/flash.php?interface=AccountInterface&method=get
