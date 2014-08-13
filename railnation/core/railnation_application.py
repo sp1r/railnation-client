@@ -5,7 +5,7 @@ import time
 
 from railnation.core.railnation_globals import log
 
-import railnation.core.railnation_client  # create client instance
+import railnation.core.railnation_client  # creates client instance
 
 from railnation.core.railnation_auth import authorize
 from railnation.core.railnation_params import load_game

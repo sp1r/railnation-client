@@ -12,7 +12,7 @@ import signal
 import sys
 
 # import own libs
-from railnation.core.railnation_app import Application
+from railnation.core.railnation_application import Application
 from railnation.core.railnation_errors import (
     ConnectionProblem,
     NotAuthorized,

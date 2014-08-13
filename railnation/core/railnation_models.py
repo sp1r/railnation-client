@@ -1,7 +1,8 @@
 # -*- coding:utf-8 -*-
 """Модели используют client для доступа к игре"""
 
-from railnation.core.railnation_globals import client, log
+from railnation.core.railnation_globals import log
+from railnation.core.railnation_client import client
 
 
 class Player():

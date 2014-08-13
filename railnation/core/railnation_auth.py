@@ -81,20 +81,30 @@ def authorize():
         log.critical('Username or password is incorrect.')
         raise NotAuthorized('You entered wrong username and password.')
 
-    # загружаем фрейм с выбором id мира для входа
+    client.session.headers.update({'Accept-Language':
+                                   'en-US,en;q=0.8,ru;q=0.6'})
+
+    # загружаем фрейм с выбором id мира для входа;
+    # сервер косячит, он кодирует кириллицу в юникод, но не устанавливает
+    # значение charset=utf-8 в заголовке Content-type, поэтому
+    # придется прибегнуть к военной хитрости
     log.debug('Requesting world selection frame...')
-    response = client.session.get(_get_link('external-avatar-list'))
+    response = client.session.get(_get_link('external-avatar-list'),
+                                  stream=True)
     log.debug('Response: %s Message: %s' % (response.status_code,
                                             response.reason))
 
-    frame = response.text
+    frame = str(response.raw.read(), 'utf-8')
 
     # ищем миры, в которых у нас есть персонажи
     parser = GrepWorldsInformation()
     parser.feed(frame)
+
+    table = '[%-3s] %-20s %-5s %-20s'
     print('List of your games:')
+    print(table % ('ID', 'Name', 'Era', 'Last login'))
     for world, data in parser.result.items():
-        print('[%d] %s (%s) last login: %s' % (world,
+        print(table % (world,
                                                data['name'],
                                                data['era'],
                                                data['last_login']))
@@ -103,7 +113,7 @@ def authorize():
 
     # ищем элементы класса loginAvatarForm и сохраняем их параметр action
     parser = HTMLAttributeSearch('form', 'class', 'loginAvatarForm', 'action')
-    parser.feed(response.text)
+    parser.feed(frame)
     world_target = parser.result
     log.debug('World selection form submit url: %s' % world_target)
 

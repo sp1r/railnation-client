@@ -42,22 +42,27 @@ def load_game():
                                   'getLanguage',
                                   [])['Body'])
 
+    client.session.headers.update({'content-type': ''})
     # TODO: расследовать, одинаковый ли id у ассетов на разных серверах
-    r = client.session.get('http://s3.railnation.ru/web/assets/ea24d4af2c56'
-                           '6004782f750f940615e5/languagedata.ru-RU.zip')
+    # r = client.session.get('http://s3.railnation.ru/web/assets/ea24d4af2c56'
+    #                        '6004782f750f940615e5/languagedata.ru-RU.zip',
+    #                        stream=True)
+    #
+    # tf = tempfile.TemporaryFile()
+    # tf.write(zlib.decompress(r.raw.read()))
+    # tf.seek(0)
+    # # #parse this file
+    # tf.close()
+    #
+    # r = client.session.get('http://s3.railnation.ru/web/assets/ea24d4af2c56'
+    #                        '6004782f750f940615e5/languagedata.city-Names.zip',
+    #                        stream=True)
+    #
+    # tf = tempfile.TemporaryFile()
+    # tf.write(zlib.decompress(r.raw.read()))
+    # tf.seek(0)
+    # # #parse this file too
+    # tf.close()
 
-    tf = tempfile.TemporaryFile()
-    tf.write(zlib.decompress(r.content))
-    tf.seek(0)
-    # parse this file
-    tf.close()
-
-    r = client.session.get('http://s3.railnation.ru/web/assets/ea24d4af2c56'
-                           '6004782f750f940615e5/languagedata.city-Names.zip')
-
-    tf = tempfile.TemporaryFile()
-    tf.write(zlib.decompress(r.content))
-    tf.seek(0)
-    # parse this file too
-    tf.close()
+    client.session.headers.update({'content-type': 'application/json'})
 
