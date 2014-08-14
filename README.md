@@ -6,10 +6,11 @@ Use it and forgot about lags and crashes of Flash.
 
 Currently in development and not playable =(
 
-Requirements
------------
-1. python 3
-2. python-requests module
+Requirements (Limitations)
+--------------------------
+1. Linux
+2. python 3
+3. python-requests module
 
 How to run
 -----------
