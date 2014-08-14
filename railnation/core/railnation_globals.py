@@ -4,6 +4,7 @@
 import logging
 import sys
 import os
+import time
 
 # python 3?
 is_py3 = sys.version_info >= (3, 3)
@@ -34,3 +35,4 @@ _file_handler.setFormatter(_log_format)
 _file_handler.setLevel(logging.DEBUG)
 
 log.addHandler(_file_handler)
+log.info('Log started: %s' % time.asctime())

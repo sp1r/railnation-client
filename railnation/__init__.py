@@ -36,8 +36,11 @@ def main():
     except ConnectionProblem as err:
         print('Got connection problem.')
         print(err)
-        return 1
+        return 3
     except NotAuthorized as err:
+        print(err)
+        return 2
+    except RuntimeError as err:
         print(err)
         return 1
 
