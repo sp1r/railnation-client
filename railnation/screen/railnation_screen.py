@@ -6,6 +6,9 @@ import time
 
 from railnation.core.railnation_globals import log
 from railnation.core.railnation_params import properties
+from railnation.screen.railnation_infos import info
+from railnation.screen.railnation_menu import menu
+
 
 LEFT_BAR = 30
 INFOS_START = 4
@@ -18,25 +21,37 @@ class Screen(object):
         self.min_y, self.min_x = 0, LEFT_BAR + 1
 
     def _init_curses(self):
-        # Init the curses screen
+        """Init the screen"""
         self.screen = curses.initscr()
         if not self.screen:
             raise RuntimeError("Cannot init screen.")
 
-        # Set curses options
         curses.noecho()  # don`t print typed characters back to screen
         curses.cbreak()  # react on keypress instantly
-        self.screen.keypad(True)  # enable keypad shortcuts
+        self.screen.keypad(1)  # enable keypad shortcuts
         curses.curs_set(0)  # make cursor invisible
+        self.screen.move(0, 0)  # park cursor
 
-    def update(self, infos, menu, body, navigation, help):
-        """Refresh screen data"""
+    def end(self):
+        """Restore normal terminal settings"""
+        curses.nocbreak()
+        self.screen.keypad(0)
+        curses.echo()
+        curses.curs_set(1)
+        curses.endwin()
+
+    def display(self, page, max_loops=600):
+        """Refresh screen data (one loop is 100ms)"""
         self.screen.erase()
         log.debug('Reloading screen.')
         self.max_y, self.max_x = self.screen.getmaxyx()
-        self._draw_template()
-        self._draw_left_bar(infos, menu)
+        body, navigation, help = page.data_for_display()
+
+        self._draw_grid()
+
+        self._draw_left_bar()
         self._draw_help(help)
+
         for item in body:
             self.screen.addstr(item[0] + self.min_y,
                                item[1] + self.min_x,
@@ -64,28 +79,21 @@ class Screen(object):
         # elif key in self.pages_switch:
         #     self.current_page = self.pages_switch[key]
 
-    def end(self):
-        """restore normal terminal settings"""
-        curses.nocbreak()
-        self.screen.keypad(0)
-        curses.echo()
-        curses.endwin()
-
-    def _draw_template(self):
+    def _draw_grid(self):
         for y in range(self.max_y):
             self.screen.addstr(y, LEFT_BAR, '|')
-        world_name = properties['client']['world_name']
-        # world_name = 'Дымовая коробка'
+        # world_name = properties['client']['world_name']
+        world_name = 'Дымовая коробка'
         self.screen.addstr(1, (30 - len(world_name)) // 2, world_name)
         self.screen.addstr(2, 3, time.asctime())
 
-    def _draw_left_bar(self, infos, menu):
+    def _draw_left_bar(self):
         header = '= INFO ='
         current_line = INFOS_START
         self.screen.addstr(current_line, 0, LEFT_BAR * '-')
         self.screen.addstr(current_line, (LEFT_BAR - len(header)) // 2, header)
         current_line += 1
-        for line in infos:
+        for line in info.get_infos():
             self.screen.addstr(current_line, 2, line)
             current_line += 1
         current_line += 1
@@ -93,12 +101,14 @@ class Screen(object):
         self.screen.addstr(current_line, 0, LEFT_BAR * '-')
         self.screen.addstr(current_line, (LEFT_BAR - len(header)) // 2, header)
         current_line += 1
-        for line in menu:
+        for line in menu.get_menu():
             self.screen.addstr(current_line, 2, line)
             current_line += 1
 
     def _draw_help(self, help):
         self.screen.addstr(self.max_y - 1, 1, "press 'h' is for help")
+        if len(help) == 0:
+            return
         current_line = self.max_y - len(help)
         self.max_y -= current_line
         self.screen.addstr(current_line - 1,

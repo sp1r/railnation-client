@@ -3,18 +3,21 @@
 
 from railnation.core.railnation_globals import log
 from railnation.core.railnation_client import client
+from railnation.core.railnation_params import self_id
 
 
 class Player():
     def __init__(self, player_id=None):
 
         if player_id is None:
-            self.id = client.player_id
+            self.id = self_id
         else:
             self.id = player_id
 
         self.params = {}
         self.corp_id = ''
+        self.corp_name = ''
+        self.corp_title = ''
         self.name = ''
         self.prestige = ''
         self.rank = ''
@@ -45,8 +48,12 @@ class Player():
         }
         try:
             self.corp_id = str(data['corporation']['ID'])
+            self.corp_name = data['corporation']['name']
+            self.corp_title = data['corporation']['title']
         except KeyError:
-            pass
+            self.corp_id = ''
+            self.corp_name = ''
+            self.corp_title = ''
         self.name = data['username']
         self.prestige = data['prestige']
         self.rank = data['highscore_rank']
