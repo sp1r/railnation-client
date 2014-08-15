@@ -8,3 +8,7 @@ class ConnectionProblem(Exception):
 
 class NotAuthorized(Exception):
     pass
+
+
+class ChangePage(Exception):
+    pass

@@ -10,15 +10,15 @@ example_menu = (
 
 class MainMenu:
     def __init__(self):
-        self.menu = []
-        self.pages = {}
+        self.entries = {}
 
-    def get_menu(self):
-        return self.menu
+    def add_entry(self, page_class):
+        self.entries[page_class.key] = page_class
 
-    def add_entry(self, ch, title, page_class):
-        self.pages[ch] = page_class
-        self.menu.append('[%s] %s' % (ch, title))
+    def items(self):
+        return self.entries.items()
 
+    def __iter__(self):
+        return self.entries.__iter__()
 
 menu = MainMenu()

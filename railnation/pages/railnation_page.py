@@ -10,27 +10,30 @@ try to load any other pages. Such action must be performed via Application
 instance only.
 """
 
-example_help = (
-    '"u" - upgrade current',
-    '"s" - sell current',
-    '"r" - return all to town'
-)
-example_layout = (
-    (1, 10, 'Hello Little Brother! Welcome to my client!'),
-    (5, 5, 'This is some random text.'),
-    (12, 32, 'All this for testing only'),
-    (21, 11, 'And not for real gaming'),
-)
-example_navigation = (
-    (1, 10, 5, 'first'),
-    (5, 5, 4, 'second'),
-    (12, 32, 3, 'third'),
-    (21, 11, 3, 'fourth'),
-)
+# example_controls = {
+#     "u": ('upgrade current', function),
+#     "s": ('sell current', function),
+#     "r": ('return all to town', function),
+# }
+# example_layout = [
+#     (1, 10, 'Hello Little Brother! Welcome to my client!'),
+#     (5, 5, 'This is some random text.'),
+#     (12, 32, 'All this for testing only'),
+#     (21, 11, 'And not for real gaming'),
+# ]
+# example_navigation = [
+#     (1, 10, 5, 'first'),
+#     (5, 5, 4, 'second'),
+#     (12, 32, 3, 'third'),
+#     (21, 11, 3, 'fourth'),
+# ]
 
 
 class BasicPage(object):
     """
+      name - don`t forget to name your pages!
+      desc, key - if you want this page to be represented in main menu
+    you need to provide desc and key attributes.
       layout should consist of tuples (x, y, string), where x and y are
     relative coordinates inside the page area, and string does not contain
     any line breaks.
@@ -39,10 +42,14 @@ class BasicPage(object):
     arg - parameter which will be passed to callback function
       help - is messages to instruct user of action keys
     """
+    name = ''
+    desc = ''
+    key = ''
+
     def __init__(self):
         self.layout = []
         self.navigation = []
-        self.help = []
+        self.controls = {}
 
     def data_for_display(self):
-        return self.layout, self.navigation, self.help
+        return self.layout, self.navigation, self.controls
