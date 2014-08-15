@@ -10,16 +10,16 @@ class Page(BasicPage):
     name = 'welcome'
     desc = 'Welcome page'
     key = 'W'
+    valid_time = 9999
 
-    def __init__(self):
-        BasicPage.__init__(self)
+    def refresh(self):
         r = client.produce('WelcomeInterface',
                            'get',
                            [])['Body']
         self.layout.append((3, 15, 'Welcome to the game!'))
-        self.layout.append((5, 10, 'Current Era is %d' % (r['currentEra'] + 1)))
-        self.layout.append((6, 10, 'Era progress: %5.2f%%' % r['eraProgress']))
-        self.layout.append((7, 10, 'Your rank now = %s' % r['userRank']))
+        self.layout.append((5, 10, 'Current Era            : %d' % (r['currentEra'] + 1)))
+        self.layout.append((6, 10, 'Era progress           : %5.2f%%' % r['eraProgress']))
+        self.layout.append((7, 10, 'Your rank now          : %s' % r['userRank']))
         self.layout.append((8, 10, 'Trains needs repairing : %s' % r['lowReliableTrains']))
         self.layout.append((9, 10, 'Research points        : %s' % r['researchPoints']))
         self.layout.append((10, 10, 'Free rails             : %s' % r['leftRails']))

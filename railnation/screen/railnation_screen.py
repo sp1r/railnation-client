@@ -21,6 +21,9 @@ class Screen(object):
         self.max_y, self.max_x = 0, 0
         self.min_y, self.min_x = 0, LEFT_BAR + 1
 
+        self.zones = []
+        self.current_zone = 0
+
     def _init_curses(self):
         """Init the screen"""
         self.screen = curses.initscr()
@@ -43,11 +46,44 @@ class Screen(object):
         curses.endwin()
 
     def display(self, page, max_loops=600):
-        """Refresh screen data (one loop is 100ms)"""
+        """
+        Refresh screen data.
+        (one loop is 100ms)
+        """
+        self._draw_all(page)
+
+        # Communicate
+        loops = 1
+        while loops < max_loops:
+            if loops % page.valid_time == 0:
+                self._draw_all(page)
+
+            ch = self.screen.getch()
+
+            if ch == -1:
+                loops += 1
+
+            elif ch == curses.KEY_UP:
+                self.screen.chgat(*self.zones[self.current_zone]['off'])
+                current_zone = (self.current_zone - 1) % len(self.zones)
+                self.screen.chgat(*self.zones[current_zone]['on'])
+
+            elif ch == curses.KEY_DOWN:
+                self.screen.chgat(*self.zones[self.current_zone]['off'])
+                current_zone = (self.current_zone + 1) % len(self.zones)
+                self.screen.chgat(*self.zones[current_zone]['on'])
+
+            # elif chr(ch) in page.contols:
+            #     page.contols[chr(ch)][1](*navigation[current_zone][3:])
+
+            elif chr(ch) in menu:
+                raise ChangePage(menu.entries[chr(ch)].name)
+
+    def _draw_all(self, page):
         self.screen.erase()
         log.debug('Reloading screen.')
-        self.max_y, self.max_x = self.screen.getmaxyx()
 
+        self.max_y, self.max_x = self.screen.getmaxyx()
         body, navigation, controls = page.data_for_display()
 
         self._draw_grid()
@@ -55,35 +91,14 @@ class Screen(object):
         self._draw_controls(controls)
         self._draw_body(body)
 
-        zones = self._translate_navigation(navigation)
-        current_zone = 0
-        self.screen.chgat(*zones[current_zone]['on'])
+        self.zones = self._translate_navigation(navigation)
+
+        if self.current_zone >= len(self.zones):
+            self.current_zone = 0
+
+        self.screen.chgat(*self.zones[self.current_zone]['on'])
 
         self.screen.refresh()
-
-        # Communicate
-        loops = 0
-        while loops < max_loops:
-            ch = self.screen.getch()
-
-            if ch == -1:
-                loops += 1
-
-            elif ch == curses.KEY_UP:
-                self.screen.chgat(*zones[current_zone]['off'])
-                current_zone = (current_zone - 1) % len(navigation)
-                self.screen.chgat(*zones[current_zone]['on'])
-
-            elif ch == curses.KEY_DOWN:
-                self.screen.chgat(*zones[current_zone]['off'])
-                current_zone = (current_zone + 1) % len(navigation)
-                self.screen.chgat(*zones[current_zone]['on'])
-
-            elif chr(ch) in page.contols:
-                page.contols[chr(ch)][1](*navigation[current_zone][3:])
-
-            elif chr(ch) in menu:
-                raise ChangePage(menu.entries[chr(ch)].name)
 
     def _draw_grid(self):
         for y in range(self.max_y):

@@ -9,16 +9,10 @@ from railnation.core.railnation_globals import (
     orig_sys_path,
 )
 from railnation.screen.railnation_menu import menu
-
 import railnation.core.railnation_client  # creates client instance
 from railnation.core.railnation_authentication import authorize
 from railnation.core.railnation_params import load_game
-
-from railnation.screen.railnation_screen import Screen
-
 from railnation.core.railnation_errors import ChangePage
-
-from railnation.pages.page_welcome import Page
 
 
 class Application(object):
@@ -29,28 +23,29 @@ class Application(object):
         self._load_all_pages()
         log.info('%s pages loaded.' % len(self.pages))
 
-        print('Authorizing on rail-nation.com...')
+        print('Connecting to www.rail-nation.com...')
+
         authorize()
         log.info('Authorization complete.')
 
-        print('Loading game parameters...')
         load_game()
         log.info('Game parameters loaded.')
 
+        # now it is safe to import screen (it uses client)
+        from railnation.screen.railnation_screen import Screen
         self.screen = Screen()
         log.info('Screen ready.')
 
     def start(self):
         log.info('Game is starting!')
-        current_page = 'welcome'
+        current_page = self.pages['welcome']()
 
         while True:
             try:
-                page = self.pages[current_page]()
-                self.screen.display(page)
+                self.screen.display(current_page)
             except ChangePage as key:
                 log.debug('Changing page to: %s' % key)
-                current_page = key
+                current_page = self.pages[key]()
 
     def end(self):
         self.screen.end()

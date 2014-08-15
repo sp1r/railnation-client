@@ -1,12 +1,6 @@
 # -*- coding:utf-8 -*-
 """Main menu management"""
 
-example_menu = (
-    '[W] Welcome page',
-    '[A] Account page',
-    '[T] Your trains',
-)
-
 
 class MainMenu:
     def __init__(self):

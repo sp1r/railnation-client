@@ -33,10 +33,10 @@ class InfoContainer:
 
 
 class ResourceContainer(InfoContainer):
-    """Занимается выделением ресурсов на действия"""
+    """Занимается учетом ресурсов"""
     def __init__(self):
         InfoContainer.__init__(self)
-        self.resources = [0, 0, 0, 0, 0, 0, 0, 0]
+        self.resources = {}
         self.player = Player()
 
     def store(self, resource, amount):

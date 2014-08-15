@@ -100,7 +100,7 @@ def authorize():
     parser = GrepWorldsInformation()
     parser.feed(frame)
 
-    table = '[%-3s] %-20s %-5s %-20s'
+    table = '[%-3s] %-20s %-8s %-20s'
     print('List of your games:')
     print(table % ('ID', 'Name', 'Era', 'Last login'))
     for world, data in parser.result.items():
@@ -109,7 +109,7 @@ def authorize():
                                                data['era'],
                                                data['last_login']))
 
-    world_id = int(input('Print world id to enter: '))
+    world_id = int(input('Choose world ID to enter: '))
 
     # ищем элементы класса loginAvatarForm и сохраняем их параметр action
     parser = HTMLAttributeSearch('form', 'class', 'loginAvatarForm', 'action')

@@ -16,6 +16,8 @@ language = ''
 
 
 def load_game():
+    print('Loading game parameters', end='')
+
     client.session.headers.update({'content-type': 'application/json'})
 
     global self_id, properties, agent, language
@@ -27,12 +29,16 @@ def load_game():
         log.critical('Got "False" instead of player ID while loading!')
         raise NotAuthorized('Cannot load game. Not logged in.')
 
+    print('.', end='')
+
     t = client.produce('PropertiesInterface',
                        'getData',
                        [])['Body']
 
     properties = t['properties']
     properties['client'] = t['client']
+
+    print('.', end='')
 
     agent = client.produce('KontagentInterface',
                            'getData',
@@ -41,6 +47,8 @@ def load_game():
     language = str(client.produce('AccountInterface',
                                   'getLanguage',
                                   [])['Body'])
+
+    print('.', end='')
 
     client.session.headers.update({'content-type': ''})
     # TODO: расследовать, одинаковый ли id у ассетов на разных серверах
@@ -53,6 +61,7 @@ def load_game():
     # tf.seek(0)
     # # #parse this file
     # tf.close()
+    # print('.', end='')
     #
     # r = client.session.get('http://s3.railnation.ru/web/assets/ea24d4af2c56'
     #                        '6004782f750f940615e5/languagedata.city-Names.zip',
@@ -63,6 +72,9 @@ def load_game():
     # tf.seek(0)
     # # #parse this file too
     # tf.close()
+    # print('.', end='')
 
     client.session.headers.update({'content-type': 'application/json'})
+
+    print('.')
 
