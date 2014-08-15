@@ -1,12 +1,13 @@
 Rail Nation Client
 ===================
 
-This is a Terminal client to http://rail-nation.com game. 
-Use it and forgot about lags and crashes of Flash.
+This is a Terminal client to http://www.rail-nation.com game.
 
-Currently in development and not playable =(
+Use it and forgot about lags and crashes of Flash!
 
-Requirements (Limitations)
+Just kidding. Currently in development and not playable =(
+
+Requirements (more like Limitations)
 --------------------------
 1. Linux
 2. python 3
