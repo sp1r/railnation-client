@@ -3,10 +3,6 @@
 
 """Allow user to run Application as a module"""
 
-# Execute with:
-# $ python railnation/__main__.py (2.6)
-# $ python -m railnation (2.7+)
-
 import sys
 if __package__ is None and not hasattr(sys, "frozen"):
     # It is a direct call to __main__.py
@@ -17,4 +13,4 @@ if __package__ is None and not hasattr(sys, "frozen"):
 import railnation
 
 if __name__ == '__main__':
-    railnation.main()
+    sys.exit(railnation.main())

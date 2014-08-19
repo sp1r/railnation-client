@@ -1,14 +1,21 @@
 # -*- coding:utf-8 -*-
 """Исключения"""
 
+from railnation.core.railnation_log import log
+log.debug('Loading module: Errors')
+
 
 class ConnectionProblem(Exception):
     pass
 
 
-class NotAuthorized(Exception):
+class NotAuthenticated(Exception):
     pass
 
 
-class ChangePage(Exception):
+class ChangeHandler(Exception):
+    pass
+
+
+class MenuItemDuplication(Exception):
     pass

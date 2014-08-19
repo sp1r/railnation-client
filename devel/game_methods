@@ -40,8 +40,8 @@ FactoryInterface            getInvestmentScreen     [location_id, 1]            
 FactoryInterface            getInvestmentScreen     [location_id, 0]                Информация о инвестициях ассоциаций
 FactoryInterface            invest                  [location_id]                   Инвестирует производство
 
-GUIInterface                get_gui                 []                              Полная информация о ресурсах игрока (запускается при загрузке)
-GUIInterface                get_initial_gui         []                              Немного более подробная информация, чем get_gui
+GUIInterface                get_gui                 []                              Полная информация о ресурсах игрока (запускается при выходе из режима неактивности)
+GUIInterface                get_initial_gui         []                              Немного более подробная информация, чем get_gui (запускается при загрузке)
 GUIInterface                getUnreadMessages       []                              Новые сообщения в личке, в ассе и от системы
 
 HighscoreInterface          search                  [corp_id, 9, 5]                 Рейтинг ассоциаций

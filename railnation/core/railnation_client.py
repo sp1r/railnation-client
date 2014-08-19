@@ -8,8 +8,8 @@ import requests.exceptions
 import time
 import sys
 
-from railnation.core.railnation_globals import log
-
+from railnation.core.railnation_log import log
+log.debug('Loading module: Client')
 
 CLIENT_CHECKSUM = 'ea24d4af2c566004782f750f940615e5'  # hardcoded in flash-app
 MAX_RECONNECT = 10
@@ -105,7 +105,3 @@ def _quote(item):
 def _make_hash(item):
     """Сокращение"""
     return hashlib.md5(_quote(item).encode("utf-8")).hexdigest()
-
-
-client = Client()
-log.info('Client created.')

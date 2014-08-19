@@ -13,9 +13,10 @@ import sys
 
 # import own libs
 from railnation.core.railnation_application import Application
+
 from railnation.core.railnation_errors import (
     ConnectionProblem,
-    NotAuthorized,
+    NotAuthenticated,
 )
 
 
@@ -31,23 +32,24 @@ def main():
     # Share global var
     global app
 
+    # Catch the CTRL-C signal
+    signal.signal(signal.SIGINT, _signal_handler)
+
     try:
+        # load application parameters
         app = Application()
+        app.start()
     except ConnectionProblem as err:
-        print('Got connection problem.')
+        print('Connection problem.')
         print(err)
         return 3
-    except NotAuthorized as err:
+    except NotAuthenticated as err:
+        print('Authentication problem.')
         print(err)
         return 2
     except RuntimeError as err:
         print(err)
         return 1
-
-    # Catch the CTRL-C signal
-    signal.signal(signal.SIGINT, _signal_handler)
-
-    app.start()
 
 
 if __name__ == '__main__':

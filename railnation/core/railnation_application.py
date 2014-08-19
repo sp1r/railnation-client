@@ -3,62 +3,51 @@
 import os
 import sys
 
+from railnation.core.railnation_log import log
+log.debug('Loading module: Application')
+
+from railnation.core.railnation_errors import ChangeHandler
+
 from railnation.core.railnation_globals import (
-    log,
+    menu,
     pages_path,
     orig_sys_path,
+    screen,
 )
-from railnation.screen.railnation_menu import menu
-import railnation.core.railnation_client  # creates client instance
-from railnation.core.railnation_authentication import authorize
-from railnation.core.railnation_params import load_game
-from railnation.core.railnation_errors import ChangePage
+
+FIRST_HANDLER = 'welcome'
 
 
 class Application(object):
     def __init__(self):
-        log.info('Application object created.')
-
-        self.pages = {}
-        self._load_all_pages()
-        log.info('%s pages loaded.' % len(self.pages))
-
-        print('Connecting to www.rail-nation.com...')
-
-        authorize()
-        log.info('Authorization complete.')
-
-        load_game()
-        log.info('Game parameters loaded.')
-
-        # now it is safe to import screen (it uses client)
-        from railnation.screen.railnation_screen import Screen
-        self.screen = Screen()
-        log.info('Screen ready.')
+        log.info('Application instantiated.')
+        self.handlers = {}
 
     def start(self):
         log.info('Game is starting!')
-        current_page = self.pages['welcome']()
+        current_handler = self.handlers[FIRST_HANDLER]()
 
         while True:
             try:
-                self.screen.display(current_page)
-            except ChangePage as key:
-                log.debug('Changing page to: %s' % key)
-                current_page = self.pages[key]()
+                current_handler.loop()
+            except ChangeHandler as key:
+                log.debug('Changing handler to: %s' % key)
+                current_handler = self.handlers[key]()
 
     def end(self):
-        self.screen.end()
+        try:
+            screen.end()
+        except:
+            pass
 
-    def _load_all_pages(self):
-        """import all pages in railnation.pages dir"""
-        header = 'page_'
+    def _load_all_handlers(self):
+        """import all handlers in railnation.handlers directory"""
+        header = 'handler_'
         for item in os.listdir(pages_path):
             if item.startswith(header) and item.endswith(".py"):
                 log.debug("Importing file %s" % item)
-                page_module = __import__(os.path.basename(item)[:-3])
-                self.pages[page_module.Page.name] = page_module.Page
-                if page_module.Page.key != '':
-                    menu.add_entry(page_module.Page)
+                module = __import__(os.path.basename(item)[:-3])
+                self.handlers[module.Handler.name] = module.Handler
+                menu.add_entry(module.Handler)
         # Restore system path
         sys.path = orig_sys_path

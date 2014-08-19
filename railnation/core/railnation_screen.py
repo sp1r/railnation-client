@@ -4,25 +4,27 @@
 import curses
 import time
 
-from railnation.core.railnation_globals import log
-from railnation.core.railnation_params import properties
-from railnation.screen.railnation_infos import info
-from railnation.screen.railnation_menu import menu
+from railnation.core.railnation_log import log
+log.debug('Loading module: Screen')
 
-from railnation.core.railnation_errors import ChangePage
+from railnation.core.railnation_errors import ChangeHandler
 
 LEFT_BAR = 30
 INFOS_START = 4
 
 
 class Screen(object):
-    def __init__(self):
+    def __init__(self, menu, infos):
         self._init_curses()
         self.max_y, self.max_x = 0, 0
         self.min_y, self.min_x = 0, LEFT_BAR + 1
 
+        self.navigate = False
         self.zones = []
         self.current_zone = 0
+
+        self.menu = menu
+        self.infos = infos
 
     def _init_curses(self):
         """Init the screen"""
@@ -45,76 +47,77 @@ class Screen(object):
         curses.curs_set(1)
         curses.endwin()
 
-    def display(self, page, max_loops=600):
-        """
-        Refresh screen data.
-        (one loop is 100ms)
-        """
-        self._draw_all(page)
+    def display_page(self, page):
+        assert isinstance(page, Page)
 
-        # Communicate
-        loops = 1
-        while loops < max_loops:
-            if loops % page.valid_time == 0:
-                self._draw_all(page)
-
-            ch = self.screen.getch()
-
-            if ch == -1:
-                loops += 1
-
-            elif ch == curses.KEY_UP:
-                self.screen.chgat(*self.zones[self.current_zone]['off'])
-                current_zone = (self.current_zone - 1) % len(self.zones)
-                self.screen.chgat(*self.zones[current_zone]['on'])
-
-            elif ch == curses.KEY_DOWN:
-                self.screen.chgat(*self.zones[self.current_zone]['off'])
-                current_zone = (self.current_zone + 1) % len(self.zones)
-                self.screen.chgat(*self.zones[current_zone]['on'])
-
-            # elif chr(ch) in page.contols:
-            #     page.contols[chr(ch)][1](*navigation[current_zone][3:])
-
-            elif chr(ch) in menu:
-                raise ChangePage(menu.entries[chr(ch)].name)
-
-    def _draw_all(self, page):
         self.screen.erase()
         log.debug('Reloading screen.')
 
         self.max_y, self.max_x = self.screen.getmaxyx()
-        body, navigation, controls = page.data_for_display()
 
-        self._draw_grid()
         self._draw_left_bar()
-        self._draw_controls(controls)
-        self._draw_body(body)
 
-        self.zones = self._translate_navigation(navigation)
+        if page.help_lines:
+            self._draw_help(page.help_lines)
 
-        if self.current_zone >= len(self.zones):
+        self._draw_body(page.layout)
+
+        if page.navigation:
+            self.navigate = True
+            self.zones = self._translate_navigation(page.navigation)
             self.current_zone = 0
-
-        self.screen.chgat(*self.zones[self.current_zone]['on'])
+            self.screen.chgat(*self.zones[self.current_zone]['on'])
+        else:
+            self.navigate = False
 
         self.screen.refresh()
 
-    def _draw_grid(self):
+    def communicate(self, actions=None):
+        if actions is None:
+            actions = ()
+
+        while True:
+            ch = self.screen.getch()
+
+            if ch == -1:
+                continue
+
+            elif ch == curses.KEY_UP and self.navigate:
+                self.screen.chgat(*self.zones[self.current_zone]['off'])
+                current_zone = (self.current_zone - 1) % len(self.zones)
+                self.screen.chgat(*self.zones[current_zone]['on'])
+
+            elif ch == curses.KEY_DOWN and self.navigate:
+                self.screen.chgat(*self.zones[self.current_zone]['off'])
+                current_zone = (self.current_zone + 1) % len(self.zones)
+                self.screen.chgat(*self.zones[current_zone]['on'])
+
+            elif chr(ch) in actions:
+                if self.navigate:
+                    actions[chr(ch)](*self.zones[self.current_zone]['args'])
+                else:
+                    actions[chr(ch)]()
+
+            elif chr(ch) in self.menu:
+                raise ChangeHandler(self.menu[chr(ch)])
+
+            elif chr(ch) == 'h':
+                raise ChangeHandler('help')
+
+    def _draw_left_bar(self):
         for y in range(self.max_y):
             self.screen.addstr(y, LEFT_BAR, '|')
-        world_name = properties['client']['world_name']
-        # world_name = 'Дымовая коробка'
+        #world_name = properties['client']['world_name']
+        world_name = 'Hello Wolf!'
         self.screen.addstr(1, (30 - len(world_name)) // 2, world_name)
         self.screen.addstr(2, 3, time.asctime())
 
-    def _draw_left_bar(self):
         header = '= INFO ='
         current_line = INFOS_START
         self.screen.addstr(current_line, 0, LEFT_BAR * '-')
         self.screen.addstr(current_line, (LEFT_BAR - len(header)) // 2, header)
         current_line += 1
-        for line in info.get_infos():
+        for line in self.infos.get_infos():
             self.screen.addstr(current_line, 2, line)
             current_line += 1
         current_line += 1
@@ -122,22 +125,19 @@ class Screen(object):
         self.screen.addstr(current_line, 0, LEFT_BAR * '-')
         self.screen.addstr(current_line, (LEFT_BAR - len(header)) // 2, header)
         current_line += 1
-        for key, item in menu.items():
+        for key, item in self.menu.items():
             self.screen.addstr(current_line, 2, '[%s] %s' % (key, item.desc))
             current_line += 1
 
-    def _draw_controls(self, controls):
         self.screen.addstr(self.max_y - 1, 1, "press 'h' is for help")
-        if len(controls) == 0:
-            return
-        current_line = self.max_y - len(controls)
-        self.max_y -= current_line
-        self.screen.addstr(current_line - 1,
+
+    def _draw_help(self, help_lines):
+        self.max_y -= len(help_lines) + 1
+        self.screen.addstr(self.max_y,
                            LEFT_BAR + 1,
                            (self.max_x - LEFT_BAR) * '-')
-        for char, action in controls.items():
-            self.screen.addstr(current_line, LEFT_BAR + 3, '[%s] %s' % (char, action[0]))
-            current_line += 1
+        for position, line in enumerate(help_lines):
+            self.screen.addstr(self.max_y + position + 1, LEFT_BAR + 3, line)
 
     def _draw_body(self, body):
         for item in body:
@@ -151,6 +151,23 @@ class Screen(object):
             current = {
                 'on': (item[0] + self.min_y, item[1] + self.min_x, item[2], curses.A_REVERSE),
                 'off': (item[0] + self.min_y, item[1] + self.min_x, item[2], curses.A_NORMAL),
+                'args': navigation[3:],
             }
             translated.append(current)
         return translated
+
+
+class Page:
+    """Pre-formatted page"""
+    def __init__(self):
+        self.layout = []
+        self.navigation = []
+        self.help_lines = []
+
+    def data_for_display(self):
+        return self.layout, self.help_lines
+
+
+class Table:
+    def __init__(self):
+        pass

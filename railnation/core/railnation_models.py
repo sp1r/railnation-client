@@ -1,12 +1,16 @@
 # -*- coding:utf-8 -*-
 """Модели используют client для доступа к игре"""
 
-from railnation.core.railnation_globals import log
-from railnation.core.railnation_client import client
-from railnation.core.railnation_params import self_id
+from railnation.core.railnation_log import log
+log.debug('Loading module: Models')
+
+from railnation.core.railnation_globals import (
+    client,
+    self_id
+)
 
 
-class Player():
+class Player:
     def __init__(self, player_id=None):
 
         if player_id is None:
@@ -75,7 +79,7 @@ class Player():
         return Station(self.id)
 
 
-class Corporation():
+class Corporation:
     def __init__(self, corp_id):
         self.id = corp_id
 
@@ -130,7 +134,7 @@ class Corporation():
                 yield building
 
 
-class Station():
+class Station:
     def __init__(self, owner_id):
         self.owner_id = owner_id
 
@@ -150,13 +154,19 @@ class Station():
     def __repr__(self):
         return "<Station of player: %s>" % self.owner_id
 
+    def __getitem__(self, item):
+        return self.buildings[item]
+
+    def __iter__(self):
+        return self.buildings.__iter__()
+
     @property
     def collectables(self):
         for t in (9, 10, 11):
             yield self.buildings[t]
 
 
-class Building():
+class Building:
     def __init__(self, owner_id, data):
         self.owner_id = owner_id
         self.type = int(data['type'])
@@ -188,3 +198,39 @@ class Building():
     #             log.info('Got ticket!' % self.owner_id)
     #             prize = self.client.collect_ticket()
     #             log.info('Prize: %s' % str(prize['Infos']))
+
+
+class Town:
+    def __init__(self, town_id):
+        self.id = town_id
+        self.name = ''
+        self.level = 0
+        self.capacity = 0
+        self.growth_floor = 0
+        self.resources = {}
+        self.update()
+
+    def update(self):
+        r = client.produce('TownInterface', 'getDetails', [self.id])['Body']
+        self.name = r['town']['name']
+        self.level = r['town']['level']
+
+        self.capacity = int(r['resources'][0]['capacity'])
+        self.growth_floor = int(self.capacity * 0.67)
+        for res in r['resources']:
+            self.resources[int(res['resource_type'])] = {
+                'amount': int(res['amount']),
+                'consume': int(res['consume_amount']),
+                'price': int(res['price']),
+                'price_factor': float(res['price_factor']),
+                'priority': int(res['priority']),
+                'trend': float(res['trend']),
+            }
+
+    @property
+    def growth(self):
+        g = 0.0
+        for good in self.resources.values():
+            if good['priority'] == 1:
+                g += 25.0 * min(1.0, (good['amount'] - good['consume'])/self.growth_floor)
+        return g

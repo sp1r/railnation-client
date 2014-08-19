@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Game constants.
+This is stub module.
+In future it will be replaced by loading data from server.
 """
 
 resources = {

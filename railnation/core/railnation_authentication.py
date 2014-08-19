@@ -4,11 +4,12 @@
 import getpass
 import html.parser
 
-from railnation.core.railnation_globals import log
-from railnation.core.railnation_client import client
+from railnation.core.railnation_log import log
+log.debug('Loading module: Authentication')
+
 from railnation.core.railnation_errors import (
     ConnectionProblem,
-    NotAuthorized,
+    NotAuthenticated,
 )
 
 # I believe this won`t change every day
@@ -17,13 +18,17 @@ BASE_URL = 'www.rail-nation.com'
 sam_config = {}
 
 
-def authorize():
+def authenticate(client):
     """
-    Проводит аутентификацию.
+    Authenticate this client
+
+    :param client: web client object
+    :type client: railnation.core.railnation_client.Client
     """
+    print('Connecting to www.rail-nation.com...')
     # загружаем конфигурацию SAM
     sam_url = 'http://%s/js/sam.config.php' % BASE_URL
-    log.info('Downloading SAM config...')
+    log.debug('Downloading SAM config...')
     log.debug('SAM config url: %s' % sam_url)
     response = client.session.get(sam_url)
     log.debug('Response: %s Message: %s' % (response.status_code,
@@ -79,7 +84,7 @@ def authorize():
     parser.feed(response.text)
     if parser.result is None:
         log.critical('Username or password is incorrect.')
-        raise NotAuthorized('You entered wrong username and password.')
+        raise NotAuthenticated('You entered wrong username and password.')
 
     client.session.headers.update({'Accept-Language':
                                    'en-US,en;q=0.8,ru;q=0.6'})
