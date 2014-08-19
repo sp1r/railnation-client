@@ -45,7 +45,7 @@ def main():
         return 3
     except NotAuthenticated as err:
         print('Authentication problem.')
-        print(err)
+        print(str(err))
         return 2
     except RuntimeError as err:
         print(err)

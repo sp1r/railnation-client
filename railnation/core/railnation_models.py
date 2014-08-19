@@ -158,7 +158,7 @@ class Station:
         return self.buildings[item]
 
     def __iter__(self):
-        return self.buildings.__iter__()
+        return self.buildings.values().__iter__()
 
     @property
     def collectables(self):

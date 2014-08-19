@@ -1,5 +1,7 @@
 # -*- coding:utf-8 -*-
 """docstring"""
+from railnation.core.railnation_log import log
+log.debug('Loading Handler: Stations')
 
 from railnation.core.railnation_globals import (
     screen,
@@ -12,11 +14,13 @@ from railnation.core.railnation_models import Station
 class Handler:
     name = 'stations'
     key = 'S'
+    menu = 'See Stations'
 
     def __init__(self):
         self.page = StationPage(self_id)
 
     def loop(self):
+        self.page.refresh()
         while True:
             screen.display_page(self.page)
             screen.communicate()

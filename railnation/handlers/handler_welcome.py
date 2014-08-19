@@ -1,5 +1,7 @@
 # -*- coding:utf-8 -*-
 """docstring"""
+from railnation.core.railnation_log import log
+log.debug('Loading Handler: Welcome')
 
 from railnation.core.railnation_globals import (
     client,
@@ -11,11 +13,13 @@ from railnation.core.railnation_screen import Page
 class Handler:
     name = 'welcome'
     key = 'W'
+    menu = 'Welcome Page'
 
     def __init__(self):
         self.page = WelcomePage()
 
     def loop(self):
+        self.page.refresh()
         while True:
             screen.display_page(self.page)
             screen.communicate()

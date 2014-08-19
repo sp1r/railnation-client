@@ -99,10 +99,10 @@ class Screen(object):
                     actions[chr(ch)]()
 
             elif chr(ch) in self.menu:
-                raise ChangeHandler(self.menu[chr(ch)])
+                raise ChangeHandler(chr(ch))
 
             elif chr(ch) == 'h':
-                raise ChangeHandler('help')
+                raise ChangeHandler('h')
 
     def _draw_left_bar(self):
         for y in range(self.max_y):
@@ -126,7 +126,7 @@ class Screen(object):
         self.screen.addstr(current_line, (LEFT_BAR - len(header)) // 2, header)
         current_line += 1
         for key, item in self.menu.items():
-            self.screen.addstr(current_line, 2, '[%s] %s' % (key, item.desc))
+            self.screen.addstr(current_line, 2, '[%s] %s' % (key, item))
             current_line += 1
 
         self.screen.addstr(self.max_y - 1, 1, "press 'h' is for help")

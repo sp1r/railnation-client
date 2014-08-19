@@ -94,18 +94,21 @@ class MainMenu:
     def __init__(self):
         self.entries = {}
 
-    def add_entry(self, handler_class):
-        if handler_class.key in self.entries:
-            raise MenuItemDuplication('Key %s is already in use' % handler_class.key)
-        if handler_class.key == 'h':
+    def add_entry(self, key, description):
+        if key in self.entries:
+            raise MenuItemDuplication('Key %s is already in use' % key)
+        if key == 'h':
             return
-        self.entries[handler_class.key] = handler_class.name
+        self.entries[key] = description
 
     def items(self):
         return self.entries.items()
 
     def __iter__(self):
         return self.entries.__iter__()
+
+    def __getitem__(self, item):
+        return self.entries.__getitem__(item)
 
 menu = MainMenu()
 log.debug('Main menu instantiated.')
@@ -188,9 +191,9 @@ is_linux = sys.platform.startswith('linux')
 
 # set path
 work_path = os.path.realpath(os.path.dirname(__file__))
-pages_path = os.path.realpath(os.path.join(work_path, '..', 'pages'))
+handlers_path = os.path.realpath(os.path.join(work_path, '..', 'handlers'))
 
 # temporary add pages dir to sys.path, we will restore original value
 # after all pages are imported
 orig_sys_path = sys.path[:]
-sys.path.append(pages_path)
+sys.path.append(handlers_path)
