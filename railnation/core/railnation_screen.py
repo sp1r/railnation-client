@@ -1,5 +1,8 @@
 # -*- coding:utf-8 -*-
-"""Managing screen and data displaying"""
+"""
+Managing screen and data displaying.
+Define displaying basic classes (Page, Table).
+"""
 
 import curses
 import time
@@ -99,7 +102,7 @@ class Screen(object):
                     actions[chr(ch)]()
 
             elif chr(ch) in self.menu:
-                raise ChangeHandler(chr(ch))
+                raise ChangeHandler(self.menu[chr(ch)])
 
             elif chr(ch) == 'h':
                 raise ChangeHandler('h')

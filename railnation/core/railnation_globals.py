@@ -20,7 +20,6 @@ import time
 
 from railnation.core.railnation_errors import (
     NotAuthenticated,
-    MenuItemDuplication,
 )
 
 from railnation.core.railnation_log import log
@@ -92,23 +91,25 @@ language = str(client.produce('AccountInterface',
 # main menu
 class MainMenu:
     def __init__(self):
-        self.entries = {}
+        self.menu = {}
+        self.names = {}
 
-    def add_entry(self, key, description):
-        if key in self.entries:
-            raise MenuItemDuplication('Key %s is already in use' % key)
-        if key == 'h':
-            return
-        self.entries[key] = description
+    def add_entry(self, handler):
+        if handler.key in self.menu:
+            raise RuntimeError('Menu Error: Key "%s" is already in use '
+                               'by handler: %s' %
+                               (handler.key, self.names[handler.key]))
+        self.menu[handler.key] = handler.menu
+        self.names[handler.key] = handler.name
 
     def items(self):
-        return self.entries.items()
+        return self.menu.items()
 
     def __iter__(self):
-        return self.entries.__iter__()
+        return self.menu.__iter__()
 
     def __getitem__(self, item):
-        return self.entries.__getitem__(item)
+        return self.names.__getitem__(item)
 
 menu = MainMenu()
 log.debug('Main menu instantiated.')

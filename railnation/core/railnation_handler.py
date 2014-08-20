@@ -1,17 +1,20 @@
 # -*- coding:utf-8 -*-
-"""docstring"""
+"""
+This module contains handlers for core procedures, such as help page.
+
+Handlers is this module does not go to Main Menu as it does handlers, which
+are imported from handlers directory.
+"""
+
 from railnation.core.railnation_log import log
-log.debug('Loading Handler: Help')
+
+log.debug('Loading Module: Handlers')
 
 from railnation.core.railnation_globals import screen
 from railnation.core.railnation_screen import Page
 
 
-class Handler:
-    name = 'help'
-    key = 'h'
-    menu = 'Help page'
-
+class HelpHandler:
     def __init__(self):
         self.page = HelpPage()
 
@@ -26,12 +29,12 @@ class HelpPage(Page):
         Page.__init__(self)
         self.layout = (
             (7, 4, 'This program is a console client to browser '
-                    'game Rail Nation (www.rail-nation.com) '
-                    'by Travian games Inc.'),
+                   'game Rail Nation (www.rail-nation.com) '
+                   'by Travian games Inc.'),
             (8, 4, 'Due to specific of console communication '
-                    'it has slightly different logic than web.'),
+                   'it has slightly different logic than web.'),
             (9, 4, 'And I`m trying to make things easier for player, '
-                    'so he can concentrate on strategy instead of clicking.'),
+                   'so he can concentrate on strategy instead of clicking.'),
             (10, 4, 'Hope you enjoy it.'),
             (13, 2, '<--- Left panel is for information'),
             (14, 7, 'It also contains menu.'),
