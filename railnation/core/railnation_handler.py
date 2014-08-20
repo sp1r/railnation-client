@@ -6,12 +6,15 @@ Handlers is this module does not go to Main Menu as it does handlers, which
 are imported from handlers directory.
 """
 
+import curses
+
 from railnation.core.railnation_log import log
 
 log.debug('Loading Module: Handlers')
 
 from railnation.core.railnation_globals import screen
 from railnation.core.railnation_screen import Page
+from railnation.core.railnation_errors import ChangeHandler
 
 
 class HelpHandler:
@@ -47,3 +50,16 @@ class HelpPage(Page):
             'In this section help messages will be shown,',
             'telling you about communicating with current screen.'
         )
+
+
+class WindowSizeHandler:
+    def __init__(self, exit_handler):
+        self.text = 'Make window size 80x24 or more'
+        self.exit_target = exit_handler
+
+    def loop(self):
+        while True:
+            screen.display_plain(self.text)
+            curses.napms(500)
+            if screen.min_resolution_satisfied():
+                raise ChangeHandler(self.exit_target)

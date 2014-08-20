@@ -17,5 +17,5 @@ class ChangeHandler(Exception):
     pass
 
 
-class MenuItemDuplication(Exception):
+class WindowTooSmall(Exception):
     pass

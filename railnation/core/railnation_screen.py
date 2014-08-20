@@ -10,7 +10,13 @@ import time
 from railnation.core.railnation_log import log
 log.debug('Loading module: Screen')
 
-from railnation.core.railnation_errors import ChangeHandler
+from railnation.core.railnation_errors import (
+    ChangeHandler,
+    WindowTooSmall,
+)
+
+MIN_WIDTH = 80
+MIN_HEIGHT = 24
 
 LEFT_BAR = 30
 INFOS_START = 4
@@ -50,13 +56,34 @@ class Screen(object):
         curses.curs_set(1)
         curses.endwin()
 
+    def min_resolution_satisfied(self):
+        self.max_y, self.max_x = self.screen.getmaxyx()
+        return self.max_y >= MIN_HEIGHT and self.max_x >= MIN_WIDTH
+
+    def display_plain(self, text):
+        self.screen.erase()
+        log.debug('Reloading screen. Will draw plain text.')
+
+        self.max_y, self.max_x = self.screen.getmaxyx()
+
+        if self.max_y < 1:
+            return
+
+        if self.max_x < len(text):
+            self.screen.addstr(0, 0, text[:self.max_x])
+        else:
+            self.screen.addstr(0, 0, text)
+
+        self.screen.refresh()
+
     def display_page(self, page):
         assert isinstance(page, Page)
 
         self.screen.erase()
-        log.debug('Reloading screen.')
+        log.debug('Reloading screen. Will draw a page.')
 
-        self.max_y, self.max_x = self.screen.getmaxyx()
+        if not self.min_resolution_satisfied:
+            raise WindowTooSmall()
 
         self._draw_left_bar()
 

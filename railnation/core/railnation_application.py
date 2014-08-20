@@ -6,7 +6,10 @@ import sys
 from railnation.core.railnation_log import log
 log.debug('Loading module: Application')
 
-from railnation.core.railnation_errors import ChangeHandler
+from railnation.core.railnation_errors import (
+    ChangeHandler,
+    WindowTooSmall,
+)
 
 from railnation.core.railnation_globals import (
     menu,
@@ -17,6 +20,7 @@ from railnation.core.railnation_globals import (
 
 from railnation.core.railnation_handler import (
     HelpHandler,
+    WindowSizeHandler,
 )
 
 FIRST_HANDLER = 'welcome'
@@ -39,6 +43,9 @@ class Application(object):
             except ChangeHandler as key:
                 log.debug('Changing handler to: %s' % str(key))
                 current_handler = self.handlers[str(key)]()
+            except WindowTooSmall:
+                log.debug('Window screen is too low.')
+                current_handler = self.handlers['window'](current_handler.name)
 
     def end(self):
         try:
@@ -48,6 +55,7 @@ class Application(object):
 
     def _load_core_handlers(self):
         self.handlers['help'] = HelpHandler
+        self.handlers['window'] = WindowSizeHandler
 
     def _load_external_handlers(self):
         """import all handlers in railnation.handlers directory"""
