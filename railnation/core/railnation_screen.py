@@ -58,6 +58,7 @@ class Screen(object):
 
     def min_resolution_satisfied(self):
         self.max_y, self.max_x = self.screen.getmaxyx()
+        log.debug('Screen size: %s x %s' % (self.max_x, self.max_y))
         return self.max_y >= MIN_HEIGHT and self.max_x >= MIN_WIDTH
 
     def display_plain(self, text):
@@ -65,6 +66,7 @@ class Screen(object):
         log.debug('Reloading screen. Will draw plain text.')
 
         self.max_y, self.max_x = self.screen.getmaxyx()
+        log.debug('Screen size: %s x %s' % (self.max_x, self.max_y))
 
         if self.max_y < 1:
             return
@@ -82,7 +84,7 @@ class Screen(object):
         self.screen.erase()
         log.debug('Reloading screen. Will draw a page.')
 
-        if not self.min_resolution_satisfied:
+        if not self.min_resolution_satisfied():
             raise WindowTooSmall()
 
         self._draw_left_bar()
@@ -159,7 +161,7 @@ class Screen(object):
             self.screen.addstr(current_line, 2, '[%s] %s' % (key, item))
             current_line += 1
 
-        self.screen.addstr(self.max_y - 1, 1, "press 'h' is for help")
+        self.screen.addstr(self.max_y - 1, 1, "press 'h' for help")
 
     def _draw_help(self, help_lines):
         self.max_y -= len(help_lines) + 1
