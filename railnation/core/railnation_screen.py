@@ -23,6 +23,14 @@ INFOS_START = 4
 
 
 class Screen(object):
+    """
+    menu and infos -- are components of UI common to all pages.
+
+    Core methods are:
+    display_plain -- to print text without anything else
+    display_page -- to draw a Page object to screen with gui
+    display_table -- to draw a Table object to screen with gui
+    """
     def __init__(self, menu, infos):
         self._init_curses()
         self.max_y, self.max_x = 0, 0
@@ -62,6 +70,7 @@ class Screen(object):
         return self.max_y >= MIN_HEIGHT and self.max_x >= MIN_WIDTH
 
     def display_plain(self, text):
+        """Print text line without gui"""
         self.screen.erase()
         log.debug('Reloading screen. Will draw plain text.')
 
@@ -79,6 +88,7 @@ class Screen(object):
         self.screen.refresh()
 
     def display_page(self, page):
+        """Draw a page with gui"""
         assert isinstance(page, Page)
 
         self.screen.erase()
@@ -92,7 +102,7 @@ class Screen(object):
         if page.help_lines:
             self._draw_help(page.help_lines)
 
-        self._draw_body(page.layout)
+        self._draw_page_body(page.layout)
 
         if page.navigation:
             self.navigate = True
@@ -103,6 +113,23 @@ class Screen(object):
             self.navigate = False
 
         self.screen.refresh()
+
+    def display_table(self, table):
+        """Draw a table with gui"""
+        assert isinstance(table, Table)
+
+        self.screen.erase()
+        log.debug('Reloading screen. Will draw a table.')
+
+        if not self.min_resolution_satisfied():
+            raise WindowTooSmall()
+
+        self._draw_left_bar()
+
+        if table.help_lines:
+            self._draw_help(table.help_lines)
+
+        self._draw_table_body(table.header, table.rows)
 
     def communicate(self, actions=None):
         if actions is None:
@@ -134,7 +161,7 @@ class Screen(object):
                 raise ChangeHandler(self.menu[chr(ch)])
 
             elif chr(ch) == 'h':
-                raise ChangeHandler('h')
+                raise ChangeHandler('help')
 
     def _draw_left_bar(self):
         for y in range(self.max_y):
@@ -171,11 +198,14 @@ class Screen(object):
         for position, line in enumerate(help_lines):
             self.screen.addstr(self.max_y + position + 1, LEFT_BAR + 3, line)
 
-    def _draw_body(self, body):
+    def _draw_page_body(self, body):
         for item in body:
             self.screen.addstr(item[0] + self.min_y,
                                item[1] + self.min_x,
                                item[2])
+
+    def _draw_table_body(self, header, rows):
+        pass
 
     def _translate_navigation(self, navigation):
         translated = []
@@ -192,14 +222,16 @@ class Screen(object):
 class Page:
     """Pre-formatted page"""
     def __init__(self):
+        self.title = ''
         self.layout = []
         self.navigation = []
         self.help_lines = []
 
-    def data_for_display(self):
-        return self.layout, self.help_lines
-
 
 class Table:
+    """Bunch of rows"""
     def __init__(self):
-        pass
+        self.title = ''
+        self.help_lines = []
+        self.header = []
+        self.rows = []
