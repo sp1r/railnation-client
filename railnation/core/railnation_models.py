@@ -1,8 +1,8 @@
 # -*- coding:utf-8 -*-
 """Модели используют client для доступа к игре"""
 
-from railnation.core.railnation_log import log
-log.debug('Loading module: Models')
+# from railnation.core.railnation_log import log
+# log.debug('Loading module: Models')
 
 from railnation.core.railnation_globals import (
     client,

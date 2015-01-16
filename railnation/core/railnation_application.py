@@ -3,69 +3,87 @@
 import os
 import sys
 
-from railnation.core.railnation_log import log
-log.debug('Loading module: Application')
+import logging
 
 from railnation.core.railnation_errors import (
     ChangeHandler,
-    WindowTooSmall,
 )
+
+from railnation.core.railnation_client import Client
 
 from railnation.core.railnation_globals import (
-    menu,
     handlers_path,
     orig_sys_path,
-    screen,
 )
-
-from railnation.core.railnation_handler import (
-    HelpHandler,
-    WindowSizeHandler,
-)
-
-FIRST_HANDLER = 'welcome'
 
 
 class Application(object):
-    def __init__(self):
-        log.info('Application instantiated.')
+    def __init__(self, config):
+        logging.debug('Creating application with config: %s' % str(config))
+
+        self.context = ''
+
         self.handlers = {}
-        self._load_core_handlers()
-        self._load_external_handlers()
-
-    def start(self):
-        log.info('Game is starting!')
-        current_handler = self.handlers[FIRST_HANDLER]()
-
-        while True:
-            try:
-                current_handler.loop()
-            except ChangeHandler as key:
-                log.debug('Changing handler to: %s' % str(key))
-                current_handler = self.handlers[str(key)]()
-            except WindowTooSmall:
-                log.debug('Window screen is too low.')
-                current_handler = self.handlers['window'](current_handler.name)
-
-    def end(self):
-        try:
-            screen.end()
-        except:
-            pass
-
-    def _load_core_handlers(self):
-        self.handlers['help'] = HelpHandler
-        self.handlers['window'] = WindowSizeHandler
-
-    def _load_external_handlers(self):
-        """import all handlers in railnation.handlers directory"""
+        # import all handlers in railnation.handlers directory
+        logging.debug('Start loading handlers...')
         header = 'handler_'
         for item in os.listdir(handlers_path):
+            logging.debug('Found file: %s' % item)
             if item.startswith(header) and item.endswith(".py"):
-                log.debug("Importing file %s" % item)
+                logging.debug("Importing file: %s" % item)
                 module = __import__(os.path.basename(item)[:-3])
+                logging.debug("Got handler: %s" % module.Handler.name)
                 self.handlers[module.Handler.name] = module.Handler
-                menu.add_entry(module.Handler)
         # Restore system path
         sys.path = orig_sys_path
-        log.debug('Got handlers: %s' % self.handlers.keys())
+
+        logging.info('Loaded handlers: %s' % str(list(self.handlers.keys())))
+
+        logging.debug('Constructing Client object...')
+        self.client = Client()
+
+        logging.debug('Authenticating Client object...')
+        self.client.authenticate()
+
+        logging.debug('Loading Game parameters...')
+        self.client.session.headers.update({'content-type': 'application/json'})
+        self.client.load_parameters()
+
+        logging.debug('Application object successfully created.')
+
+    def start(self):
+        logging.info('Game is starting!')
+
+        # loop towards eternity
+        while True:
+            logging.debug('Current context: %s' % self.context)
+            logging.debug('Waiting for input...')
+            command = input('(%s): ' % self.context).split()
+            logging.debug('Got input: %s' % str(command))
+
+            try:
+                self.handlers[self.context].execute(command)
+
+            except KeyError:
+                self.execute(command)
+
+            except ChangeHandler as key:
+                # logging.debug('Changing handler to: %s' % str(key))
+                # current_handler = self.handlers[str(key)]()
+                pass
+
+    def end(self):
+        pass
+
+    def execute(self, command):
+        if command[0] == 'show':
+            self.show(command[1:])
+
+        elif command[0] == 'help':
+            self.help(command[1:])
+
+    def show(self, command):
+        pass
+
+    def help(self, command):
+        pass

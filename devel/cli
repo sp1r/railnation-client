@@ -1,0 +1,10 @@
+show trains
+
+trains all
+(trains-all) repair
+
+trains swallow01
+(train) park oakhill
+
+trains swallow01-05
+(train-group)

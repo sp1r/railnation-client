@@ -13,4 +13,4 @@ if __package__ is None and not hasattr(sys, "frozen"):
 import railnation
 
 if __name__ == '__main__':
-    sys.exit(railnation.main())
+    sys.exit(railnation.main(sys.argv[1:]))
