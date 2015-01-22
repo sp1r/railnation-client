@@ -1,12 +1,42 @@
 # -*- coding:utf-8 -*-
 """docstring"""
 
-from raillib.map.maputils import WeightedGraph
+from raillib.map.maputils import (
+    WeightedGraph,
+    BellmanFordSP
+)
 
-global_map = WeightedGraph()
 
-with open('raillib/map/vertex', 'r') as v:
-    global_map.read_vertexes_from_file(v)
+class Map(object):
+    def __init__(self):
+        self.graph = WeightedGraph()
+        with open('raillib/map/vertex', 'r') as v:
+            for line in v:
+                self.graph.add_vertex(line.strip)
 
-with open('raillib/map/edges', 'r') as e:
-    global_map.read_edges_from_file(e)
+        self.distances = {}
+        with open('raillib/map/edges', 'r') as e:
+            for line in e:
+                v1, v2, d = line.strip().split()
+
+                try:
+                    self.distances[v1][v2] = d
+                except KeyError:
+                    self.distances[v1] = {v2: d}
+
+                try:
+                    self.distances[v2][v1] = d
+                except KeyError:
+                    self.distances[v2] = {v1: d}
+
+    def add_edge(self, v1, v2):
+        self.graph.add_edge(v1, v2, self.distances[v1][v2])
+
+    def get_route(self, v1, v2):
+        alg = BellmanFordSP(self.graph, v1)
+
+        if alg.has_path_to(v2):
+            return alg.path_to(v2)
+
+        else:
+            return None

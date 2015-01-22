@@ -4,7 +4,7 @@ from raillib.errors import NotAuthenticated
 
 from raillib.client import Client
 
-from raillib.map import global_map
+from raillib.map import Map
 
 from raillib.models import (
     Player,
@@ -47,6 +47,8 @@ class Avatar(object):
         self.client_info = {}
         self.language = ''
 
+        self.map = Map()
+
         self._load_parameters()
 
     def _load_parameters(self):
@@ -72,7 +74,10 @@ class Avatar(object):
                                                 'getLanguage',
                                                 [])['Body'])
 
-        self.map = None
+        own_rails = self.client.produce('RailInterface', 'get',
+                                        [self.player_id])['Body']
+        for item in own_rails:
+            self.map.add_edge(item['location_id1'], item['location_id2'])
 
     @property
     def yourself(self):
