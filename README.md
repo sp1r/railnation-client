@@ -24,9 +24,9 @@ Usage
 ------
 
 1. Collect your bonuses:
-`RN> bonuses mine
-RN(bonus-mine)> collect`
+`RN> bonuses mine`
+`RN(bonus-mine)> collect`
 
 2. Collect all bonuses in association:
-`RN> bonuses all
-RN(bonus-all)> collect`
+`RN> bonuses all`
+`RN(bonus-all)> collect`
