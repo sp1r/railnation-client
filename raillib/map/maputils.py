@@ -23,10 +23,14 @@ class WeightedGraph:
         self.adj = {}
 
     def add_vertex(self, v):
+        assert isinstance(v, str)
         self.adj[v] = []
         self.v += 1
 
     def add_edge(self, v1, v2, dist):
+        assert isinstance(v1, str)
+        assert isinstance(v2, str)
+        assert isinstance(dist, int)
         self.adj[v1].append(WeightedEdge(v2, dist))
         self.adj[v2].append(WeightedEdge(v1, dist))
         self.e += 1
@@ -43,6 +47,8 @@ class WeightedGraph:
 
 class BellmanFordSP:
     def __init__(self, graph, root):
+        assert isinstance(graph, WeightedGraph)
+        assert isinstance(root, str)
         self.graph = graph
         self.is_in_queue = {}
         self.edge_to = {}
@@ -72,12 +78,15 @@ class BellmanFordSP:
                     self.is_in_queue[w.to] = True
 
     def get_dist_to(self, v):
+        assert isinstance(v, str)
         return self.dist_to[v]
 
     def has_path_to(self, v):
+        assert isinstance(v, str)
         return self.dist_to[v] < float("inf")
 
     def path_to(self, v):
+        assert isinstance(v, str)
         if not self.has_path_to(v):
             return None
         path = queue.LifoQueue()

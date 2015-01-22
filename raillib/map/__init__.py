@@ -12,12 +12,13 @@ class Map(object):
         self.graph = WeightedGraph()
         with open('raillib/map/vertex', 'r') as v:
             for line in v:
-                self.graph.add_vertex(line.strip)
+                self.graph.add_vertex(line.strip())
 
         self.distances = {}
         with open('raillib/map/edges', 'r') as e:
             for line in e:
-                v1, v2, d = line.strip().split()
+                v1, v2, dist = line.strip().split()
+                d = int(dist)
 
                 try:
                     self.distances[v1][v2] = d
