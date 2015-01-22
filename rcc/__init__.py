@@ -2,8 +2,8 @@
 # -*- coding:utf-8 -*-
 """Initialize software"""
 
-__appname__ = 'railnation-client'
-__version__ = '0.0.2'
+__appname__ = 'railnation-console-client'
+__version__ = '0.1.2'
 __author__ = 'V.Spiridonov <namelessorama@gmail.com>'
 __license__ = ''
 
@@ -14,9 +14,9 @@ from optparse import OptionParser
 import logging
 
 # import own libs
-from railnation.core.railnation_application import Application
+from rcc.application import Application
 
-from railnation.core.railnation_errors import (
+from raillib.errors import (
     ConnectionProblem,
     NotAuthenticated,
 )
@@ -51,17 +51,6 @@ def main(argv=None):
                         format='%(levelname)-10s %(asctime)s: %(message)s',
                         datefmt='%d/%m %H:%M:%S',
                         level=logging.DEBUG)
-    # log = logging.Logger('debug-log')
-    #
-    # log_format = logging.Formatter(
-    #     fmt='%(levelname)-10s %(asctime)s: %(message)s',
-    #     datefmt='%d/%m %H:%M:%S',
-    #     style='%')
-    # file_handler = logging.StreamHandler(open('/tmp/railnation-debug.log', 'w'))
-    # file_handler.setFormatter(log_format)
-    # # set log level here
-    # file_handler.setLevel(logging.DEBUG)
-    # log.addHandler(file_handler)
 
     logging.info('=' * 80)
     logging.info(' ' * 36 + 'New run!' + ' ' * 36)

@@ -6,15 +6,9 @@ import json
 import requests
 import requests.exceptions
 import time
-import sys
-import getpass
 import html.parser
-import logging
 
-# from railnation.core.railnation_log import log
-# log.debug('Loading module: Client')
-
-from railnation.core.railnation_errors import (
+from raillib.errors import (
     ConnectionProblem,
     NotAuthenticated,
 )
@@ -25,11 +19,14 @@ BASE_URL = 'www.rail-nation.com'
 sam_config = {}
 
 CLIENT_CHECKSUM = 'ea24d4af2c566004782f750f940615e5'  # hardcoded in flash-app
-MAX_RECONNECT = 10
+MAX_RECONNECT = 5
+MAX_WAIT = 3
 
 
 class Client:
     def __init__(self):
+        self.authenticated = False
+        self.worlds = {}
         self.rpc_url = ''
         self.webkey = ''
         self.session = requests.Session()
@@ -39,16 +36,10 @@ class Client:
                           'Chrome/36.0.1985.125 Safari/537.36'
         })
 
-        self.log = logging.Logger('debug-log')
-
         self.player_id = 'False'
         self.properties = {}
         self.client_info = {}
         self.language = ''
-
-    @property
-    def is_authorized(self):
-        return self.rpc_url == ''
 
     def produce(self, interface, method, params):
         """
@@ -63,7 +54,6 @@ class Client:
         :return: ответ сервера
         :rtype: dict
         """
-        self.log.debug('Trying: %s %s %s' % (interface, method, params))
         target = {'interface': interface,
                   'method': method}
         payload = {'ckecksum': CLIENT_CHECKSUM,
@@ -78,42 +68,33 @@ class Client:
                 r = self.session.post(self.rpc_url,
                                       params=target,
                                       data=json.dumps(payload),
-                                      timeout=5)
+                                      timeout=MAX_WAIT)
 
             except requests.exceptions.ConnectionError:
-                self.log.warning('Connection problems.')
-                time.sleep(1)
+                time.sleep(0.25)
 
             except requests.exceptions.Timeout:
-                self.log.warning('No response from server (timeout).')
+                pass
 
             # если нет ошибок - возвращаем ответ
             else:
-                self.log.debug('Response: %s Error: %s Content: %s' %
-                          (r.status_code, r.reason, r.text))
                 return r.json()
 
-        # более чем 10 неудачных попыток соединения считаем критической
-        # ошибкой и выходим
+        # более чем MAX_RECONNECT неудачных попыток соединения считаем
+        # критической ошибкой и выходим
         else:
-            self.log.critical('Too much connection errors. Will now exit.')
-            sys.exit(1)
+            raise ConnectionProblem('Too many connection failures (%s)'
+                                    % MAX_RECONNECT)
 
-    def authenticate(self):
+    def authenticate(self, login, password):
         """
         Authenticate this client
         """
-        print('Connecting to www.rail-nation.com...')
         # загружаем конфигурацию SAM
         sam_url = 'http://%s/js/sam.config.php' % BASE_URL
-        self.log.debug('Downloading SAM config...')
-        self.log.debug('SAM config url: %s' % sam_url)
         response = self.session.get(sam_url)
-        self.log.debug('Response: %s Message: %s' % (response.status_code,
-                                                response.reason))
 
         if response.status_code != 200:
-            self.log.critical("Error while getting SAM config from server.")
             raise ConnectionProblem("Could not download SAM config.")
 
         # парсим строки вида:
@@ -125,57 +106,46 @@ class Client:
                 fields = line.split("'")
                 key, value = fields[1], fields[3]
                 sam_config[key] = value
-                self.log.debug('SAM item: %s = %s' % (key, sam_config[key]))
 
         # загружаем фрейм с формой ввода пароля
-        self.log.debug('Requesting login frame...')
         response = self.session.get(self.get_link('login'))
-        self.log.debug('Response: %s Message: %s' % (response.status_code,
-                                                response.reason))
 
         # находим элемент с id="loginForm" и сохраняем его параметр action
         parser = HTMLAttributeSearch('form', 'id', 'loginForm', 'action')
         parser.feed(response.text)
         login_target = parser.result
-        self.log.debug('Login form submit url: %s' % login_target)
-
-        # спрашиваем имя и пароль у пользователя
-        username = input("Enter your email (login): ")
-        self.log.info('Trying to login. User: %s' % username)
-        password = getpass.getpass("Password for %s: " % username)
 
         login_data = {
             'className': 'login ',
-            'email': username,
+            'email': login,
             'password': password,
             'remember_me': 0,
         }
 
         # отправляем логин и пароль на сервер
-        self.log.debug('Sending credentials...')
         response = self.session.post(login_target, data=login_data)
-        self.log.debug('Response: %s Message: %s' % (response.status_code,
-                                                response.reason))
 
         # проверяем успешна ли авторизация
         parser = HTMLAttributeSearch('a', 'class', 'forwardLink', 'href')
         parser.feed(response.text)
-        if parser.result is None:
-            self.log.critical('Username or password is incorrect.')
-            raise NotAuthenticated('You entered wrong username and password.')
 
-        self.session.headers.update({'Accept-Language':
-                                       'en-US,en;q=0.8,ru;q=0.6'})
+        if parser.result is not None:
+            self.authenticated = True
+        else:
+            return
+
+        self.session.headers.update(
+            {
+                'Accept-Language': 'en-US,en;q=0.8,ru;q=0.6'
+            }
+        )
 
         # загружаем фрейм с выбором id мира для входа;
         # сервер косячит, он кодирует кириллицу в юникод, но не устанавливает
         # значение charset=utf-8 в заголовке Content-type, поэтому
         # придется прибегнуть к военной хитрости
-        self.log.debug('Requesting world selection frame...')
         response = self.session.get(self.get_link('external-avatar-list'),
-                                      stream=True)
-        self.log.debug('Response: %s Message: %s' % (response.status_code,
-                                                response.reason))
+                                    stream=True)
 
         frame = str(response.raw.read(), 'utf-8')
 
@@ -183,32 +153,25 @@ class Client:
         parser = GrepWorldsInformation()
         parser.feed(frame)
 
-        table = '[%-3s] %-20s %-8s %-20s'
-        print('List of your games:')
-        print(table % ('ID', 'Name', 'Era', 'Last login'))
-        for world, data in parser.result.items():
-            print(table % (world,
-                                                   data['name'],
-                                                   data['era'],
-                                                   data['last_login']))
+        self.worlds = {w['id']: World(w) for w in parser.results}
 
-        world_id = int(input('Choose world ID to enter: '))
+    def get_worlds(self):
+        if not self.authenticated:
+            return []
 
-        # ищем элементы класса loginAvatarForm и сохраняем их параметр action
-        parser = HTMLAttributeSearch('form', 'class', 'loginAvatarForm', 'action')
-        parser.feed(frame)
-        world_target = parser.result
-        self.log.debug('World selection form submit url: %s' % world_target)
+        return self.worlds.values()
+
+    def enter_world(self, world_id):
+        if not self.authenticated:
+            return None
 
         world_data = {
             'world': world_id,
         }
 
         # отправляем id мира на сервер
-        self.log.info('Entering world %s...' % world_data['world'])
-        response = self.session.post(world_target, data=world_data)
-        self.log.debug('Response: %s Message: %s' % (response.status_code,
-                                                response.reason))
+        response = self.session.post(self.worlds[world_id].action,
+                                     data=world_data)
 
         # в ответе находим ссылку класса forwardLink и сохраняем href
         parser = HTMLAttributeSearch('a', 'class', 'forwardLink', 'href')
@@ -217,20 +180,16 @@ class Client:
 
         self.rpc_url, self.webkey = auth_link.split('?key=')
         self.rpc_url += 'rpc/flash.php'
-        self.log.debug('RPC url: %s' % self.rpc_url)
-        self.log.debug('Web key: %s' % self.webkey)
 
         # авторизуемся через эту ссылку (получаем куку в сессию)
-        self.log.debug('Authorizing via link: %s' % auth_link)
         response = self.session.get(auth_link)
-        self.log.debug('Response: %s Message: %s' % (response.status_code,
-                                                response.reason))
+
+        return response.status_code == 200
 
     def get_link(self, action):
         """
         Повторяет функционал из http://www.rail-nation.com/js/sam.js
         """
-        self.log.debug('Constructing url for %s frame' % action)
         target = "%s/iframe/%s/applicationId/%s/applicationCountryId/%s" \
                  "/applicationInstanceId/%s/userParam/undefined/" % \
                  (sam_config['url'],
@@ -238,33 +197,8 @@ class Client:
                   sam_config['applicationId'],
                   sam_config['applicationCountryId'],
                   sam_config['applicationInstanceId'])
-        self.log.debug('Link for %s frame is: %s' % (action, target))
         return target
 
-    def load_parameters(self):
-        self.player_id = str(self.produce('AccountInterface',
-                             'is_logged_in',
-                             [self.webkey])['Body'])
-        if self.player_id == 'False':
-            # log.critical('Got "False" instead of player ID while loading!')
-            raise NotAuthenticated('Error while authenticating you.')
-
-        # log.debug('Web Client authenticated.')
-
-        r = self.produce('PropertiesInterface',
-                           'getData',
-                           [])['Body']
-
-        self.properties = r['properties']
-        self.properties['client'] = r['client']
-
-        self.client_info = self.produce('KontagentInterface',
-                                     'getData',
-                                     [])['Body']
-
-        self.language = str(self.produce('AccountInterface',
-                                      'getLanguage',
-                                      [])['Body'])
 
 def _quote(item):
     """
@@ -325,15 +259,20 @@ class GrepWorldsInformation(html.parser.HTMLParser):
         self.in_target_block = False
         self.grep_data = False
         self.grep_data_into = ''
-        self.current_world = {}
-        self.result = {}
+        self.current_world = {
+            'target': None,
+            'online': False
+        }
+        self.results = []
 
     def handle_starttag(self, tag, attrs):
         if tag == 'div':
             attributes = {k: v for k, v in attrs}
             try:
-                if attributes['id'] == 'avatarListContainer':
+                if attributes['id'] == 'ownAvatarHeadline':
                     self.in_target_block = True
+                elif attributes['id'] == 'newServerHeadline':
+                    self.in_target_block = False
             except KeyError:
                 pass
             if self.in_target_block:
@@ -347,14 +286,53 @@ class GrepWorldsInformation(html.parser.HTMLParser):
                     elif attributes['class'] == 'loginColumn':
                         self.grep_data = True
                         self.grep_data_into = 'last_login'
+                    elif attributes['class'] == 'serverAgeColumn':
+                        self.grep_data = True
+                        self.grep_data_into = 'age'
+                    elif 'status-online' in attributes['class']:
+                        self.current_world['online'] = True
                 except KeyError:
                     pass
+                except TypeError:
+                    pass
+
         if tag == 'input' and self.in_target_block:
             attributes = {k: v for k, v in attrs}
             try:
                 if attributes['id'] == 'loginAvatarWorldInput':
-                    self.result[attributes['value']] = self.current_world
-                    self.current_world = {}
+                    self.current_world['id'] = attributes['value']
+                    self.results.append(self.current_world)
+                    self.current_world = {
+                        'target': None,
+                        'online': False
+                    }
+            except KeyError:
+                pass
+
+        if tag == 'form' and self.in_target_block:
+            attributes = {k: v for k, v in attrs}
+            try:
+                if attributes['class'] == 'loginAvatarForm':
+                    self.current_world['action'] = attributes['action']
+            except KeyError:
+                pass
+
+        if tag == 'img' and self.in_target_block:
+            attributes = {k: v for k, v in attrs}
+            try:
+                self.current_world['flag'] = attributes['src']
+            except KeyError:
+                pass
+
+        if tag == 'span' and self.in_target_block:
+            attributes = {k: v for k, v in attrs}
+            try:
+                if attributes['class'] == 'playersActive':
+                    self.grep_data = True
+                    self.grep_data_into = 'players_active'
+                elif attributes['class'] == 'playersOnline':
+                    self.grep_data = True
+                    self.grep_data_into = 'players_online'
             except KeyError:
                 pass
 
@@ -362,3 +340,20 @@ class GrepWorldsInformation(html.parser.HTMLParser):
         if self.grep_data:
             self.current_world[self.grep_data_into] = data
             self.grep_data = False
+
+
+class World(object):
+    def __init__(self, world_data):
+        self.id = world_data['id']
+        self.name = world_data['name']
+        self.flag = world_data['flag'].split('/')[-1].split('.')[0]
+        self.age = world_data['age']
+        self.era = int(world_data['era'].split()[1])
+
+        self.online = world_data['online']
+        self.players_active = world_data['players_active'].split()[0]
+        self.players_online = world_data['players_online'].split()[0].strip('(')
+
+        self.last_login = world_data['last_login']
+
+        self.action = world_data['action']

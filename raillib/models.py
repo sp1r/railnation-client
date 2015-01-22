@@ -1,22 +1,12 @@
 # -*- coding:utf-8 -*-
 """Модели используют client для доступа к игре"""
 
-# from railnation.core.railnation_log import log
-# log.debug('Loading module: Models')
-
-from railnation.core.railnation_globals import (
-    client,
-    self_id
-)
-
 
 class Player:
-    def __init__(self, player_id=None):
+    def __init__(self, client, player_id):
+        self.client = client
 
-        if player_id is None:
-            self.id = self_id
-        else:
-            self.id = player_id
+        self.id = player_id
 
         self.params = {}
         self.corp_id = ''
@@ -31,9 +21,9 @@ class Player:
         self.update()
 
     def update(self):
-        data = client.produce('ProfileInterface',
-                              'get_profile_data',
-                              [self.id])['Body']
+        data = self.client.produce('ProfileInterface',
+                                   'get_profile_data',
+                                   [self.id])['Body']
         self.id = str(data['user_id'])
         self.params = {
             'hometown_is_public': data['hometown_is_public'],
@@ -70,17 +60,29 @@ class Player:
     @property
     def corporation(self):
         if self.corp_id:
-            return Corporation(self.corp_id)
+            return Corporation(self.client, self.corp_id)
         else:
             return None
 
     @property
     def station(self):
-        return Station(self.id)
+        return Station(self.client, self.id)
+
+    @property
+    def collectables(self):
+        return self.station.collectables
+
+    @property
+    def trains(self):
+        for t in self.client.produce('TrainInterface', 'getMyTrains',
+                                     [True])['Body']:
+            yield Train(self.client, t)
 
 
 class Corporation:
-    def __init__(self, corp_id):
+    def __init__(self, client, corp_id):
+        self.client = client
+
         self.id = corp_id
 
         self.name = ''
@@ -96,7 +98,7 @@ class Corporation:
         self.update()
 
     def update(self):
-        data = client.produce('CorporationInterface',
+        data = self.client.produce('CorporationInterface',
                                     'get',
                                     [self.id])['Body']
         self.name = data['name']
@@ -115,27 +117,31 @@ class Corporation:
         self.level = data['level']
         self.home_town = data['homeTown']
         self.country = data['country']
-        self.member_ids = [str(x['user_id']) for x in data['members']]
+        self.member_ids = [str(x['user_id']) for x in data['members']
+                           if x['title'] != '3']
 
     @property
     def members(self):
-        for member_id in self.member_ids:
-            yield Player(member_id)
+        return [Player(self.client, member_id)
+                for member_id in self.member_ids]
 
     @property
     def stations(self):
-        for member_id in self.member_ids:
-            yield Station(member_id)
+        return [Station(self.client, member_id)
+                for member_id in self.member_ids]
 
     @property
     def collectables(self):
+        all_collectables = []
         for station in self.stations:
-            for building in station.collectables:
-                yield building
+            all_collectables += station.collectables
+        return all_collectables
 
 
 class Station:
-    def __init__(self, owner_id):
+    def __init__(self, client, owner_id):
+        self.client = client
+
         self.owner_id = owner_id
 
         self.buildings = {}
@@ -143,11 +149,11 @@ class Station:
         self.update()
 
     def update(self):
-        data = client.produce('BuildingsInterface',
-                                    'getAll',
-                                    [self.owner_id])['Body']
+        data = self.client.produce('BuildingsInterface',
+                                   'getAll',
+                                   [self.owner_id])['Body']
         self.buildings = {
-            building_id: Building(self.owner_id, building_data)
+            building_id: Building(self.client, self.owner_id, building_data)
             for building_id, building_data in data.items()
         }
 
@@ -162,14 +168,14 @@ class Station:
 
     @property
     def collectables(self):
-        for t in (9, 10, 11):
-            yield self.buildings[t]
+        return [self.buildings[t] for t in ('9', '10', '11')]
 
 
 class Building:
-    def __init__(self, owner_id, data):
+    def __init__(self, client, owner_id, data):
+        self.client = client
         self.owner_id = owner_id
-        self.type = int(data['type'])
+        self.type = data['type']
         self.level = int(data['level'])
         self.finished = data['finished']
         self.construction_time = int(data['constructionTime'])
@@ -178,30 +184,46 @@ class Building:
         self.max_level = int(data['maxLevel'])
         self.effects = data['effects']
         self.effects_next = data['effectsNext']
-        self.production_time = data['productionTime']
+        self.production_time = int(data['productionTime'])
 
     def __repr__(self):
         return "<Building level %d of type %d" % (self.level, self.type)
 
-    # def collect(self):
-    #     log.debug('Collecting %d for player %s' % (self.type, self.owner_id))
-    #     result = Model.client.collect(self.owner_id, self.type)
-    #
-    #     if result["Errorcode"] == 10054:
-    #         log.info('%s: Bank overflow' % self.owner_id)
-    #     elif not result["Body"]:
-    #         log.info('%s: Missed' % self.owner_id)
-    #     else:
-    #         log.info('%s: Collected' % self.owner_id)
-    #         ticket = self.client.check_lottery()
-    #         if ticket['Body']['freeSlot']:
-    #             log.info('Got ticket!' % self.owner_id)
-    #             prize = self.client.collect_ticket()
-    #             log.info('Prize: %s' % str(prize['Infos']))
+    @property
+    def bonus_ready(self):
+        if self.production_time == 0:
+            return True
+        else:
+            return False
+
+    def collect(self):
+        result = self.client.produce('BuildingsInterface',
+                                     'collect',
+                                     [self.type, self.owner_id])
+
+        if result["Errorcode"] == 10054:
+            # Bank overflow
+            return 10054, None
+        elif not result["Body"]:
+            # already collected
+            return 1, None
+        else:
+            # success
+            ticket = self.client.produce('LotteryInterface',
+                                         'isForFree',
+                                         [])
+            if ticket['Body']['freeSlot']:
+                return 0, self.client.produce('LotteryInterface',
+                                              'buy',
+                                              [])['Infos']
+            else:
+                return 0, None
 
 
 class Town:
-    def __init__(self, town_id):
+    def __init__(self, client, town_id):
+        self.client = client
+
         self.id = town_id
         self.name = ''
         self.level = 0
@@ -211,7 +233,7 @@ class Town:
         self.update()
 
     def update(self):
-        r = client.produce('TownInterface', 'getDetails', [self.id])['Body']
+        r = self.client.produce('TownInterface', 'getDetails', [self.id])['Body']
         self.name = r['town']['name']
         self.level = r['town']['level']
 
@@ -227,10 +249,73 @@ class Town:
                 'trend': float(res['trend']),
             }
 
-    @property
-    def growth(self):
-        g = 0.0
-        for good in self.resources.values():
-            if good['priority'] == 1:
-                g += 25.0 * min(1.0, (good['amount'] - good['consume'])/self.growth_floor)
-        return g
+    # @property
+    # def growth(self):
+    #     g = 0.0
+    #     for good in self.resources.values():
+    #         if good['priority'] == 1:
+    #             g += 25.0 * min(1.0, (good['amount'] - good['consume'])/self.growth_floor)
+    #     return g
+
+
+class Train:
+    def __init__(self, client, data):
+        self.client = client
+
+        self.id = data['ID']
+        self.owner_id = data['user_id']
+        self.name = data['name']
+        self.type = data['type']
+
+        self.reliability = data['reliability']
+        self.maintenance_costs = data['maintenance_costs']
+        self.profit_today = data['profit_today']
+        self.profit_last_hour = data['profit_last_hour']
+
+        self.boost_end = data['boost_end']
+        self.mechanic_end = data['mechanic_end']
+        self.bought = data['bought']
+
+        self.profit = data['profit']
+        self.costs_today = data['costs_today']
+
+        self.max_num_waggons_base = data['max_num_waggons_base']
+        self.endurance = data['endurance']
+        self.tech_id = data['tech_id']
+
+        self.waggons = data['waggons']
+        self.upgrades = [x['id'] for x in data['upgrades']]
+
+        self.navigation = data['navigation']
+
+        self.value = data['value']
+
+    def update_navigation(self):
+        self.navigation = \
+            self.client.produce('TrainInterface', 'getTrack', [self.id])['Body']
+
+    def repair(self):
+        return self.client.produce('TrainInterface', 'doMaintenance',
+                                   [self.id])['Body']
+
+    def __lt__(self, other):
+        if int(self.bought) != int(other.bought):
+            return int(self.bought) < int(other.bought)
+
+        else:
+            return self.id < other.id
+
+    def __eq__(self, other):
+        return not self < other and not other < self
+
+    def __ne__(self, other):
+        return self < other or other < self
+
+    def __gt__(self, other):
+        return other < self
+
+    def __ge__(self, other):
+        return not self < other
+
+    def __le__(self, other):
+        return not other < self

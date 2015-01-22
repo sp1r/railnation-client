@@ -522,4 +522,68 @@ get_train_road_map:
     ]}
 
 ================================================================================
-research:
+get_city:
+"Body":{
+    "town":{
+        "ID":"644f0d32-7040-4a8e-bc76-a46ddd5a5ef1",
+        "name":5,
+        "level":7,
+        "is_capital":false,
+        "bonuses":[],
+        "is_endgame":false,
+        "type":2,
+        "lastConsumption":-455,
+        "OwnerGroup":0,
+        "GroupYesterday":0,
+        "GroupAmount":{"0":118073},
+        "factions":null},
+        "resources":[
+            {
+                "type":1,
+                "amount":1912,
+                "capacity":8000,
+                "income":1,
+                "price":134,
+                "trend":-0.22,
+                "priority":2,
+                "resource_type":1,
+                "price_factor":1,
+                "consume_amount":185,
+                "factions":null
+            },{
+                "type":2,
+                ...
+            }
+        ],
+        "suppliers":{
+            "1":[
+                {
+                    "userId":"38ae63e4-ebe9-1f41-0c5a-8460a493c3a6",
+                    "userName":"mdragic04",
+                    "amount":"2486",
+                    "reward":0,
+                    "pos":1,
+                    "titles":[]
+                },{
+                    "userId":"adef85d7-910a-6a06-ac9b-021c4dce177b",
+                    ...
+            ],
+        },
+        "toolTip":{
+            "3":{"suppliersCount":"12","userReward":1},
+            "14":{"suppliersCount":"14","userReward":1},
+            "11":{"suppliersCount":"5","userReward":46.55}
+        },
+        "depot":{
+            "ID":"8b20f602-a73f-7f91-d26d-8e22701d3c6d",
+            "location_id":"644f0d32-7040-4a8e-bc76-a46ddd5a5ef1",
+            "user_id":"42a21512-a4a2-0af4-9a02-ae87323e3c80",
+            "level":"1",
+            "updatedAfter":"-161062",
+            "isHomeTown":"1"
+        },
+        "capitalInfo":{
+            "leading_capital":"00000000-0000-0000-0000-000000000000",
+            "capital_finished_resources":0}
+        }
+    }

@@ -1,4 +1,8 @@
 show trains
+show stations
+
+stations all
+(stations-all) collect
 
 trains all
 (trains-all) repair

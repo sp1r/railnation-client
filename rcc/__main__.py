@@ -10,7 +10,7 @@ if __package__ is None and not hasattr(sys, "frozen"):
     path = os.path.realpath(os.path.abspath(__file__))
     sys.path.append(os.path.dirname(os.path.dirname(path)))
 
-import railnation
+import rcc
 
 if __name__ == '__main__':
-    sys.exit(railnation.main(sys.argv[1:]))
+    sys.exit(rcc.main(sys.argv[1:]))
