@@ -253,7 +253,19 @@ buildings = {
         11: "ресторан",
         12: "лотерея",
     },
-    'eng': {}
+    'eng': {
+        1: "Construction yard",
+        2: "Track production",
+        3: "Engine house",
+        4: "Bank",
+        5: "Laboratory",
+        6: "Licence trade",
+        8: "Station concourse",
+        9: "Shopping centre",
+        10: "Hotel",
+        11: "Restaurant",
+        12: "Lottery",
+    }
 }
 
 train_names = {
