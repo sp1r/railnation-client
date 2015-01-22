@@ -100,6 +100,3 @@ class Module(ModuleBase):
     def haul(self, command):
         if len(command) < 2:
             return
-
-    def _set_schedule(self, start, end):
-        pass

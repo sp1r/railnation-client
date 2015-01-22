@@ -303,6 +303,29 @@ class Train:
         return self.client.produce('TrainInterface', 'doMaintenance',
                                    [self.id])['Body']
 
+    def get_schedule(self):
+        response = self.client.produce('TrainInterface', 'getRoadMap',
+                                       [self.id])
+        schedule = Schedule()
+        for item in response['Body']:
+            schedule.append_target(item['location_id'])
+            schedule.elements[-1].loading = item['loading']
+        return schedule
+
+    def set_schedule(self, schedule):
+        assert isinstance(schedule, Schedule)
+        road_map = []
+        for element in schedule.elements:
+            road_map.append({
+                'dest_id': element.id,
+                'scheduleType': int(element.temporary) + 1,
+                'wait': element.wait_type,
+                'loading': element.loading,
+            })
+
+        response = self.client.produce('TrainInterface', 'setRoadMap',
+                                       [self.id, road_map])
+
     def __lt__(self, other):
         if int(self.bought) != int(other.bought):
             return int(self.bought) < int(other.bought)
@@ -324,3 +347,62 @@ class Train:
 
     def __le__(self, other):
         return not other < self
+
+
+class Schedule(object):
+    def __init__(self):
+        self.elements = []
+
+    def clear(self):
+        self.elements = []
+
+    def append_temporary(self, location_id):
+        self.elements.append(Element(location_id,
+                                     is_temporary=True))
+
+    def append_passing_by(self, location_id):
+        self.elements.append(Element(location_id))
+
+    def append_target(self, location_id):
+        self.elements.append(Element(location_id,
+                                     is_temporary=False,
+                                     pass_by=False))
+
+    def load(self, waggon_type, amount):
+        loading_rule = {
+            'type': waggon_type,
+            'load': amount,
+            'unload': 0,
+        }
+        self.elements[-1].add_loading_rule(loading_rule)
+
+    def unload(self, waggon_type, amount):
+        loading_rule = {
+            'type': waggon_type,
+            'load': 0,
+            'unload': amount,
+        }
+        self.elements[-1].add_loading_rule(loading_rule)
+
+
+class Element(object):
+    def __init__(self, location_id, is_temporary=False, pass_by=True):
+        self.id = location_id
+        self.temporary = is_temporary
+        self.pass_by = pass_by
+        self.load_here = False
+        self.loading = []
+
+    def add_loading_rule(self, rule):
+        if rule['load'] != 0:
+            self.load_here = True
+        self.loading.append(rule)
+
+    @property
+    def wait_type(self):
+        if self.pass_by:
+            return -1
+        elif self.load_here:
+            return 60
+        else:
+            return 0
