@@ -69,6 +69,7 @@ class Module(ModuleBase):
         logging.info('Start collecting bonuses.')
 
         for player in self.range:
+            is_me = player.id == self.player.id
             buildings = player.collectables
 
             for b in buildings:
@@ -78,7 +79,7 @@ class Module(ModuleBase):
 
                 if b.type == '10':
                     if b.bonus_ready:
-                        result, bonus = b.collect()
+                        result, bonus = b.collect(is_me)
                         if result == 0:
                             print('Bonus collected.')
                             if bonus is not None:
@@ -87,7 +88,7 @@ class Module(ModuleBase):
                 # Others and more complex
                 else:
                     if b.bonus_ready and not b.owner_id in self.blacklist:
-                        result, bonus = b.collect()
+                        result, bonus = b.collect(is_me)
                         if result == 0:
                             print('Bonus collected.')
                             if bonus is not None:

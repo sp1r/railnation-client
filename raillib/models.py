@@ -196,10 +196,15 @@ class Building:
         else:
             return False
 
-    def collect(self):
-        result = self.client.produce('BuildingsInterface',
-                                     'collect',
-                                     [self.type, self.owner_id])
+    def collect(self, direct=False):
+        if direct:
+            result = self.client.produce('BuildingsInterface',
+                                         'collect',
+                                         [self.type])
+        else:
+            result = self.client.produce('BuildingsInterface',
+                                         'collect',
+                                         [self.type, self.owner_id])
 
         if result["Errorcode"] == 10054:
             # Bank overflow

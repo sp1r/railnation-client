@@ -89,6 +89,3 @@ class Avatar(object):
             return Station(self.client, self.player_id)
         else:
             return Station(self.client, owner_id)
-
-    def grab_ticket(self):
-        pass
