@@ -297,7 +297,8 @@ class Train:
 
     def update_navigation(self):
         self.navigation = \
-            self.client.produce('TrainInterface', 'getTrack', [self.id])['Body']
+            self.client.produce('TrainInterface', 'getTrack',
+                                [self.id, True, False])['Body']
 
     def repair(self):
         return self.client.produce('TrainInterface', 'doMaintenance',
@@ -325,6 +326,9 @@ class Train:
 
         response = self.client.produce('TrainInterface', 'setRoadMap',
                                        [self.id, road_map])
+
+    def __repr__(self):
+        return '<Train %s with ID=%s>' % (self.type, self.id)
 
     def __lt__(self, other):
         if int(self.bought) != int(other.bought):

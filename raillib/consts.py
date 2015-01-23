@@ -132,6 +132,12 @@ city_names = {
     }
 }
 
+# type of the id object is essential
+city_ids = {
+    5: str('5b1e2f4d-e337-4614-a05b-9fede31b7204'),
+    13: str('644f0d32-7040-4a8e-bc76-a46ddd5a5ef1'),
+}
+
 goods = {
     'rus': {
         1: "уголь",

@@ -8,9 +8,10 @@ from raillib.consts import (
     train_names,
     goods,
     city_names,
+    city_ids,
 )
 from rcc.module import ModuleBase
-
+from raillib.models import Schedule
 
 REFRESH_PERIOD = 300
 
@@ -69,7 +70,7 @@ class Module(ModuleBase):
         #     return self.name, self.prompt
 
         elif command[1] == 'all':
-            self.range = [self.avatar.my_trains]
+            self.range = self.avatar.my_trains
             self.prompt = 'RN(trains-all)> '
             logging.debug('Trains range: %s' % str(self.range))
             return self.name, self.prompt
@@ -94,8 +95,42 @@ class Module(ModuleBase):
         if len(command) < 2:
             return
 
-        if not command[1] in city_names['eng']:
+        if not command[1] in city_names['eng'].values():
             print('No such town: %s' % command[1])
+            return
+
+        logging.info('Parking %d trains to %s' % (len(self.range), command[1]))
+
+        for city_num, name in city_names['eng'].items():
+            if command[1] == name.capitalize():
+                end_point = city_ids[city_num]
+
+        logging.debug('Found city id: %s' % end_point)
+
+        for train in self.range:
+            logging.debug('Parking train: %s' % train.id)
+            train.update_navigation()
+
+            logging.debug('Searching route from: %s to: %s' % (
+                train.navigation['next_location_id'],
+                end_point)
+            )
+            path = self.avatar.map.get_route(
+                train.navigation['next_location_id'],
+                end_point
+            )
+            if path is None:
+                logging.info('Town %s is not connected. '
+                             'Cannot park there.' % command[1])
+
+            logging.debug('Route length: %s' % path.qsize())
+
+            schedule = Schedule()
+            while not path.empty():
+                next_location = path.get()
+                logging.debug('Route element: Pass by %s' % next_location)
+                schedule.append_temporary(next_location)
+            train.set_schedule(schedule)
 
     def haul(self, command):
         if len(command) < 2:
