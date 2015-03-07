@@ -1,12 +1,12 @@
 # -*- coding:utf-8 -*-
 
-from raillib.errors import NotAuthenticated
+from railnationlib.errors import NotAuthenticated
 
-from raillib.client import Client
+from railnationlib.client import Client
 
-from raillib.map import Map
+from railnationlib.map import Map
 
-from raillib.models import (
+from railnationlib.models import (
     Player,
     Town,
     Train,
@@ -20,6 +20,7 @@ class Game(object):
     """
     def __init__(self):
         self.client = Client()
+        self.avatars = {}
 
     def authenticate(self, login, password):
         self.client.authenticate(login, password)
@@ -29,9 +30,14 @@ class Game(object):
 
     def enter_world(self, world_id):
         if self.client.enter_world(world_id):
+            self.avatars[world_id] = Avatar(self.client)
             return Avatar(self.client)
         else:
             return None
+
+    def get_avatar(self, login, password, world_id):
+        self.client.authenticate(login, password)
+        return self.enter_world(world_id)
 
 
 class Avatar(object):
@@ -39,6 +45,10 @@ class Avatar(object):
     Avatar object is access point to game methods and objects.
     """
     def __init__(self, client):
+        if not client.authenticated:
+            raise NotAuthenticated('Need to authenticate before '
+                                   'constructing avatar.')
+
         self.client = client
         self.client.session.headers.update({'content-type': 'application/json'})
 
@@ -80,7 +90,7 @@ class Avatar(object):
             self.map.add_edge(item['location_id1'], item['location_id2'])
 
     @property
-    def yourself(self):
+    def me(self):
         return Player(self.client, self.player_id)
 
     @property

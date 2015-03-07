@@ -127,15 +127,19 @@ class Corporation:
 
     @property
     def stations(self):
-        return [Station(self.client, member_id)
-                for member_id in self.member_ids]
+        # return [Station(self.client, member_id)
+        #         for member_id in self.member_ids]
+        for member_id in self.member_ids:
+            yield Station(self.client, member_id)
 
     @property
     def collectables(self):
-        all_collectables = []
+        # all_collectables = []
         for station in self.stations:
-            all_collectables += station.collectables
-        return all_collectables
+            # all_collectables += station.collectables
+            for collectable in station.collectables:
+                yield collectable
+        # return all_collectables
 
 
 class Station:
@@ -218,8 +222,9 @@ class Building:
                                          'isForFree',
                                          [])
             if ticket['Body']['freeSlot']:
+                self.client.produce('LotteryInterface', 'buy', [])
                 return 0, self.client.produce('LotteryInterface',
-                                              'buy',
+                                              'rewardLottery',
                                               [])['Infos']
             else:
                 return 0, None

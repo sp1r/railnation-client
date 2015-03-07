@@ -15,6 +15,7 @@ BuildingsInterface          collect                 [building_id]               
 BuildingsInterface          collect                 [building_id, user_id]          Собирает бонус со здания досуга (чужое здание)
 BuildingsInterface          build                   [building_id, False, False]     Строит здание (при наличии средств)
 BuildingsInterface          getFinishMTX            [building_id]                   Количество золота, для немедленного завершения строительства
+BuildingInterface           cancel                  [building_id]                   Отменяет строительство
 
 CorporationInterface        get                     [corp_id]                       Информация об ассоциации (имя, престиж, количество игроков, id игроков и проч.)
 CorporationInterface        getVCard                [[corp_id]]                     Герб в кодировке base64 и еще немного информации
@@ -88,6 +89,7 @@ RailInterface               get                     [user_id]                   
 ResearchInterface           researchTechnology      [tech_id, points]               Вкладывает очки исследования в технологию
 
 ResourceInterface           getResource             [user_id, resource_id]          Информация об одном из ресурсов игрока (деньги, золото, ОИ и др.)
+ResourceInterface           isLimitReached          [user_id]                       Отвечает достиг ли игрок лимита денежных средств.
 
 SkinInterface               getAllReleasedSkins     []                              Список доступных внешних видов поездов
 

@@ -8,9 +8,8 @@ import requests.exceptions
 import time
 import html.parser
 
-from raillib.errors import (
+from railnationlib.errors import (
     ConnectionProblem,
-    NotAuthenticated,
 )
 
 # I believe this won`t change every day
@@ -159,7 +158,7 @@ class Client:
         if not self.authenticated:
             return []
 
-        return self.worlds.values()
+        return [str(w) for w in self.worlds.values()]
 
     def enter_world(self, world_id):
         if not self.authenticated:
@@ -357,3 +356,6 @@ class World(object):
         self.last_login = world_data['last_login']
 
         self.action = world_data['action']
+
+    def __str__(self):
+        return '<World %s %s>' % (self.id, self.name)

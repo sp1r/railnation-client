@@ -3,5 +3,5 @@
 
 __author__ = 'vspir'
 
-
-from raillib.game import Game
+if __name__ == '__main__':
+    pass

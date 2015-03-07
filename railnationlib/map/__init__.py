@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 """docstring"""
 
-from raillib.map.maputils import (
+from railnationlib.map.maputils import (
     WeightedGraph,
     BellmanFordSP
 )
@@ -10,12 +10,12 @@ from raillib.map.maputils import (
 class Map(object):
     def __init__(self):
         self.graph = WeightedGraph()
-        with open('raillib/map/vertex', 'r') as v:
+        with open('railnationlib/map/vertex', 'r') as v:
             for line in v:
                 self.graph.add_vertex(line.strip())
 
         self.distances = {}
-        with open('raillib/map/edges', 'r') as e:
+        with open('railnationlib/map/edges', 'r') as e:
             for line in e:
                 v1, v2, dist = line.strip().split()
                 d = int(dist)

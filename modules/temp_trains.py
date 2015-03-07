@@ -4,14 +4,14 @@
 import time
 import logging
 
-from raillib.consts import (
+from railnationlib.consts import (
     train_names,
     goods,
     city_names,
     city_ids,
 )
 from rcc.module import ModuleBase
-from raillib.models import Schedule
+from railnationlib.models import Schedule
 
 REFRESH_PERIOD = 300
 
