@@ -1,36 +1,13 @@
-Rail Nation Console Client
-==========================
+Rail Nation Client
+==================
 
-This is a Terminal client to http://www.rail-nation.com game.
+This is a python client to http://www.rail-nation.com game.
 
-Use it and forgot about lags and crashes of Flash!
+Just for fun.
 
-Just kidding. Currently in development and cannot do much stuff.
+16/01/2017 -- Project status changed to 'Under Development' (again)
 
-Requirements (more like Limitations)
---------------------------
-1. Linux
-2. python 3
-3. python-requests module
 
-How to run
------------
-when in rail-nation-client dir:
+### How to run
 
-1. `python3 -m rcc`
-2. `python3 rcc/__main__.py`
-
-Usage
-------
-
-1. Collect your bonuses:
-```
-RN> bonuses mine
-RN(bonus-mine)> collect
-```
-
-2. Collect all bonuses in association:
-```
-RN> bonuses all
-RN(bonus-all)> collect
-```
+Use start.sh script in root directory

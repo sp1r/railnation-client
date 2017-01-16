@@ -1,7 +1,8 @@
 #!/usr/bin/env python
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 """Allow user to run Application as a module"""
+
 
 import sys
 if __package__ is None and not hasattr(sys, "frozen"):
@@ -10,7 +11,8 @@ if __package__ is None and not hasattr(sys, "frozen"):
     path = os.path.realpath(os.path.abspath(__file__))
     sys.path.append(os.path.dirname(os.path.dirname(path)))
 
-import daemon
+import railnation
+
 
 if __name__ == '__main__':
-    sys.exit(daemon.main(sys.argv[1:]))
+    sys.exit(railnation.main(sys.argv[1:]))
