@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:  utf-8 -*-
 
-import html.parser
+# import html.parser
 import logging
 import random
 
@@ -25,99 +25,99 @@ def _get_random_msid():
     return ''.join([random.choice(msid_chars) for x in range(26)])
 
 
-class HTMLAttributeSearch(html.parser.HTMLParser):
-    """
-    Find attribute value by tag type and id.
-    """
-
-    def error(self, message):
-        self.log.error('Parsing error: %s' % message)
-
-    def __init__(self, tag_to_find,
-                 filter_by_attr, filter_attr_value, attr_to_extract):
-        html.parser.HTMLParser.__init__(self)
-        self.log = logging.getLogger('HTMLAttributeSearch')
-        self.interesting_tag = tag_to_find
-        self.filter = filter_by_attr
-        self.filter_value = filter_attr_value
-        self.target = attr_to_extract
-        self.result = None
-
-    def handle_starttag(self, tag, attrs):
-        if tag == self.interesting_tag:
-            attributes = {k: v for k, v in attrs}
-            try:
-                if attributes[self.filter] == self.filter_value:
-                    self.result = attributes[self.target]
-            except KeyError:
-                pass
-
-
-class GrepWorldsInformation(html.parser.HTMLParser):
-    """
-    More complex logic to extract worlds information
-    """
-
-    def error(self, message):
-        self.log.error('Parsing error: %s' % message)
-
-    def __init__(self):
-        html.parser.HTMLParser.__init__(self)
-        self.log = logging.getLogger('GrepWorldsInformation')
-        self.in_target_block = False
-        self.grep_data = False
-        self.grep_data_into = ''
-        self.current_world = {}
-        self.results = []
-
-    def handle_starttag(self, tag, attrs):
-        if tag == 'div':
-            attributes = {k: v for k, v in attrs}
-            try:
-                if attributes['class'] == 'gameWorldsForLogin':
-                    self.in_target_block = True
-                elif attributes['class'] == 'gameWorldsForRegistration':
-                    self.in_target_block = False
-            except KeyError:
-                pass
-
-        try:
-
-            if self.in_target_block:
-                if tag == 'li':
-                    attributes = {k: v for k, v in attrs}
-                    if attributes['class'] == 'world-name':
-                        self.grep_data = True
-                        self.grep_data_into = 'name'
-                    elif attributes['class'] == 'world-status':
-                        self.grep_data = True
-                        self.grep_data_into = 'era'
-                    elif attributes['class'] == 'world-population':
-                        self.grep_data = True
-                        self.grep_data_into = 'population'
-
-                elif tag == 'img':
-                    attributes = {k: v for k, v in attrs}
-                    if 'statuses' in attributes['src']:
-                        self.current_world['status'] = attributes['src'].split('/')[-1].split('.')[0]
-
-                    elif 'maps' in attributes['src']:
-                        self.current_world['map'] = attributes['src'].split('/')[-1].split('.')[0]
-
-                elif tag == 'a':
-                    attributes = {k: v for k, v in attrs}
-                    if attributes['class'] == 'one-click':
-                        self.current_world['link'] = attributes['href']
-                        self.results.append(self.current_world)
-                        self.current_world = {}
-
-        except KeyError:
-            pass
-
-    def handle_data(self, data):
-        if self.grep_data:
-            self.current_world[self.grep_data_into] = data.strip()
-            self.grep_data = False
+# class HTMLAttributeSearch(html.parser.HTMLParser):
+#     """
+#     Find attribute value by tag type and id.
+#     """
+#
+#     def error(self, message):
+#         self.log.error('Parsing error: %s' % message)
+#
+#     def __init__(self, tag_to_find,
+#                  filter_by_attr, filter_attr_value, attr_to_extract):
+#         html.parser.HTMLParser.__init__(self)
+#         self.log = logging.getLogger('HTMLAttributeSearch')
+#         self.interesting_tag = tag_to_find
+#         self.filter = filter_by_attr
+#         self.filter_value = filter_attr_value
+#         self.target = attr_to_extract
+#         self.result = None
+#
+#     def handle_starttag(self, tag, attrs):
+#         if tag == self.interesting_tag:
+#             attributes = {k: v for k, v in attrs}
+#             try:
+#                 if attributes[self.filter] == self.filter_value:
+#                     self.result = attributes[self.target]
+#             except KeyError:
+#                 pass
+#
+#
+# class GrepWorldsInformation(html.parser.HTMLParser):
+#     """
+#     More complex logic to extract worlds information
+#     """
+#
+#     def error(self, message):
+#         self.log.error('Parsing error: %s' % message)
+#
+#     def __init__(self):
+#         html.parser.HTMLParser.__init__(self)
+#         self.log = logging.getLogger('GrepWorldsInformation')
+#         self.in_target_block = False
+#         self.grep_data = False
+#         self.grep_data_into = ''
+#         self.current_world = {}
+#         self.results = []
+#
+#     def handle_starttag(self, tag, attrs):
+#         if tag == 'div':
+#             attributes = {k: v for k, v in attrs}
+#             try:
+#                 if attributes['class'] == 'gameWorldsForLogin':
+#                     self.in_target_block = True
+#                 elif attributes['class'] == 'gameWorldsForRegistration':
+#                     self.in_target_block = False
+#             except KeyError:
+#                 pass
+#
+#         try:
+#
+#             if self.in_target_block:
+#                 if tag == 'li':
+#                     attributes = {k: v for k, v in attrs}
+#                     if attributes['class'] == 'world-name':
+#                         self.grep_data = True
+#                         self.grep_data_into = 'name'
+#                     elif attributes['class'] == 'world-status':
+#                         self.grep_data = True
+#                         self.grep_data_into = 'era'
+#                     elif attributes['class'] == 'world-population':
+#                         self.grep_data = True
+#                         self.grep_data_into = 'population'
+#
+#                 elif tag == 'img':
+#                     attributes = {k: v for k, v in attrs}
+#                     if 'statuses' in attributes['src']:
+#                         self.current_world['status'] = attributes['src'].split('/')[-1].split('.')[0]
+#
+#                     elif 'maps' in attributes['src']:
+#                         self.current_world['map'] = attributes['src'].split('/')[-1].split('.')[0]
+#
+#                 elif tag == 'a':
+#                     attributes = {k: v for k, v in attrs}
+#                     if attributes['class'] == 'one-click':
+#                         self.current_world['link'] = attributes['href']
+#                         self.results.append(self.current_world)
+#                         self.current_world = {}
+#
+#         except KeyError:
+#             pass
+#
+#     def handle_data(self, data):
+#         if self.grep_data:
+#             self.current_world[self.grep_data_into] = data.strip()
+#             self.grep_data = False
 
 
 class AccountManager:
