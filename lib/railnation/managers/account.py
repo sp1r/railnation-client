@@ -120,6 +120,15 @@ class AccountManager:
     4. Resume old login.
     """
 
+    instance = None
+
+    @staticmethod
+    def get_instance():
+        if AccountManager.instance is None:
+            AccountManager.instance = AccountManager()
+
+        return AccountManager.instance
+
     def __init__(self):
         self.log = logging.getLogger('AccountManager')
         self.log.debug('Initializing...')
@@ -220,8 +229,7 @@ class AccountManager:
         self.log.info('Successfully logged in to the game.')
         self.log.debug(response.text)
 
-        self.log.debug('Entering lobby')
-
-        self.log.debug('Acquired cookies: %s' % session.cookies)
+    def get_lobby_info(self):
+        self.log.debug('Trying railnation lobby')
 
 
