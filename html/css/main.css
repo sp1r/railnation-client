@@ -1,0 +1,59 @@
+*{
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    border: none;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    background: none;
+    font: normal 16px arial;
+    max-width: 100%;
+}
+
+input, textarea, button{
+    display: block;
+    width: 100%;
+    height: 38px;
+    line-height: 38px;
+    padding: 0 12px;
+    margin: 8px 0;
+    color: white;
+    border: 1px solid white;
+}
+
+button[type='submit']{
+    cursor: pointer;
+}
+
+.absolute{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+}
+
+.home-page{
+    background: #2f3f54;
+}
+
+.login-box{
+    width: 270px;
+    height: 300px;
+}
+
+.login-box input{
+    text-align: center;
+}
+
+.login-box button{
+    background: #eaeaea;
+    color: #2f3f54;
+    font-weight: bold;
+}
+
+.login-box button:hover{
+    background: #cecece;
+}
