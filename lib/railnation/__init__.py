@@ -21,7 +21,7 @@ import cherrypy
 from railnation.core.server import session
 from railnation.core.errors import RailNationClientError
 from railnation.core.common import html_dir
-from railnation.core.api import RailNationClientAPI
+from railnation.core.api import RailNationClientAPIv1
 
 
 def load_options(parser):
@@ -106,10 +106,10 @@ def main(argv=None):
         }
     }
 
-    api_config = {}
+    api_v1_config = {}
 
     cherrypy.tree.mount(UserInterface(), '/', ui_config)
-    cherrypy.tree.mount(RailNationClientAPI(), '/api/v1', api_config)
+    cherrypy.tree.mount(RailNationClientAPIv1(), '/api/v1', api_v1_config)
 
     cherrypy.engine.signals.subscribe()
     cherrypy.engine.start()
