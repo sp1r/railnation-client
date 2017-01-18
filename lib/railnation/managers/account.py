@@ -3,8 +3,9 @@
 
 import html.parser
 import logging
+import random
 
-from lib.railnation.config import (
+from railnation.config import (
     BASE_URL,
     LOBBY_URL,
     MELLON_CONFIG,
@@ -12,6 +13,16 @@ from lib.railnation.config import (
 )
 from railnation.core.server import session
 from railnation.core.errors import RailNationInitializationError
+
+
+msid_chars = ('1', '2', '3', '4', '5', '6', '7', '8', '9',
+              'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
+              'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v')
+
+
+def _get_random_msid():
+    random.seed()
+    return ''.join([random.choice(msid_chars) for x in range(26)])
 
 
 class HTMLAttributeSearch(html.parser.HTMLParser):
@@ -133,80 +144,67 @@ class AccountManager:
         self.log = logging.getLogger('AccountManager')
         self.log.debug('Initializing...')
         self.authenticated = False
-        self.username = None
+        self.mellon_config = {
+            'url': 'http://mellon-rn.traviangames.com',
+            'application': {
+                'domain': 'www.rail-nation.com',
+                'path': '%2Fhome%2F',
+                'inGame': 0,
+                'id': 'railnation',
+                'countryId': 'ii',
+                'instanceId': 'portal-ii',
+                'languageId': 'en_GB',
+                'cookieEnabled': 1,
+            },
+            'mellon': {
+                'cookie': {
+                    'domain': '.rail-nation.com'
+                },
+            },
+        }
 
-        self.log.debug('Knock-knock on rail-nation lobby')
-        response = session.get(LOBBY_URL)
-        if len(response.history) > 0:
-            self.log.debug('Cannot enter lobby. Authenticate first?')
-        else:
-            self.log.info('Found previous session.')
-            self.authenticated = True
+    #     self.log.debug('Knock-knock on rail-nation lobby')
+    #     response = session.get(LOBBY_URL)
+    #     if len(response.history) > 0:
+    #         self.log.debug('Cannot enter lobby. Authenticate first?')
+    #     else:
+    #         self.log.info('Joined Rail-Nation Lobby')
+    #         self.authenticated = True
+    #
+    # def _load_home_page(self):
+    #     home_url = '%s/home/' % BASE_URL
+    #     self.log.debug('Loading home page: %s' % home_url)
+    #     response = session.get(home_url)
+    #     self.log.debug("Result: %s %s" % (response.status_code,
+    #                                       response.reason))
+    #
+    #     if response.status_code != 200:
+    #         self.log.critical("Failed to download home page (%s)" % home_url)
+    #         self.log.critical("Response: %s" % response.text)
+    #         raise RailNationInitializationError("Failed to download home page. See logs for details.")
+
+    def _get_mellon_url(self, action):
+        url = self.mellon_config['url']
+        if action == 'login':
+            url += '/authentication/login'
+
+        # Probably order of fields is not important, but...
+        url += '/applicationDomain/%(domain)s' \
+               '/applicationPath/%(path)s' \
+               '/applicationInGame/%(inGame)s' \
+               '/applicationId/%(id)s' \
+               '/applicationCountryId/%(countryId)s' \
+               '/applicationInstanceId/%(instanceId)s' \
+               '/applicationLanguageId/%(languageId)s' \
+               '/applicationCookieEnabled/%(cookieEnabled)s' % self.mellon_config['application']
+
+        return url
 
     def login(self, username, password):
-        # Load home page
-        home_url = '%s/home/' % BASE_URL
-        self.log.debug('Loading home page: %s' % home_url)
-        response = session.get(home_url)
-        self.log.debug("Code: %s %s" % (response.status_code,
-                                        response.reason))
-
-        if response.status_code != 200:
-            self.log.critical("Failed to download home page (%s)" % home_url)
-            self.log.critical("Response: %s" % response.text)
-            raise RailNationInitializationError("Failed to download home page. See logs for details.")
-
-        # Load Mellon config
-        # TODO: read this url from web-page <script> tag
-        config_url = '%s/wp-content/themes/railnation/js/mellon/config.php' % BASE_URL
-        self.log.debug('Loading Mellon config from: %s' % config_url)
-        response = session.get(config_url)
-        self.log.debug("Code: %s %s" % (response.status_code,
-                                        response.reason))
-
-        if response.status_code != 200:
-            self.log.critical("Failed to download Mellon config (%s)" % config_url)
-            self.log.critical("Response: %s" % response.text)
-            raise RailNationInitializationError("Failed to download Mellon config. See logs for details.")
-
-        self.log.debug('Got Mellon config:')
-        self.log.debug(response.text)
-
-        # Grep base mellon url:
-        try:
-            start = response.text.rindex("new MellonUrl(")
-        except ValueError:
-            self.log.critical("Failed to parse Mellon config.")
-            raise RailNationInitializationError("Failed to load Mellon config. See logs for details.")
-        else:
-            end = response.text.index(")", start)
-            self.log.debug('Found url indexes: [%s, %s]' % (start, end))
-            mellon_base_url = response.text[start+15:end-1]
-
-        self.log.debug("Found Mellon base url: %s" % mellon_base_url)
+        if self.authenticated:
+            return
 
         self.log.debug('Trying to login with username: %s' % username)
-
-        # get frame with login form
-        auth_url = mellon_base_url + '/authentication/login/'
-        for k, v in MELLON_CONFIG.items():
-            auth_url += '/%s/%s' % (k, v)
-
-        self.log.debug('Loading login frame from: %s' % auth_url)
-        response = session.get(auth_url, params=XDM_CONFIG)
-        self.log.debug("Code: %s %s" % (response.status_code,
-                                        response.reason))
-
-        if response.status_code != 200:
-            self.log.critical("Could not download login frame.")
-            self.log.critical("Response: %s" % response.text)
-            raise RailNationInitializationError("Could not download login frame. See logs for details.")
-
-        # parse received html for tag "form" with id="loginForm" and grep its "action" attribute
-        parser = HTMLAttributeSearch('form', 'id', 'login', 'action')
-        parser.feed(response.text)
-        login_target = parser.result
-        self.log.debug('Found login target: %s' % login_target)
 
         login_data = {
             'submit': 'Login',
@@ -214,9 +212,15 @@ class AccountManager:
             'password': password,
         }
 
-        # Send login & password
-        self.log.debug("Sending login & password to server")
-        response = session.post(mellon_base_url + login_target, data=login_data)
+        auth_url = self._get_mellon_url('login')
+
+        self.log.debug("Sending login data to server")
+        response = session.post(auth_url,
+                                data=login_data,
+                                params={
+                                    'msname': 'msid',
+                                    'msid': _get_random_msid()
+                                })
         self.log.debug("Code: %s %s" % (response.status_code,
                                         response.reason))
 
@@ -225,11 +229,30 @@ class AccountManager:
             self.log.critical("Response: %s" % response.text)
             raise RailNationInitializationError("Could not authenticate. See logs for details.")
 
-        # It everything is ok - we will get a frame with worlds
         self.log.info('Successfully logged in to the game.')
-        self.log.debug(response.text)
+        self.log.trace(response.text)
 
-    def get_lobby_info(self):
-        self.log.debug('Trying railnation lobby')
+        # grep redirect url
+        try:
+            s = response.text.index("parent.bridge.redirect({url: '")
+            e = response.text.index("'", s+30)
+        except ValueError:
+            raise RailNationInitializationError('Cannot parse redirect url from login response!')
+        else:
+            redirect_url = response.text[s+30, e]
+
+        self.log.debug('Got redirect url: %s' % redirect_url)
+
+        try:
+            msid_cookie = {k: v for k, v in [p.split('=') for p in redirect_url.split('&')[1].split('?')]}['msid']
+        except KeyError:
+            raise RailNationInitializationError('Cannot parse msid from redirect url in login response!')
+
+        self.log.debug('Got new msid cookie: %s' % msid_cookie)
+        session.cookies.update({'msid': msid_cookie})
+
+        self.log.debug('Entering Lobby...')
+        response = session.get(redirect_url)
+
 
 
