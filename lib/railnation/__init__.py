@@ -103,7 +103,19 @@ def main(argv=None):
         '/index.html': {
             'tools.staticfile.on': True,
             'tools.staticfile.filename': os.path.join(html_dir, 'index.html'),
-        }
+        },
+        '/css': {
+            'tools.staticdir.on': True,
+            'tools.staticdir.dir': os.path.join(html_dir, 'css'),
+        },
+        '/img': {
+            'tools.staticdir.on': True,
+            'tools.staticdir.dir': os.path.join(html_dir, 'img'),
+        },
+        '/js': {
+            'tools.staticdir.on': True,
+            'tools.staticdir.dir': os.path.join(html_dir, 'js'),
+        },
     }
 
     api_v1_config = {}

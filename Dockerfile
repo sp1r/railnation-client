@@ -1,4 +1,4 @@
-FROM    centos:latest
+FROM    centos:7
 
 RUN     mkdir /opt/railnation && \
         /usr/bin/curl 'https://bootstrap.pypa.io/get-pip.py' | /usr/bin/python && \
