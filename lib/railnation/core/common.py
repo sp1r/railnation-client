@@ -6,7 +6,14 @@ Not configurable.
 """
 
 import os
+import sys
 import logging
+
+
+if sys.version_info > (3, 0):
+    IS_PY3 = True
+else:
+    IS_PY3 = False
 
 # Try to guess where we are
 base_dir = os.path.normpath(os.path.join(
