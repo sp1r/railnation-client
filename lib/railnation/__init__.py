@@ -93,7 +93,7 @@ def main(argv=None):
 
     cherrypy.server.socket_host = '0.0.0.0'
     cherrypy.server.socket_port = int(options.app_port)
-    cherrypy.config.update({'log.screen': False,
+    cherrypy.config.update({'log.screen': True,
                             'log.access_file': '',
                             'log.error_file': '',
                             })
