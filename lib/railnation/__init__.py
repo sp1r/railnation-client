@@ -20,7 +20,10 @@ import cherrypy
 
 from railnation.core.server import session
 from railnation.core.errors import RailNationClientError
-from railnation.core.common import html_dir
+from railnation.core.common import (
+    html_dir,
+    log
+)
 from railnation.core.api import RailNationClientAPIv1
 
 
@@ -33,14 +36,9 @@ def load_options(parser):
                       default=8080,
                       help='port to start web application on (default = 8080)')
 
-    parser.add_option('-l', '--log-file', action='store', dest='log_file_name',
-                      default=None,
-                      help='write journal messages to file, default behavior is to write to '
-                           'railnation.log in current directory')
-
     parser.add_option('-d', '--debug', action='store_true', dest='debug_logging',
                       default=False,
-                      help='debug logging')
+                      help='enable debug logging')
 
 
 def CORS():
@@ -72,28 +70,18 @@ def main(argv=None):
         print('Rail-Nation client v.%s' % __version__)
         sys.exit(0)
 
-    # configure logging
-    if options.log_file_name is None:
-        log_file_name = os.path.join(os.getcwd(), 'railnation.log')
-    else:
-        log_file_name = options.log_file_name
-
     if options.debug_logging:
         log_level = logging.DEBUG
     else:
         log_level = logging.INFO
 
-    logging.basicConfig(filename=log_file_name,
-                        filemode='a',
-                        format='%(asctime)s: %(levelname)8s: %(name)s: %(message)s',
-                        datefmt='%Y-%d-%m %H:%M:%S',
-                        level=log_level)
+    log.setLevel(log_level)
 
-    logging.info('Starting Rail-Nation client v.%s' % __version__)
+    log.info('Starting Rail-Nation client v.%s' % __version__)
 
     cherrypy.server.socket_host = '0.0.0.0'
     cherrypy.server.socket_port = int(options.app_port)
-    cherrypy.config.update({'log.screen': False,
+    cherrypy.config.update({'log.screen': True,
                             'log.access_file': '',
                             'log.error_file': '',
                             })

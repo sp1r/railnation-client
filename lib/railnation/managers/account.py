@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding:  utf-8 -*-
 
-# import html.parser
-import logging
+import pprint
 import random
+import json
 
 from railnation.config import (
     BASE_URL,
@@ -11,6 +11,7 @@ from railnation.config import (
     MELLON_CONFIG,
     XDM_CONFIG,
 )
+from railnation.core.common import log
 from railnation.core.server import session
 from railnation.core.errors import RailNationInitializationError
 
@@ -23,101 +24,6 @@ msid_chars = ('1', '2', '3', '4', '5', '6', '7', '8', '9',
 def _get_random_msid():
     random.seed()
     return ''.join([random.choice(msid_chars) for x in range(26)])
-
-
-# class HTMLAttributeSearch(html.parser.HTMLParser):
-#     """
-#     Find attribute value by tag type and id.
-#     """
-#
-#     def error(self, message):
-#         self.log.error('Parsing error: %s' % message)
-#
-#     def __init__(self, tag_to_find,
-#                  filter_by_attr, filter_attr_value, attr_to_extract):
-#         html.parser.HTMLParser.__init__(self)
-#         self.log = logging.getLogger('HTMLAttributeSearch')
-#         self.interesting_tag = tag_to_find
-#         self.filter = filter_by_attr
-#         self.filter_value = filter_attr_value
-#         self.target = attr_to_extract
-#         self.result = None
-#
-#     def handle_starttag(self, tag, attrs):
-#         if tag == self.interesting_tag:
-#             attributes = {k: v for k, v in attrs}
-#             try:
-#                 if attributes[self.filter] == self.filter_value:
-#                     self.result = attributes[self.target]
-#             except KeyError:
-#                 pass
-#
-#
-# class GrepWorldsInformation(html.parser.HTMLParser):
-#     """
-#     More complex logic to extract worlds information
-#     """
-#
-#     def error(self, message):
-#         self.log.error('Parsing error: %s' % message)
-#
-#     def __init__(self):
-#         html.parser.HTMLParser.__init__(self)
-#         self.log = logging.getLogger('GrepWorldsInformation')
-#         self.in_target_block = False
-#         self.grep_data = False
-#         self.grep_data_into = ''
-#         self.current_world = {}
-#         self.results = []
-#
-#     def handle_starttag(self, tag, attrs):
-#         if tag == 'div':
-#             attributes = {k: v for k, v in attrs}
-#             try:
-#                 if attributes['class'] == 'gameWorldsForLogin':
-#                     self.in_target_block = True
-#                 elif attributes['class'] == 'gameWorldsForRegistration':
-#                     self.in_target_block = False
-#             except KeyError:
-#                 pass
-#
-#         try:
-#
-#             if self.in_target_block:
-#                 if tag == 'li':
-#                     attributes = {k: v for k, v in attrs}
-#                     if attributes['class'] == 'world-name':
-#                         self.grep_data = True
-#                         self.grep_data_into = 'name'
-#                     elif attributes['class'] == 'world-status':
-#                         self.grep_data = True
-#                         self.grep_data_into = 'era'
-#                     elif attributes['class'] == 'world-population':
-#                         self.grep_data = True
-#                         self.grep_data_into = 'population'
-#
-#                 elif tag == 'img':
-#                     attributes = {k: v for k, v in attrs}
-#                     if 'statuses' in attributes['src']:
-#                         self.current_world['status'] = attributes['src'].split('/')[-1].split('.')[0]
-#
-#                     elif 'maps' in attributes['src']:
-#                         self.current_world['map'] = attributes['src'].split('/')[-1].split('.')[0]
-#
-#                 elif tag == 'a':
-#                     attributes = {k: v for k, v in attrs}
-#                     if attributes['class'] == 'one-click':
-#                         self.current_world['link'] = attributes['href']
-#                         self.results.append(self.current_world)
-#                         self.current_world = {}
-#
-#         except KeyError:
-#             pass
-#
-#     def handle_data(self, data):
-#         if self.grep_data:
-#             self.current_world[self.grep_data_into] = data.strip()
-#             self.grep_data = False
 
 
 class AccountManager:
@@ -141,11 +47,11 @@ class AccountManager:
         return AccountManager.instance
 
     def __init__(self):
-        self.log = logging.getLogger('AccountManager')
+        self.log = log.getChild('AccountManager')
         self.log.debug('Initializing...')
         self.authenticated = False
         self.mellon_config = {
-            'url': 'http://mellon-rn.traviangames.com',
+            'url': 'https://mellon-rn.traviangames.com',
             'application': {
                 'domain': 'www.rail-nation.com',
                 'path': '%2Fhome%2F',
@@ -162,28 +68,16 @@ class AccountManager:
                 },
             },
         }
+        self.city_names = {}
+        self.avatars = {}
+        self.avatars_details = {}
+        self.worlds = {}
 
-    #     self.log.debug('Knock-knock on rail-nation lobby')
-    #     response = session.get(LOBBY_URL)
-    #     if len(response.history) > 0:
-    #         self.log.debug('Cannot enter lobby. Authenticate first?')
-    #     else:
-    #         self.log.info('Joined Rail-Nation Lobby')
-    #         self.authenticated = True
-    #
-    # def _load_home_page(self):
-    #     home_url = '%s/home/' % BASE_URL
-    #     self.log.debug('Loading home page: %s' % home_url)
-    #     response = session.get(home_url)
-    #     self.log.debug("Result: %s %s" % (response.status_code,
-    #                                       response.reason))
-    #
-    #     if response.status_code != 200:
-    #         self.log.critical("Failed to download home page (%s)" % home_url)
-    #         self.log.critical("Response: %s" % response.text)
-    #         raise RailNationInitializationError("Failed to download home page. See logs for details.")
+        #
+        # Maybe store sessions somewhere? or maybe store passwords somewhere?
+        #
 
-    def _get_mellon_url(self, action):
+    def _get_mellon_url(self, action, **kwargs):
         url = self.mellon_config['url']
         if action == 'login':
             url += '/authentication/login'
@@ -214,32 +108,35 @@ class AccountManager:
 
         auth_url = self._get_mellon_url('login')
 
-        self.log.debug("Sending login data to server")
+        self.log.debug('Sending login data to server')
         response = session.post(auth_url,
                                 data=login_data,
                                 params={
                                     'msname': 'msid',
                                     'msid': _get_random_msid()
                                 })
-        self.log.debug("Code: %s %s" % (response.status_code,
+        self.log.debug('Code: %s %s' % (response.status_code,
                                         response.reason))
 
         if response.status_code != 200:
-            self.log.critical("Authentication failed.")
-            self.log.critical("Response: %s" % response.text)
-            raise RailNationInitializationError("Could not authenticate. See logs for details.")
+            self.log.critical('Authentication failed.')
+            self.log.critical('Response: %s' % response.text)
+            raise RailNationInitializationError('Could not authenticate. See logs for details.')
 
         self.log.info('Successfully logged in to the game.')
-        self.log.trace(response.text)
+
+        self.authenticated = True
 
         # grep redirect url
         try:
             s = response.text.index("parent.bridge.redirect({url: '")
             e = response.text.index("'", s+30)
         except ValueError:
+            self.log.critical('Cannot parse redirect url from login response!')
+            self.log.critical('Response: %s' % response.text)
             raise RailNationInitializationError('Cannot parse redirect url from login response!')
         else:
-            redirect_url = response.text[s+30, e]
+            redirect_url = response.text[s+30: e]
 
         self.log.debug('Got redirect url: %s' % redirect_url)
 
@@ -253,6 +150,145 @@ class AccountManager:
 
         self.log.debug('Entering Lobby...')
         response = session.get(redirect_url)
+        self.log.debug('Code: %s %s' % (response.status_code,
+                                        response.reason))
 
+        if response.status_code != 200:
+            self.log.critical('Could not enter lobby.')
+            self.log.critical('Response: %s' % response.text)
+            raise RailNationInitializationError('Could not enter lobby. Strange...')
 
+        self.load_lobby_data()
+
+    def load_lobby_data(self):
+        self.log.debug('Loading lobby data')
+
+        self.log.info('Loading city names...')
+        response = session.get('http://lobby.rail-nation.com/lang/city-names.js')
+        self.log.debug('Code: %s %s' % (response.status_code,
+                                        response.reason))
+
+        if response.status_code != 200:
+            self.log.critical('Error while loading city names.')
+            self.log.critical('Response: %s' % response.text)
+            raise RailNationInitializationError('Error while loading city names.')
+
+        for line in response.text.splitlines():
+            if not line.strip():
+                continue
+            fields = line.split("'")
+            try:
+                names_pack_id, city_id = fields[1].split('-', 1)
+                city_name = fields[3]
+            except IndexError:
+                self.log.critical('Cannot parse city names: %s' % line)
+                self.log.debug('fields: %s' % fields)
+                self.log.critical('Response: %s' % response.text)
+                raise RailNationInitializationError('Error while parsing city names.')
+            else:
+                try:
+                    self.city_names[names_pack_id][city_id] = city_name
+                except KeyError:
+                    self.city_names[names_pack_id] = {city_id: city_name}
+                finally:
+                    self.log.debug('Pack %s: %s => %s' % (names_pack_id, city_id, city_name))
+
+        # At this point we should have a valid cookie named "gl5SessionKey" in our session
+        session_key = None
+        for c in session.cookies:
+            if c.name == 'gl5SessionKey':
+                session_key = c.value.split('%22')[3]
+                break
+
+        self.log.debug('Found session key %s' % session_key)
+
+        data = {
+            'controller': 'player', 
+            'action': 'getAll',
+            'params': {},
+            'session': session_key
+        }
+        self.log.debug('Requesting: %s' % data)
+
+        response = session.post('http://lobby.rail-nation.com/api/index.php',
+                                headers={'Content-Type': 'application/json;charset=UTF=8'},
+                                data=json.dumps(data))
+        self.log.debug('Code: %s %s' % (response.status_code,
+                                        response.reason))
+
+        if response.status_code != 200:
+            self.log.critical('Error while loading lobby data.')
+            self.log.critical('Response: %s' % response.text)
+            raise RailNationInitializationError('Could not load lobby data. Strange...')
+
+        r = response.json()
+        if 'error' in r.keys() and r['error']:
+            self.log.critical('Error while loading lobby data.')
+            self.log.critical('Response: %s' % r)
+            raise RailNationInitializationError('Could not load lobby data...')
+
+        for cache_item in r['cache']:
+            if cache_item['name'] == 'Collection:Avatar:':
+                for avatar_cache_item in cache_item['data']['cache']:
+                    avatar_id = avatar_cache_item['data']['avatarIdentifier']
+                    self.log.info('Found avatar ID: %s' % avatar_id)
+                    self.log.debug('Avatar data: %s' % pprint.pformat(avatar_cache_item['data']))
+                    self.avatars[avatar_id] = avatar_cache_item['data']
+            elif cache_item['name'].startswith('AvatarInformation:'):
+                avatar_id = cache_item['data']['avatarIdentifier']
+                self.log.info('Found avatar info ID: %s' % avatar_id)
+                self.log.debug('Avatar info: %s' % pprint.pformat(cache_item['data']))
+                self.avatars_details[avatar_id] = cache_item['data']
+
+        self.log.debug('Requesting details')
+        data = {
+            'controller': 'cache',
+            'action': 'get',
+            'params': {
+                'names': [
+                    'Feed:%s:0' % self.mellon_config['application']['countryId'],
+                    'ServerInfo:%s' % self.mellon_config['application']['countryId'],
+                ]
+            },
+            'session': session_key,
+        }
+
+        for avatar in self.avatars.values():
+            data['params']['names'].append('GameWorld:%s' % avatar['consumersId'])
+
+        if len(self.avatars) != len(self.avatars_details):
+            missing_info = set(self.avatars.keys()) - set(self.avatars_details.keys())
+            for avatar_id in missing_info:
+                data['params']['names'].append('AvatarInformation:%s' % avatar_id)
+
+        self.log.debug('Requesting: %s' % data)
+
+        response = session.post('http://lobby.rail-nation.com/api/index.php',
+                                headers={'Content-Type': 'application/json;charset=UTF=8'},
+                                data=json.dumps(data))
+        self.log.debug('Code: %s %s' % (response.status_code,
+                                        response.reason))
+
+        if response.status_code != 200:
+            self.log.critical('Error while loading worlds data.')
+            self.log.critical('Response: %s' % response.text)
+            raise RailNationInitializationError('Could not load worlds data. Strange...')
+
+        r = response.json()
+        if 'error' in r.keys() and r['error']:
+            self.log.critical('Error while loading worlds data.')
+            self.log.critical('Response: %s' % r)
+            raise RailNationInitializationError('Could not load worlds data...')
+
+        for cache_item in r['cache']:
+            if cache_item['name'].startswith('AvatarInformation:'):
+                avatar_id = cache_item['data']['avatarIdentifier']
+                self.log.info('Found avatar info ID: %s' % avatar_id)
+                self.log.debug('Avatar info: %s' % pprint.pformat(cache_item['data']))
+                self.avatars_details[avatar_id] = cache_item['data']
+            elif cache_item['name'].startswith('GameWorld:'):
+                world_id = cache_item['data']['consumersId']
+                self.log.info('Found world ID: %s' % world_id)
+                self.log.debug('World data: %s' % pprint.pformat(cache_item['data']))
+                self.worlds[world_id] = cache_item['data']
 

@@ -8,7 +8,8 @@ ENV     PYTHONPATH /opt/railnation/lib
 
 EXPOSE  8080
 
-CMD     /usr/bin/python -m railnation
+ENTRYPOINT  ["/bin/sh", "/opt/railnation/start.sh"]
+CMD     []
 
 ADD     . /opt/railnation
 
