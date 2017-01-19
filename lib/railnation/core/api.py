@@ -68,7 +68,7 @@ class RailNationClientAPIv1:
     @cherrypy.tools.json_out()
     @cherrypy.expose
     def worlds(self):
-        self.log.debug('Listing worlds')
+        self.log.debug('%s /worlds called' % cherrypy.request.method)
         manager = AccountManager.get_instance()
 
         response = []
@@ -103,6 +103,20 @@ class RailNationClientAPIv1:
                 'worldId': world['consumersId']
             })
 
+        self.log.debug('Returning %s worlds' % len(response))
         return {'code': 0, 'data': response}
+
+    @cherrypy.tools.json_out()
+    @cherrypy.expose
+    def join(self, world_id):
+        self.log.debug('%s /join/%s called' % (cherrypy.request.method, world_id))
+        manager = AccountManager.get_instance()
+
+        manager.join_world(world_id)
+
+        if manager.in_game:
+            return {'code': 0, 'data': True}
+        else:
+            return {'code': 0, 'data': False}
 
 
