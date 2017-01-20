@@ -12,7 +12,11 @@ from railnation.config import (
     XDM_CONFIG,
 )
 from railnation.core.common import log
-from railnation.core.server import session
+from railnation.core.server import (
+    session,
+    server,
+    ServerCall
+)
 from railnation.core.errors import RailNationInitializationError
 
 
@@ -361,6 +365,9 @@ class AccountManager:
             self.log.critical('Could not enter world.')
             self.log.critical('Response: %s' % response.text)
             raise RailNationInitializationError('Could not enter world. Strange...')
+
+        global server
+        server = ServerCall(self.worlds[int(world_id)]['baseUrl'])
 
         self.in_game = True
 

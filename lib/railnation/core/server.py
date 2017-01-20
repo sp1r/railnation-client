@@ -17,6 +17,7 @@ from railnation.config import (
 from railnation.core.errors import (
     RailNationConnectionProblem
 )
+from railnation.core.common import log
 
 
 session = requests.Session()
@@ -26,6 +27,13 @@ session.headers.update({
                   'Chrome/36.0.1985.125 Safari/537.36',
     'Accept-Language': 'en-US,en;q=0.8,ru;q=0.6',
 })
+
+json_communication = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+}
+
+server = None
 
 
 def _quote(item):
@@ -52,11 +60,12 @@ def _make_hash(item):
     return hashlib.md5(_quote(item).encode("utf-8")).hexdigest()
 
 
-class ServerCaller:
+class ServerCall:
     def __init__(self, server_url):
-        self.log = logging.getLogger('ServerCaller')
+        self.log = log.getChild('ServerCall')
         self.log.debug('Initialization...')
         self.api_url = 'http://%s/web/rpc/flash.php' % server_url
+        self.log.debug('Base url for calls: %s' % self.api_url)
 
     def call(self, interface_name, method_name, data):
         """
@@ -73,11 +82,6 @@ class ServerCaller:
         :return: server response as dict object (parsed from json)
         :rtype: dict
         """
-        assert session is not None
-        assert isinstance(interface_name, str)
-        assert isinstance(method_name, str)
-        assert isinstance(data, list)
-
         self.log.debug('Requesting: %s %s' % (interface_name, method_name))
         self.log.debug('Data: %s' % data)
 
@@ -95,7 +99,8 @@ class ServerCaller:
                 r = session.post(self.api_url,
                                  params=target,
                                  data=json.dumps(payload),
-                                 timeout=CONNECTION_TIMEOUT)
+                                 timeout=CONNECTION_TIMEOUT,
+                                 headers=json_communication)
 
             except requests.exceptions.ConnectionError as err:
                 self.log.error('Connection to %s resulted in error: %s' % (self.api_url,
