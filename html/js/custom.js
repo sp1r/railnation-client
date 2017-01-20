@@ -37,9 +37,9 @@ $(document).on('ready',function(){
                                         worlds += '<div class="era inline">Эпоха ' + world.era + '</div>';
                                         worlds += '<div class="eraDay inline">День ' + world.eraDay + '/14</div>';
                                         if(world.cityName){
-                                            worlds += '<div class="eraDay inline">Город ' + world.cityName + '/14</div>';
+                                            worlds += '<div class="eraDay inline">Город ' + world.cityName + '</div>';
                                         }
-                                        worlds += '<div class="playersOnline inline">Онлайн ' + world.playersOnline + '/14</div>';
+                                        worlds += '<div class="playersOnline inline">Онлайн ' + world.playersOnline + '</div>';
                                         worlds += '<div class="clear"></div>';
                                         worlds += '</div>';
                                     });
