@@ -57,3 +57,45 @@ button[type='submit']{
 .login-box button:hover{
     background: #cecece;
 }
+
+.login-form{
+    position: relative;
+}
+
+.load-box{
+    display: none;
+    background: rgba(47, 63, 84, 0.7);
+}
+
+.load-box .fa{
+    width: 25px;
+    height: 31px;
+    font-size: 30px;
+    line-height: 30px;
+    color: white;
+}
+
+.load-box.active{
+    display: block;
+}
+
+.worlds-box{
+    display: none;
+    z-index: 1;
+    width: 600px;
+    height: 450px;
+    background: white;
+    padding: 30px;
+}
+
+.worlds-box.active{
+    display: block;
+
+}
+
+.worlds-box .world-row{
+    display: block;
+    width: 100%;
+    margin: 20px 0;
+    border-bottom: 1px solid silver;
+}

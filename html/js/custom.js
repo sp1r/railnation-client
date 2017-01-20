@@ -3,7 +3,14 @@ $(document).on('ready',function(){
     $('.login-form').on('submit', function(e){
         e.preventDefault();
         var username = $('input[name=username]').val(),
-            password = $('input[name=password]').val();
+            password = $('input[name=password]').val(),
+            submit = $('button[type=submit]'),
+            load = $('.load-box'),
+            worldsBox = $('.worlds-box');
+
+        if(username && password){
+            load.addClass('active');
+        }
 
         $.ajax({
             url: 'api/v1/login',
@@ -14,8 +21,6 @@ $(document).on('ready',function(){
                 "password": password
             }),
             success: function (data) {
-                console.log(data);
-
                 if(data.code === 0){
                     $.ajax({
                         url: 'api/v1/worlds',
@@ -24,11 +29,19 @@ $(document).on('ready',function(){
                         success: function (d) {
                             if(d.code === 0){
                                 if(d.data.length){
-                                    var worlds = d.data;
+                                    var worlds = '';
 
+                                    $.each(d.data, function(world){
+                                        worlds += '<div class="world-row">';
+                                        worlds += '<div class="worldId">world.worldId</div>';
+                                        worlds += '<div class="worldName">world.worldName</div>';
+                                        worlds += '<div class="era">world.era</div>';
+                                        worlds += '<div class="eraDay">world.eraDay</div>';
+                                        worlds += '</div>';
+                                    });
 
-                                    console.log(worlds);
-
+                                    worldsBox.html(worlds).addClass('active');
+                                    load.removeClass('active');
                                 }
                             }
                         },
@@ -39,12 +52,8 @@ $(document).on('ready',function(){
                 }else{
                     console.log('error');
                 }
-
-
             }
         });
-
-
 
 
     });
