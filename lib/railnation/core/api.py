@@ -95,6 +95,12 @@ class RailNationClientAPIv1:
                 self.log.critical('World data not found. Error in initialization!')
                 return {'code': 2, 'message': 'Initialization error', 'data': None}
 
+            try:
+                city_name = manager.city_names[int(world_info['cityNamesPackage'])][avatar_info['cityId']]
+            except KeyError:
+                self.log.warning('Cannot load city name for ID: %s' % avatar_info['cityId'])
+                city_name = ''
+
             response.append({
                 'avatarName': avatar_data['avatarName'],
                 'avatarId': avatar_data['avatarIdentifier'],
@@ -103,7 +109,7 @@ class RailNationClientAPIv1:
                 'isSuspended': avatar_data['isSuspended'],
                 'playerPrestige': avatar_info['playerPrestige'],
                 'playerRank': avatar_info['playerRank'],
-                'cityName': manager.city_names[int(world_info['cityNamesPackage'])][avatar_info['cityId']],
+                'cityName': city_name,
                 'cityLevel': avatar_info['cityLevel'],
                 'associationName': avatar_info['associationName'],
                 'associationPrestige': avatar_info['associationPrestige'],
