@@ -194,6 +194,7 @@ class AccountManager:
             fields = line.split("'")
             try:
                 names_pack_id, city_id = fields[1].split('-', 1)
+                names_pack_id = int(names_pack_id)  # ensure int key
                 city_name = fields[3]
             except IndexError:
                 self.log.critical('Cannot parse city names: %s' % line)
@@ -248,12 +249,12 @@ class AccountManager:
                     avatar_id = avatar_cache_item['data']['avatarIdentifier']
                     self.log.info('Found avatar ID: %s' % avatar_id)
                     self.log.debug('Avatar data: %s' % pprint.pformat(avatar_cache_item['data']))
-                    self.avatars[avatar_id] = avatar_cache_item['data']
+                    self.avatars[int(avatar_id)] = avatar_cache_item['data']
             elif cache_item['name'].startswith('AvatarInformation:'):
                 avatar_id = cache_item['data']['avatarIdentifier']
                 self.log.info('Found avatar info ID: %s' % avatar_id)
                 self.log.debug('Avatar info: %s' % pprint.pformat(cache_item['data']))
-                self.avatars_details[avatar_id] = cache_item['data']
+                self.avatars_details[int(avatar_id)] = cache_item['data']
 
         self.log.debug('Requesting details')
         data = {
@@ -300,7 +301,7 @@ class AccountManager:
                 avatar_id = cache_item['data']['avatarIdentifier']
                 self.log.info('Found avatar info ID: %s' % avatar_id)
                 self.log.debug('Avatar info: %s' % pprint.pformat(cache_item['data']))
-                self.avatars_details[avatar_id] = cache_item['data']
+                self.avatars_details[int(avatar_id)] = cache_item['data']
             elif cache_item['name'].startswith('GameWorld:'):
                 world_id = cache_item['data']['consumersId']
                 self.log.info('Found world ID: %s' % world_id)
