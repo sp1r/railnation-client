@@ -81,11 +81,13 @@ button[type='submit']{
 
 .worlds-box{
     display: none;
+    overflow: auto;
+    position: fixed;
     z-index: 1;
     width: 600px;
     height: 450px;
     background: white;
-    padding: 30px;
+    padding: 20px 0;
 }
 
 .worlds-box.active{
@@ -96,6 +98,30 @@ button[type='submit']{
 .worlds-box .world-row{
     display: block;
     width: 100%;
-    margin: 20px 0;
-    border-bottom: 1px solid silver;
+    padding: 20px 30px;
+    cursor: pointer;
+    clear: both;
+}
+
+.worlds-box .world-row:hover{
+    background: rgba(54, 106, 175, 0.1);
+}
+
+.worlds-box .world-row+.world-row{
+    border-top: 2px solid #2f3f54;
+}
+
+.world-row .worldName {
+    font-size: 20px;
+    color: #4d9aff;
+    padding-bottom: 10px;
+
+}
+.world-row .inline {
+    float: left;
+    padding-right: 30px;
+}
+
+.clear {
+    clear: both;
 }

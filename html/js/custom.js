@@ -31,12 +31,16 @@ $(document).on('ready',function(){
                                 if(d.data.length){
                                     var worlds = '';
 
-                                    $.each(d.data, function(world){
-                                        worlds += '<div class="world-row">';
-                                        worlds += '<div class="worldId">world.worldId</div>';
-                                        worlds += '<div class="worldName">world.worldName</div>';
-                                        worlds += '<div class="era">world.era</div>';
-                                        worlds += '<div class="eraDay">world.eraDay</div>';
+                                    $.each(d.data, function(i, world){
+                                        worlds += '<div class="world-row" data-id="' + world.worldId + '">';
+                                        worlds += '<div class="worldName">' + world.worldName + '</div>';
+                                        worlds += '<div class="era inline">Эпоха ' + world.era + '</div>';
+                                        worlds += '<div class="eraDay inline">День ' + world.eraDay + '/14</div>';
+                                        if(world.cityName){
+                                            worlds += '<div class="eraDay inline">Город ' + world.cityName + '/14</div>';
+                                        }
+                                        worlds += '<div class="playersOnline inline">Онлайн ' + world.playersOnline + '/14</div>';
+                                        worlds += '<div class="clear"></div>';
                                         worlds += '</div>';
                                     });
 
@@ -52,6 +56,36 @@ $(document).on('ready',function(){
                 }else{
                     console.log('error');
                 }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+
+
+    });
+
+
+
+    $('body').on('click', '.world-row', function(e){
+        e.preventDefault();
+        var worldID = $(this).attr('data-id');
+
+        console.log('Click, world ID - ' + worldID);
+
+        $.ajax({
+            url: '/api/v1/join/'+worldID,
+            type: 'GET',
+            contentType: "application/json",
+            success: function (data) {
+                if(data.code === 0){
+                    console.log('Enter to world - ' + worldID);
+                }else{
+                    console.log(data);
+                }
+            },
+            error: function (data) {
+                console.log(data);
             }
         });
 
