@@ -26,6 +26,16 @@ def _get_random_msid():
     return ''.join([random.choice(msid_chars) for x in range(26)])
 
 
+def _cut_redirect_url(data):
+        try:
+            s = data.index("parent.bridge.redirect({url: '")
+            e = data.index("'", s+30)
+        except ValueError:
+            return None
+        else:
+            return data[s+30: e]
+
+
 class AccountManager:
     """
     Representation of Rail-Nation player`s account.
@@ -50,6 +60,7 @@ class AccountManager:
         self.log = log.getChild('AccountManager')
         self.log.debug('Initializing...')
         self.authenticated = False
+        self.in_game = False
         self.mellon_config = {
             'url': 'https://mellon-rn.traviangames.com',
             'application': {
@@ -68,6 +79,7 @@ class AccountManager:
                 },
             },
         }
+        self.msid = _get_random_msid()
         self.city_names = {}
         self.avatars = {}
         self.avatars_details = {}
@@ -81,6 +93,12 @@ class AccountManager:
         url = self.mellon_config['url']
         if action == 'login':
             url += '/authentication/login'
+        elif action == 'join':
+            if 'gameWorldId' not in kwargs:
+                error_msg = 'Missing parameter "gameWorldId" while construction join-world url'
+                self.log.error(error_msg)
+                raise RailNationInitializationError(error_msg)
+            url += '/game-world/join/gameWorldId/%s' % kwargs['gameWorldId']
 
         # Probably order of fields is not important, but...
         url += '/applicationDomain/%(domain)s' \
@@ -113,7 +131,7 @@ class AccountManager:
                                 data=login_data,
                                 params={
                                     'msname': 'msid',
-                                    'msid': _get_random_msid()
+                                    'msid': self.msid,
                                 })
         self.log.debug('Code: %s %s' % (response.status_code,
                                         response.reason))
@@ -125,28 +143,25 @@ class AccountManager:
 
         self.log.info('Successfully logged in to the game.')
 
+        redirect_url = _cut_redirect_url(response.text)
+
+        if redirect_url:
+            self.log.debug('Got redirect url: %s' % redirect_url)
+        else:
+            self.log.error('Cannot parse redirect url from login response')
+            self.log.error(response.text)
+            raise RailNationInitializationError('Cannot parse redirect url from login response')
+
         self.authenticated = True
 
-        # grep redirect url
         try:
-            s = response.text.index("parent.bridge.redirect({url: '")
-            e = response.text.index("'", s+30)
-        except ValueError:
-            self.log.critical('Cannot parse redirect url from login response!')
-            self.log.critical('Response: %s' % response.text)
-            raise RailNationInitializationError('Cannot parse redirect url from login response!')
-        else:
-            redirect_url = response.text[s+30: e]
-
-        self.log.debug('Got redirect url: %s' % redirect_url)
-
-        try:
-            msid_cookie = {k: v for k, v in [p.split('=') for p in redirect_url.split('&')[1].split('?')]}['msid']
+            self.msid = {k: v for k, v in [p.split('=') for p in redirect_url.split('&')[1].split('?')]}['msid']
         except KeyError:
             raise RailNationInitializationError('Cannot parse msid from redirect url in login response!')
 
-        self.log.debug('Got new msid cookie: %s' % msid_cookie)
-        session.cookies.update({'msid': msid_cookie})
+        self.log.debug('Got new msid value: %s' % self.msid)
+        session.cookies['msid'] = self.msid
+        self.mellon_config['application']['path'] = '%2F%23%2Fmsid%3D' + self.msid
 
         self.log.debug('Entering Lobby...')
         response = session.get(redirect_url)
@@ -179,6 +194,7 @@ class AccountManager:
             fields = line.split("'")
             try:
                 names_pack_id, city_id = fields[1].split('-', 1)
+                names_pack_id = int(names_pack_id)  # ensure int key
                 city_name = fields[3]
             except IndexError:
                 self.log.critical('Cannot parse city names: %s' % line)
@@ -233,12 +249,12 @@ class AccountManager:
                     avatar_id = avatar_cache_item['data']['avatarIdentifier']
                     self.log.info('Found avatar ID: %s' % avatar_id)
                     self.log.debug('Avatar data: %s' % pprint.pformat(avatar_cache_item['data']))
-                    self.avatars[avatar_id] = avatar_cache_item['data']
+                    self.avatars[int(avatar_id)] = avatar_cache_item['data']
             elif cache_item['name'].startswith('AvatarInformation:'):
                 avatar_id = cache_item['data']['avatarIdentifier']
                 self.log.info('Found avatar info ID: %s' % avatar_id)
                 self.log.debug('Avatar info: %s' % pprint.pformat(cache_item['data']))
-                self.avatars_details[avatar_id] = cache_item['data']
+                self.avatars_details[int(avatar_id)] = cache_item['data']
 
         self.log.debug('Requesting details')
         data = {
@@ -285,10 +301,67 @@ class AccountManager:
                 avatar_id = cache_item['data']['avatarIdentifier']
                 self.log.info('Found avatar info ID: %s' % avatar_id)
                 self.log.debug('Avatar info: %s' % pprint.pformat(cache_item['data']))
-                self.avatars_details[avatar_id] = cache_item['data']
+                self.avatars_details[int(avatar_id)] = cache_item['data']
             elif cache_item['name'].startswith('GameWorld:'):
                 world_id = cache_item['data']['consumersId']
                 self.log.info('Found world ID: %s' % world_id)
                 self.log.debug('World data: %s' % pprint.pformat(cache_item['data']))
-                self.worlds[world_id] = cache_item['data']
+                self.worlds[int(world_id)] = cache_item['data']
+
+    def join_world(self, world_id):
+        if not self.authenticated:
+            raise RailNationInitializationError('Cannot join worlds without authentication')
+
+        try:
+            self.log.debug('Trying to join world: %s' % self.worlds[int(world_id)]['worldName'])
+        except KeyError:
+            self.log.error('Unknown world ID: %s' % world_id)
+            raise RailNationInitializationError('Unknown world ID: %s' % world_id)
+
+        world_url = self._get_mellon_url('join', gameWorldId=world_id)
+
+        response = session.get(world_url,
+                               params={
+                                   'msname': 'msid',
+                                   'msid': self.msid,
+                               })
+        self.log.debug('Code: %s %s' % (response.status_code,
+                                        response.reason))
+
+        if response.status_code != 200:
+            self.log.critical('Join world failed.')
+            self.log.critical('Response: %s' % response.text)
+            raise RailNationInitializationError('Join world failed. See logs for details.')
+
+        redirect_url = _cut_redirect_url(response.text)
+
+        if redirect_url:
+            self.log.debug('Got redirect url: %s' % redirect_url)
+        else:
+            self.log.error('Cannot parse redirect url from world-join response')
+            self.log.error(response.text)
+            raise RailNationInitializationError('Cannot parse redirect url from world-join response')
+
+        self.log.info('Successful world join.')
+
+        try:
+            self.msid = {k: v for k, v in [p.split('=') for p in redirect_url.split('&')[1].split('?')]}['msid']
+        except KeyError:
+            raise RailNationInitializationError('Cannot parse msid from redirect url in world-join response!')
+
+        self.log.debug('Got new msid value: %s' % self.msid)
+        session.cookies['msid'] = self.msid
+
+        self.log.info('Entering world: %s' % self.worlds[int(world_id)]['worldName'])
+        response = session.get(redirect_url)
+        self.log.debug('Code: %s %s' % (response.status_code,
+                                        response.reason))
+
+        if response.status_code != 200:
+            self.log.critical('Could not enter world.')
+            self.log.critical('Response: %s' % response.text)
+            raise RailNationInitializationError('Could not enter world. Strange...')
+
+        self.in_game = True
+
 
