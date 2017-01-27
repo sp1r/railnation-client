@@ -93,7 +93,7 @@ $(document).on('ready',function(){
 
     });
 
-    $('.world-menu .station').on(function(e){
+    $('.world-menu .station').on('click', function(e){
         e.preventDefault();
 
 
