@@ -40,6 +40,10 @@ def load_options(parser):
                       default=False,
                       help='enable debug logging')
 
+    parser.add_option('--swagger', action='store_true', dest='enable_swagger',
+                      default=False,
+                      help='enable swagger UI')
+
 
 def CORS():
     cherrypy.response.headers["Access-Control-Allow-Origin"] = "*"
@@ -105,6 +109,13 @@ def main(argv=None):
             'tools.staticdir.dir': os.path.join(html_dir, 'js'),
         },
     }
+
+    if options.enable_swagger:
+        ui_config['/swagger'] = {
+            'tools.staticdir.on': True,
+            'tools.staticdir.dir': os.path.join(html_dir, 'swagger'),
+            'tools.staticdir.index': 'index.html',
+        }
 
     api_v1_config = {}
 
