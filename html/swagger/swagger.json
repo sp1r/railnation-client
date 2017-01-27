@@ -1,0 +1,666 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Railnation Client API",
+    "version": "1.0"
+  },
+  "basePath": "/api/v1",
+  "paths": {
+
+    "/login": {
+      "post": {
+        "summary": "Login to lobby",
+        "description": "This method perform authentication to Rail-nation Lobby. Should be called first on any session.",
+        "tags": ["Pre-game"],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "credentials",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authentication results",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "boolean"
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "Auth success",
+                "data": true
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/worlds": {
+      "get": {
+        "summary": "List player`s worlds",
+        "description": "Returns list of all game worlds where player has avatars.",
+        "tags": ["Pre-game"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Game worlds",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "avatarName": {
+                        "type": "string"
+                      },
+                      "avatarId": {
+                        "type": "integer"
+                      },
+                      "country": {
+                        "type": "string"
+                      },
+                      "isBanned": {
+                        "type": "boolean"
+                      },
+                      "isSuspended": {
+                        "type": "boolean"
+                      },
+                      "playerPrestige": {
+                        "type": "integer"
+                      },
+                      "playerRank": {
+                        "type": "integer"
+                      },
+                      "cityName": {
+                        "type": "string"
+                      },
+                      "cityLevel": {
+                        "type": "integer"
+                      },
+                      "associationName": {
+                        "type": "string"
+                      },
+                      "associationPrestige": {
+                        "type": "integer"
+                      },
+                      "associationRank": {
+                        "type": "integer"
+                      },
+                      "lastLogin": {
+                        "type": "integer"
+                      },
+                      "era": {
+                        "type": "integer"
+                      },
+                      "eraDay": {
+                        "type": "integer"
+                      },
+                      "eraTimeLapsed": {
+                        "type": "integer"
+                      },
+                      "eraTimeLeft": {
+                        "type": "integer"
+                      },
+                      "playersOnline": {
+                        "type": "integer"
+                      },
+                      "playersActive": {
+                        "type": "integer"
+                      },
+                      "playersRegistered": {
+                        "type": "integer"
+                      },
+                      "scenario": {
+                        "type": "string"
+                      },
+                      "worldName": {
+                        "type": "string"
+                      },
+                      "worldId": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "Auth success",
+                "data": [{
+                  "avatarName": "Vasiya",
+                  "avatarId": "d380ae53-932c-ad81-688b-46d471f133d7",
+                  "country": "Ru_ru",
+                  "isBanned": false,
+                  "isSuspended": false,
+                  "playerPrestige": 320,
+                  "playerRank": 423,
+                  "cityName": "London",
+                  "cityLevel": 6,
+                  "associationName": "Geeks",
+                  "associationPrestige": 163,
+                  "associationRank": 38,
+                  "lastLogin": 0,
+                  "era": 1,
+                  "eraDay": 3,
+                  "eraTimeLapsed": 343,
+                  "eraTimeLeft": 21345,
+                  "playersOnline": 104,
+                  "playersActive": 503,
+                  "playersRegistered": 1240,
+                  "scenario": "classic",
+                  "worldName": "COM1 Steam Boiler",
+                  "worldId": 1376
+                }]
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/join/{world_id}": {
+      "get": {
+        "summary": "Enter game world",
+        "description": "Starts game in selected world.",
+        "tags": ["Pre-game"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "world_id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Join world results",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "boolean"
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "Game started",
+                "data": true
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/resources": {
+      "get": {
+        "summary": "Player resources",
+        "description": "Returns list of all player resources as well as resources limits.",
+        "tags": ["Interface"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Resources data",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "amount": {
+                        "type": "object",
+                        "properties": {
+                          "resource_id": {
+                            "type": "integer"
+                          }
+                        }
+                      },
+                      "limit": {
+                        "type": "object",
+                        "properties": {
+                          "resource_id": {
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": {
+                  "amount": {
+                    "1": 1003,
+                    "2": 34,
+                    "3": 20
+                  },
+                  "limit": {
+                    "1": 3000,
+                    "2": -1,
+                    "3": -1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/station/": {
+      "get": {
+        "summary": "Self station info",
+        "description": "Returns information about active player`s station buildings.",
+        "tags": ["Station"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Station info",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "building_id": {
+                      "object": {
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "level": {
+                            "type": "integer"
+                          },
+                          "build_in_progress": {
+                            "type": "boolean"
+                          },
+                          "build_finish_at": {
+                            "type": "integer"
+                          },
+                          "production_at": {
+                            "type": "integer"
+                          },
+                          "video_watched": {
+                            "type": "boolean"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": {
+                  "0": {
+                    "name": "Engine house",
+                    "level": 10,
+                    "build_in_progress": false,
+                    "build_finish_at": 143529345,
+                    "production_at": 0,
+                    "video_watched": false
+                  },
+                  "1": {
+                    "name": "Station concourse",
+                    "level": 7,
+                    "build_in_progress": false,
+                    "build_finish_at": 143522345,
+                    "production_at": 0,
+                    "video_watched": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/station/{player_id}": {
+      "get": {
+        "summary": "Station info",
+        "description": "Returns information about some player`s station buildings.",
+        "tags": ["Station"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "player_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Station info",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "building_id": {
+                      "object": {
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "level": {
+                            "type": "integer"
+                          },
+                          "build_in_progress": {
+                            "type": "boolean"
+                          },
+                          "build_finish_at": {
+                            "type": "integer"
+                          },
+                          "production_at": {
+                            "type": "integer"
+                          },
+                          "video_watched": {
+                            "type": "boolean"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": {
+                  "0": {
+                    "name": "Engine house",
+                    "level": 10,
+                    "build_in_progress": false,
+                    "build_finish_at": 143529345,
+                    "production_at": 0,
+                    "video_watched": false
+                  },
+                  "1": {
+                    "name": "Station concourse",
+                    "level": 7,
+                    "build_in_progress": false,
+                    "build_finish_at": 143522345,
+                    "production_at": 0,
+                    "video_watched": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/association/": {
+      "get": {
+        "summary": "Self association info",
+        "description": "Returns information about current active player`s association.",
+        "tags": ["Association"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Association info",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "prestige": {
+                      "type": "integer"
+                    },
+                    "rank": {
+                      "type": "integer"
+                    },
+                    "chair": {
+                      "type": "string"
+                    },
+                    "deputies": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "members": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": {
+                  "id": "d380ae53-932c-ad81-688b-46d471f133d8",
+                  "name": "Assa",
+                  "prestige": 12345,
+                  "rank": 1,
+                  "chair": "d380ae53-932c-ad81-688b-46d471f133d7",
+                  "deputies": [
+                    "d380ae53-932c-ad81-688b-46d471f133d9",
+                    "d380ae53-932c-ad81-688b-46d471f133d0"
+                  ],
+                  "members": [
+                    "d380ae53-932c-ad81-688b-46d471f133d8",
+                    "d380ae53-932c-ad81-688b-46d471f133d9",
+                    "d380ae53-932c-ad81-688b-46d471f133d0",
+                    "d380ae53-932c-ad81-688b-46d471f133d1",
+                    "d380ae53-932c-ad81-688b-46d471f133d2"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/association/{association_id}": {
+      "get": {
+        "summary": "Association info",
+        "description": "Returns information about arbitrary association.",
+        "tags": ["Association"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "association_id",
+            "in": "path",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Association info",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "prestige": {
+                      "type": "integer"
+                    },
+                    "rank": {
+                      "type": "integer"
+                    },
+                    "chair": {
+                      "type": "string"
+                    },
+                    "deputies": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "members": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": {
+                  "id": "d380ae53-932c-ad81-688b-46d471f133d8",
+                  "name": "Assa",
+                  "prestige": 12345,
+                  "rank": 1,
+                  "chair": "d380ae53-932c-ad81-688b-46d471f133d7",
+                  "deputies": [
+                    "d380ae53-932c-ad81-688b-46d471f133d9",
+                    "d380ae53-932c-ad81-688b-46d471f133d0"
+                  ],
+                  "members": [
+                    "d380ae53-932c-ad81-688b-46d471f133d8",
+                    "d380ae53-932c-ad81-688b-46d471f133d9",
+                    "d380ae53-932c-ad81-688b-46d471f133d0",
+                    "d380ae53-932c-ad81-688b-46d471f133d1",
+                    "d380ae53-932c-ad81-688b-46d471f133d2"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+  }
+}

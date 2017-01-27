@@ -12,8 +12,17 @@ from railnation.config import (
     XDM_CONFIG,
 )
 from railnation.core.common import log
-from railnation.core.server import session
-from railnation.core.errors import RailNationInitializationError
+from railnation.core.server import (
+    session,
+    server,
+)
+from railnation.core.errors import (
+    RailNationInitializationError,
+    RailNationClientError,
+)
+
+from railnation.managers.avatar import AvatarManager
+from railnation.managers.properties import PropertiesManager
 
 
 msid_chars = ('1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -80,6 +89,7 @@ class AccountManager:
             },
         }
         self.msid = _get_random_msid()
+        self.log.debug('Generated new msid: %s' % self.msid)
         self.city_names = {}
         self.avatars = {}
         self.avatars_details = {}
@@ -114,6 +124,7 @@ class AccountManager:
 
     def login(self, username, password):
         if self.authenticated:
+            self.log.warn('Already authenticated')
             return
 
         self.log.debug('Trying to login with username: %s' % username)
@@ -125,6 +136,7 @@ class AccountManager:
         }
 
         auth_url = self._get_mellon_url('login')
+        self.log.debug('Auth url: %s' % auth_url)
 
         self.log.debug('Sending login data to server')
         response = session.post(auth_url,
@@ -141,8 +153,6 @@ class AccountManager:
             self.log.critical('Response: %s' % response.text)
             raise RailNationInitializationError('Could not authenticate. See logs for details.')
 
-        self.log.info('Successfully logged in to the game.')
-
         redirect_url = _cut_redirect_url(response.text)
 
         if redirect_url:
@@ -151,8 +161,6 @@ class AccountManager:
             self.log.error('Cannot parse redirect url from login response')
             self.log.error(response.text)
             raise RailNationInitializationError('Cannot parse redirect url from login response')
-
-        self.authenticated = True
 
         try:
             self.msid = {k: v for k, v in [p.split('=') for p in redirect_url.split('&')[1].split('?')]}['msid']
@@ -163,7 +171,7 @@ class AccountManager:
         session.cookies['msid'] = self.msid
         self.mellon_config['application']['path'] = '%2F%23%2Fmsid%3D' + self.msid
 
-        self.log.debug('Entering Lobby...')
+        self.log.info('Entering Lobby...')
         response = session.get(redirect_url)
         self.log.debug('Code: %s %s' % (response.status_code,
                                         response.reason))
@@ -173,9 +181,12 @@ class AccountManager:
             self.log.critical('Response: %s' % response.text)
             raise RailNationInitializationError('Could not enter lobby. Strange...')
 
-        self.load_lobby_data()
+        self.log.debug('Successfully logged in to the game.')
+        self.authenticated = True
 
-    def load_lobby_data(self):
+        self._load_lobby_data()
+
+    def _load_lobby_data(self):
         self.log.debug('Loading lobby data')
 
         self.log.info('Loading city names...')
@@ -299,12 +310,12 @@ class AccountManager:
         for cache_item in r['cache']:
             if cache_item['name'].startswith('AvatarInformation:'):
                 avatar_id = cache_item['data']['avatarIdentifier']
-                self.log.info('Found avatar info ID: %s' % avatar_id)
+                self.log.debug('Found avatar info ID: %s' % avatar_id)
                 self.log.debug('Avatar info: %s' % pprint.pformat(cache_item['data']))
                 self.avatars_details[int(avatar_id)] = cache_item['data']
             elif cache_item['name'].startswith('GameWorld:'):
                 world_id = cache_item['data']['consumersId']
-                self.log.info('Found world ID: %s' % world_id)
+                self.log.debug('Found world ID: %s' % world_id)
                 self.log.debug('World data: %s' % pprint.pformat(cache_item['data']))
                 self.worlds[int(world_id)] = cache_item['data']
 
@@ -313,7 +324,12 @@ class AccountManager:
             raise RailNationInitializationError('Cannot join worlds without authentication')
 
         try:
-            self.log.debug('Trying to join world: %s' % self.worlds[int(world_id)]['worldName'])
+            # only classic scenario for now
+            world = self.worlds[int(world_id)]
+            if world['scenario'] != 'classic':
+                self.log.error('Scenario "%s" is not supported' % world['scenario'])
+                raise RailNationInitializationError('Can only play classic scenario')
+            self.log.debug('Trying to join world: %s' % world['worldName'])
         except KeyError:
             self.log.error('Unknown world ID: %s' % world_id)
             raise RailNationInitializationError('Unknown world ID: %s' % world_id)
@@ -342,8 +358,6 @@ class AccountManager:
             self.log.error(response.text)
             raise RailNationInitializationError('Cannot parse redirect url from world-join response')
 
-        self.log.info('Successful world join.')
-
         try:
             self.msid = {k: v for k, v in [p.split('=') for p in redirect_url.split('&')[1].split('?')]}['msid']
         except KeyError:
@@ -362,6 +376,23 @@ class AccountManager:
             self.log.critical('Response: %s' % response.text)
             raise RailNationInitializationError('Could not enter world. Strange...')
 
+        server.init(self.worlds[int(world_id)]['baseUrl'])
+
+        self.log.debug('Successful world join.')
         self.in_game = True
+
+        world_key = {k: v for k, v in [x.split('=') for x in redirect_url.split('?')[1].split('&')]}['key']
+        self.log.debug('World join key: %s' % world_key)
+
+        self._load_game(world_key)
+
+    def _load_game(self, key):
+        self.log.info('Loading game...')
+
+        avatar = AvatarManager.get_instance()
+        avatar.init(key)
+
+        self.log.info('Loading parameters...')
+        params = PropertiesManager.get_instance()
 
 

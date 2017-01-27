@@ -9,8 +9,9 @@ CONNECTION_TIMEOUT = 3
 # Game parameters:
 BASE_URL = 'http://www.rail-nation.com'
 LOBBY_URL = 'http://lobby.rail-nation.com'
-CLIENT_CHECKSUM = 'ea24d4af2c566004782f750f940615e5'  # Where to get this value from?
 
+# CLIENT_CHECKSUM = 'ea24d4af2c566004782f750f940615e5'  # Where to get this value from?
+CLIENT_CHECKSUM = -1  # and why not?
 
 # Mellon config 
 # TODO: acquire it dynamically
