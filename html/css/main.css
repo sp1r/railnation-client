@@ -1,0 +1,126 @@
+*{
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    border: none;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    background: none;
+    font: normal 16px arial;
+    max-width: 100%;
+}
+
+input, textarea, button{
+    display: block;
+    width: 100%;
+    height: 38px;
+    line-height: 38px;
+    padding: 0 12px;
+    margin: 8px 0;
+    color: white;
+    border: 1px solid white;
+}
+
+button[type='submit']{
+    cursor: pointer;
+}
+
+.absolute{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+}
+
+.home-page{
+    background: #2f3f54;
+}
+
+.login-box{
+    width: 270px;
+    height: 300px;
+}
+
+.login-box input{
+    text-align: center;
+}
+
+.login-box button{
+    background: #eaeaea;
+    color: #2f3f54;
+    font-weight: bold;
+}
+
+.login-box button:hover{
+    background: #cecece;
+}
+
+.login-form{
+    position: relative;
+}
+
+.load-box{
+    display: none;
+    background: rgba(47, 63, 84, 0.7);
+}
+
+.load-box .fa{
+    width: 25px;
+    height: 31px;
+    font-size: 30px;
+    line-height: 30px;
+    color: white;
+}
+
+.load-box.active{
+    display: block;
+}
+
+.worlds-box{
+    display: none;
+    overflow: auto;
+    position: fixed;
+    z-index: 1;
+    width: 600px;
+    height: 450px;
+    background: white;
+}
+
+.worlds-box.active{
+    display: block;
+
+}
+
+.worlds-box .world-row{
+    display: block;
+    width: 100%;
+    padding: 20px 30px;
+    cursor: pointer;
+    clear: both;
+}
+
+.worlds-box .world-row:hover{
+    background: rgba(54, 106, 175, 0.1);
+}
+
+.worlds-box .world-row+.world-row{
+    border-top: 2px solid #2f3f54;
+}
+
+.world-row .worldName {
+    font-size: 20px;
+    color: #4d9aff;
+    padding-bottom: 10px;
+
+}
+.world-row .inline {
+    float: left;
+    padding-right: 30px;
+}
+
+.clear {
+    clear: both;
+}
