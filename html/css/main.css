@@ -79,7 +79,7 @@ button[type='submit']{
     display: block;
 }
 
-.worlds-box{
+.worlds-list-box{
     display: none;
     overflow: auto;
     position: fixed;
@@ -89,12 +89,16 @@ button[type='submit']{
     background: white;
 }
 
-.worlds-box.active{
+.worlds-list-box.active{
     display: block;
 
 }
 
-.worlds-box .world-row{
+.worlds-list-box .worlds-list{
+
+}
+
+.worlds-list-box .world-row{
     display: block;
     width: 100%;
     padding: 20px 30px;
@@ -102,11 +106,11 @@ button[type='submit']{
     clear: both;
 }
 
-.worlds-box .world-row:hover{
+.worlds-list-box .world-row:hover{
     background: rgba(54, 106, 175, 0.1);
 }
 
-.worlds-box .world-row+.world-row{
+.worlds-list-box .world-row+.world-row{
     border-top: 2px solid #2f3f54;
 }
 
@@ -116,10 +120,72 @@ button[type='submit']{
     padding-bottom: 10px;
 
 }
+
 .world-row .inline {
     float: left;
     padding-right: 30px;
 }
+
+.world-box{
+    display: none;
+    z-index: 2;
+}
+
+.world-box.active{
+    display: block;
+}
+
+.world-box .left-box{
+    background: #27446b;
+    width: 50px;
+    right: auto;
+}
+
+.world-box .center-box{
+    background: #6b6b6b;
+    left: 50px;
+    right: 25%;
+}
+
+.world-box .right-box{
+    background: #808080;
+    left: 75%;
+}
+
+.world-menu{
+
+}
+
+.world-menu>div {
+    display: block;
+    text-align: center;
+    height: 40px;
+    font-size: 24px;
+    line-height: 40px;
+    color: #8db4e6;
+    cursor: pointer;
+    transition: background .2s ease;
+}
+
+.world-menu>div:hover {
+    background: #405f88;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .clear {
     clear: both;

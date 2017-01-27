@@ -5,8 +5,7 @@ $(document).on('ready',function(){
         var username = $('input[name=username]').val(),
             password = $('input[name=password]').val(),
             submit = $('button[type=submit]'),
-            load = $('.load-box'),
-            worldsBox = $('.worlds-box');
+            load =  $(this).find('.load-box');
 
         if(username && password){
             load.addClass('active');
@@ -44,7 +43,8 @@ $(document).on('ready',function(){
                                         worlds += '</div>';
                                     });
 
-                                    worldsBox.html(worlds).addClass('active');
+                                    $('.worlds-list').html(worlds);
+                                    $('.worlds-list-box').addClass('active');
                                     load.removeClass('active');
                                 }
                             }
@@ -69,8 +69,10 @@ $(document).on('ready',function(){
 
     $('body').on('click', '.world-row', function(e){
         e.preventDefault();
-        var worldID = $(this).attr('data-id');
+        var worldID = $(this).attr('data-id'),
+            load =  $(this).find('.load-box');
 
+        load.addClass('active');
         console.log('Click, world ID - ' + worldID);
 
         $.ajax({
@@ -79,10 +81,11 @@ $(document).on('ready',function(){
             contentType: "application/json",
             success: function (data) {
                 if(data.code === 0){
-                    console.log('Enter to world - ' + worldID);
+                    $('.world-box').addClass('active');
                 }else{
-                    console.log(data);
+                    alert(data.message);
                 }
+                load.removeClass('active');
             },
             error: function (data) {
                 console.log(data);
