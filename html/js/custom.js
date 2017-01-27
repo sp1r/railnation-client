@@ -65,12 +65,10 @@ $(document).on('ready',function(){
 
     });
 
-
-
     $('body').on('click', '.world-row', function(e){
         e.preventDefault();
         var worldID = $(this).attr('data-id'),
-            load =  $(this).find('.load-box');
+            load = $('.worlds-list-box .load-box');
 
         load.addClass('active');
         console.log('Click, world ID - ' + worldID);
@@ -86,6 +84,47 @@ $(document).on('ready',function(){
                     alert(data.message);
                 }
                 load.removeClass('active');
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+
+
+    });
+
+    $('.world-menu .station').on(function(e){
+        e.preventDefault();
+
+
+        $.ajax({
+            url: '/api/v1/station/',
+            type: 'GET',
+            contentType: "application/json",
+            success: function (data) {
+                if(data.code === 0){
+                    var html = '<div class="station-box table">';
+                    $.each(data.data, function(i, build){
+                        html += '<div class="build-row table-row">';
+                        html += '<div class="build-name">' + build.name + '</div>';
+                        html += '<div class="build-lvl">' + build.level + '</div>';
+                        if(build.build_in_progress){
+                            html += '<div class="build-progress">' + build.build_finish_at + '</div>';
+                        }
+                        if(build.video_watched){
+                            html += '<div class="build-video-watched"><i class="fa fa-video-camera"></i></div>';
+                        }
+                        html += '<div class="clear"></div>';
+                        html += '</div>';
+                    });
+
+                    console.log('click');
+
+                    $('.center-body').html(html);
+
+                }else{
+                    alert(data.message);
+                }
             },
             error: function (data) {
                 console.log(data);

@@ -171,6 +171,31 @@ button[type='submit']{
     background: #405f88;
 }
 
+.world-menu>div.disabled {
+    color: #c35959;
+    cursor: auto;
+}
+
+.world-menu>div.disabled:hover {
+    background: none;
+}
+
+
+
+.center-body {
+    padding: 50px;
+}
+
+
+.center-body .build-row {
+
+}
+
+.center-body .station-box .table-row>* {
+    padding: 0 20px;
+    font-size: 18px;
+    color: white;
+}
 
 
 
@@ -180,10 +205,18 @@ button[type='submit']{
 
 
 
+.table {
+    display: table;
+}
 
+.table-row {
+    display: table-row;
+}
 
-
-
+.table-row>* {
+    display: table-cell;
+    vertical-align: middle;
+}
 
 
 
