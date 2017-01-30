@@ -660,6 +660,142 @@
           }
         }
       }
+    },
+
+    "/collect/": {
+      "post": {
+        "summary": "Collect bonuses from self station",
+        "description": "Collects all available bonuses from active player station (Hotel, Restaurant and Mall). Returns true if bonus was collected, false otherwise.",
+        "tags": ["Station"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Collecting result",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "boolean"
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": true
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/collect/{player_id}": {
+      "post": {
+        "summary": "Collect bonuses from player`s station",
+        "description": "Collects all available bonuses from specific player station (Hotel, Restaurant and Mall). Returns true if bonus was collected, false otherwise.",
+        "tags": ["Station"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "player_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Collecting result",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "boolean"
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": true
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/collect/{player_id}/{building_id}": {
+      "post": {
+        "summary": "Collect single building from player`s station",
+        "description": "Collects single building from specific player station (Hotel, Restaurant or Mall). Returns true if bonus was collected, false otherwise.",
+        "tags": ["Station"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "player_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "building_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Collecting result",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "boolean"
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": true
+              }
+            }
+          }
+        }
+      }
     }
 
   }

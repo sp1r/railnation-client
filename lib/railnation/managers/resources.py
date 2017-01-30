@@ -15,6 +15,9 @@ class ResourcesManager:
 
     @staticmethod
     def get_instance():
+        """
+        :rtype: ResourcesManager
+        """
         if ResourcesManager.instance is None:
             ResourcesManager.instance = ResourcesManager()
 

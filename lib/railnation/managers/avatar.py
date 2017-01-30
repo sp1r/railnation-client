@@ -17,6 +17,9 @@ class AvatarManager:
 
     @staticmethod
     def get_instance():
+        """
+        :rtype: AvatarManager
+        """
         if AvatarManager.instance is None:
             AvatarManager.instance = AvatarManager()
 

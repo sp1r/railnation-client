@@ -14,6 +14,9 @@ class AssociationManager:
 
     @staticmethod
     def get_instance(association_id):
+        """
+        :rtype: AssociationManager
+        """
         try:
             return AssociationManager.instances[association_id]
         except KeyError:

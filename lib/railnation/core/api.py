@@ -271,10 +271,10 @@ class RailNationClientAPIv1:
             player_id = AvatarManager.get_instance().id
             self.log.debug('Using active player id: %s' % player_id)
 
-        manager = StationManager.get_instance(player_id)
+        buildings = StationManager.get_instance().get_buildings(player_id)
 
         result = {}
-        for building_id, building_data in manager.buildings.items():
+        for building_id, building_data in buildings.items():
             result[building_id] = {
                 'name': building_data['name'],
                 'level': building_data['level'],
@@ -292,23 +292,25 @@ class RailNationClientAPIv1:
 
     @cherrypy.tools.json_out()
     @cherrypy.expose
-    def collect(self, mode, param=None):
-        self.log.debug('%s /collect/%s called' % (cherrypy.request.method, mode))
-        self.log.debug('Parameter = %s' % param)
+    def collect(self, user_id=None, building_id=None):
+        self.log.debug('%s /collect/%s/%s called' % (cherrypy.request.method, building_id, user_id))
         if cherrypy.request.method == 'OPTIONS':
             return ''
-        elif mode == 'user':
-            return self._collect_user(param)
-        elif mode == 'auto':
-            return self._collect_auto(param)
 
-    def _collect_user(self, param):
-        if cherrypy.request.method != 'POST':
+        elif cherrypy.request.method != 'POST':
             raise cherrypy.HTTPError('405 Method Not Allowed')
+
+        if building_id is not None and int(building_id) not in (7, 8, 9):
+            error_msg = 'Can only collect bonus from building_ids: 7, 8, 9. Requested: %s' % building_id
+            self.log.error(error_msg)
+            return {'code': 1, 'message': error_msg, 'data': None}
 
         manager = CollectManager.get_instance()
         try:
-            r = manager.collect(param)
+            if building_id is None:
+                r = manager.collect_player(user_id)
+            else:
+                r = manager.collect(building_id, user_id)
         except RailNationClientError as err:
             self.log.error('Error: %s' % str(err))
             return {
@@ -321,52 +323,5 @@ class RailNationClientAPIv1:
                 'code': 0,
                 'message': 'OK',
                 'data': r
-            }
-
-    def _collect_auto(self, param):
-        if cherrypy.request.method == 'GET':
-            if param is None:
-                return {
-                    'code': 0,
-                    'message': 'OK',
-                    'data': CollectManager.get_instance().auto_collect
-                }
-
-            elif param == 'stats':
-                return {
-                    'code': 0,
-                    'message': 'OK',
-                    'data': CollectManager.get_instance().stats
-                }
-
-            else:
-                return {
-                    'code': 1,
-                    'message': 'Unknown option: %s' % param
-                }
-
-        elif cherrypy.request.method != 'POST':
-            raise cherrypy.HTTPError('405 Method Not Allowed')
-
-        if param == 'enable':
-            CollectManager.get_instance().auto_collect = True
-            return {
-                'code': 0,
-                'message': 'OK',
-                'data': CollectManager.get_instance().auto_collect
-            }
-
-        elif param == 'disable':
-            CollectManager.get_instance().auto_collect = False
-            return {
-                'code': 0,
-                'message': 'OK',
-                'data': CollectManager.get_instance().auto_collect
-            }
-
-        else:
-            return {
-                'code': 1,
-                'message': 'Unknown option: %s' % param
             }
 
