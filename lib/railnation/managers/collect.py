@@ -41,7 +41,7 @@ class CollectManager:
         self.auto_open_tickets = False
         self.auto_watch = False
         self.schedule = {}
-        self.closest_production = None
+        self.next_collection = None
         self.stats = {
             'collected': 0,
             'errors': 0,
@@ -141,12 +141,15 @@ class CollectManager:
         if not self.schedule:
             self._init_schedule()
 
-        while self.closest_production <= time.time():
-            for player in self.schedule.pop(self.closest_production):
+        closest_production = min(self.schedule.keys())
+        while closest_production <= time.time():
+            for player in self.schedule.pop(self.next_collection):
                 self.log.debug('Auto-collecting player: %s' % player)
                 self.collect_player(player)
-            self.closest_production = min(self.schedule.keys()) + random.randint(*self.collect_delay)
-            self.log.debug('Closest production at: %s' % datetime.datetime.fromtimestamp(self.closest_production))
+            closest_production = min(self.schedule.keys())
+        else:
+            self.next_collection = min(self.schedule.keys()) + random.randint(*self.collect_delay)
+            self.log.debug('Next collection at: %s' % datetime.datetime.fromtimestamp(self.next_collection))
 
     def _init_schedule(self):
         association = AssociationManager.get_instance().get_association()
@@ -165,8 +168,8 @@ class CollectManager:
             except KeyError:
                 self.schedule[int(time.mktime(next_production.timetuple()))] = [player]
 
-        self.closest_production = min(self.schedule.keys()) + random.randint(*self.collect_delay)
-        self.log.debug('Closest production at: %s' % datetime.datetime.fromtimestamp(self.closest_production))
+        self.next_collection = min(self.schedule.keys()) + random.randint(*self.collect_delay)
+        self.log.debug('Next collection at: %s' % datetime.datetime.fromtimestamp(self.next_collection))
 
     # # interface=BuildingInterface&method=getIFrame
     # # {"checksum":"e0cf78b7306751b66e07c2c43d5a9cc3","client":1,"parameters":[],"hash":"d751713988987e9331980363e24189ce"}
