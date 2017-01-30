@@ -230,7 +230,7 @@ class RailNationClientAPIv1:
             self.log.debug('Using active player association id: %s' % association_id)
 
         try:
-            association = AssociationManager.get_instance(association_id)
+            association = AssociationManager.get_instance().get_association(association_id)
 
         except RailNationClientError as err:
             self.log.error('Cannot get association info: %s' % association_id)
@@ -246,13 +246,13 @@ class RailNationClientAPIv1:
                 'code': 0,
                 'message': 'OK',
                 'data': {
-                    'id': association.id,
-                    'name': association.name,
-                    'prestige': association.prestige,
-                    'rank': association.rank,
-                    'chair': association.chair,
-                    'deputies': association.deputies,
-                    'members': association.members,
+                    'id': association['id'],
+                    'name': association['name'],
+                    'prestige': association['prestige'],
+                    'rank': association['rank'],
+                    'chair': association['chair'],
+                    'deputies': association['deputies'],
+                    'members': association['members'],
                 }
             }
 
@@ -324,4 +324,70 @@ class RailNationClientAPIv1:
                 'message': 'OK',
                 'data': r
             }
+
+    @cherrypy.tools.json_out()
+    @cherrypy.expose
+    def autocollect(self, action=None):
+        self.log.debug('%s /autocollect/%s called' % (cherrypy.request.method, action))
+        if cherrypy.request.method == 'OPTIONS':
+            return ''
+
+        elif cherrypy.request.method == 'GET':
+            manager = CollectManager.get_instance()
+            if action is None:
+                return {
+                    'code': 0,
+                    'message': 'OK',
+                    'data': manager.auto_collect
+                }
+
+            elif action == 'stats':
+                return {
+                    'code': 0,
+                    'message': 'OK',
+                    'data': manager.stats
+                }
+
+            elif action == 'history':
+                return {
+                    'code': 0,
+                    'message': 'OK',
+                    'data': manager.history[-10:]
+                }
+
+            else:
+                return {
+                    'code': 1,
+                    'message': 'Bad request: GET /autocollect/%s' % action,
+                    'data': None
+                }
+
+        elif cherrypy.request.method != 'POST':
+            raise cherrypy.HTTPError('405 Method Not Allowed')
+
+        if action == 'enable':
+            manager = CollectManager.get_instance()
+            manager.auto_collect = True
+            return {
+                'code': 0,
+                'message': 'OK',
+                'data': manager.auto_collect
+            }
+
+        elif action == 'disable':
+            manager = CollectManager.get_instance()
+            manager.auto_collect = False
+            return {
+                'code': 0,
+                'message': 'OK',
+                'data': manager.auto_collect
+            }
+
+        else:
+            return {
+                'code': 1,
+                'message': 'Bad request: POST /autocollect/%s' % action,
+                'data': None
+            }
+
 

@@ -3,6 +3,7 @@
 
 import random
 import datetime
+import time
 import cherrypy
 from cherrypy.process.plugins import Monitor
 
@@ -10,6 +11,7 @@ from railnation.core.common import log
 from railnation.core.server import server
 from railnation.core.const import building_names
 from railnation.managers.avatar import AvatarManager
+from railnation.managers.association import AssociationManager
 from railnation.managers.station import StationManager
 from railnation.managers.resources import ResourcesManager
 from railnation.managers.ticket import TicketManager
@@ -39,6 +41,7 @@ class CollectManager:
         self.auto_open_tickets = False
         self.auto_watch = False
         self.schedule = {}
+        self.closest_production = None
         self.stats = {
             'collected': 0,
             'missed': 0,
@@ -57,6 +60,8 @@ class CollectManager:
         if player_id is None:
             player_id = AvatarManager.get_instance().id
 
+        result = False
+
         self.log.debug('Loading player station data: %s' % player_id)
         buildings = StationManager.get_instance().get_buildings(player_id)
 
@@ -67,14 +72,38 @@ class CollectManager:
         if buildings[7]['production_at'] <= datetime.datetime.now():
             self.log.debug('Hotel ready')
             self.collect(7, player_id)
+            buildings[7]['production_at'] = datetime.datetime.now() + datetime.timedelta(seconds=10800)
+            result = True
 
-        if r:
-            self.log.debug('Skip collecting cash bonuses')
-        else:
-            for building_id in (8, 9):
-                if buildings[building_id]['production_at'] <= datetime.datetime.now():
-                    self.log.debug('%s ready' % building_names[building_id])
-                    self.collect(building_id, player_id)
+        if buildings[8]['production_at'] <= datetime.datetime.now():
+            self.log.debug('Restaurant ready')
+            if r:
+                self.log.debug('Skip collecting cash bonuses')
+                buildings[8]['production_at'] = datetime.datetime.now() + datetime.timedelta(seconds=3600)
+            else:
+                self.collect(8, player_id)
+                buildings[8]['production_at'] = datetime.datetime.now() + datetime.timedelta(seconds=5400)
+            result = True
+
+        if buildings[9]['production_at'] <= datetime.datetime.now():
+            self.log.debug('Mall ready')
+            if r:
+                self.log.debug('Skip collecting cash bonuses')
+                buildings[9]['production_at'] = datetime.datetime.now() + datetime.timedelta(seconds=3600)
+            else:
+                self.collect(9, player_id)
+                buildings[9]['production_at'] = datetime.datetime.now() + datetime.timedelta(seconds=21600)
+            result = True
+
+        next_production = min(
+            [buildings[i]['production_at'] for i in (7, 8, 9)]
+        )
+        try:
+            self.schedule[int(time.mktime(next_production.timetuple()))].append(player_id)
+        except KeyError:
+            self.schedule[int(time.mktime(next_production.timetuple()))] = [player_id]
+
+        return result
 
     def collect(self, building_id, player_id=None):
         if player_id is None:
@@ -84,12 +113,6 @@ class CollectManager:
 
         assert building_id in (7, 8, 9)
 
-        #     if self.auto_collect:
-        #         self.log.debug('Reschedule collecting after 1 hour')
-        #         self.schedule[player_id + '-8'] = datetime.datetime.now() + datetime.timedelta(seconds=3600)
-        #         self.schedule[player_id + '-9'] = datetime.datetime.now() + datetime.timedelta(seconds=3600)
-        #     return False
-
         resources = ResourcesManager.get_instance()
         self.log.debug('Collecting from %s (owner: %s)' % (building_names[int(building_id)], player_id))
         tickets_before = resources.free_tickets_count
@@ -97,39 +120,52 @@ class CollectManager:
 
         if 'productionTimeLeft' in r:
             self.stats['collected'] += 1
+            self.log.debug('Bonus collected (%s total)' % self.stats['collected'])
         else:
             self.stats['missed'] += 1
-            return False, False
+            self.log.debug('Bonus missed (%s total)' % self.stats['missed'])
+            return False
 
         if tickets_before < resources.free_tickets_count:
-            self.log.info('Got free ticket')
             self.stats['tickets'] += 1
-            return True, True
+            self.log.info('Got free ticket (%s total)' % self.stats['tickets'])
+            return True
         else:
-            return True, False
+            return True
 
-    # def check(self):
-    #     if not self.auto_collect:
-    #         return
-    #
-    #     avatar = AvatarManager.get_instance()
-    #     player_id = avatar.id
-    #
-    #     if player_id not in self.schedule.keys():
-    #         self._create_schedule(player_id)
-    #
-    #     for building_id in (7, 8, 9):
-    #         ready_at = self.schedule[player_id + '-' + str(building_id)]
-    #         if datetime.datetime.now > ready_at:
-    #             r = self.collect(player_id, building_id)
-    #             if r:
-    #                 self._create_schedule(player_id)
+    def check(self):
+        if not self.auto_collect:
+            return
 
-    # def _create_schedule(self, player_id):
-    #     station = StationManager.get_instance(player_id)
-    #     for building_id in (7, 8, 9):
-    #         # add random delay to production time
-    #         self.schedule[player_id + '-' + str(building_id)] = station.buildings[building_id]['production_at'] + datetime.timedelta(seconds=random.randint(1, 10))
+        if not self.schedule:
+            self._init_schedule()
+
+        while self.closest_production <= time.time():
+            for player in self.schedule.pop(self.closest_production):
+                self.log.debug('Auto-collecting player: %s' % player)
+                self.collect_player(player)
+            self.closest_production = min(self.schedule.keys())
+        self.log.debug('Closest production at: %s' % datetime.datetime.fromtimestamp(self.closest_production))
+
+    def _init_schedule(self):
+        association = AssociationManager.get_instance().get_association()
+        if association is not None:
+            collect_targets = association['members']
+        else:
+            collect_targets = [AvatarManager.get_instance().id]
+
+        for player in collect_targets:
+            station = StationManager.get_instance().get_buildings(player)
+            next_production = min(
+                [station[i]['production_at'] for i in (7, 8, 9)]
+            )
+            try:
+                self.schedule[int(time.mktime(next_production.timetuple()))].append(player)
+            except KeyError:
+                self.schedule[int(time.mktime(next_production.timetuple()))] = [player]
+
+        self.closest_production = min(self.schedule.keys())
+        self.log.debug('Closest production at: %s' % datetime.datetime.fromtimestamp(self.closest_production))
 
     # # interface=BuildingInterface&method=getIFrame
     # # {"checksum":"e0cf78b7306751b66e07c2c43d5a9cc3","client":1,"parameters":[],"hash":"d751713988987e9331980363e24189ce"}
@@ -145,4 +181,4 @@ class CollectManager:
     # def watch_second_video(self, player_id, building_id):
     #     pass
 
-# Monitor(cherrypy.engine, CollectManager.get_instance().check, frequency=10).subscribe()
+Monitor(cherrypy.engine, CollectManager.get_instance().check, frequency=10).subscribe()

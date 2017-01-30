@@ -796,6 +796,246 @@
           }
         }
       }
+    },
+
+    "/autocollect/": {
+      "get": {
+        "summary": "Returns auto-collecting status (enabled/disabled)",
+        "description": "Returns auto-collecting status (enabled/disabled)",
+        "tags": ["Station"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Auto-collecting status",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "boolean"
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": true
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/autocollect/enable": {
+      "post": {
+        "summary": "Turns on auto-collecting on bonuses",
+        "description": "Turns on auto-collecting on bonuses",
+        "tags": ["Station"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Auto-collecting status",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "boolean"
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": true
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/autocollect/disable": {
+      "post": {
+        "summary": "Turns off auto-collecting on bonuses",
+        "description": "Turns off auto-collecting on bonuses",
+        "tags": ["Station"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Auto-collecting status",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "boolean"
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": true
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/autocollect/stats": {
+      "get": {
+        "summary": "Returns statistics of auto-collecting",
+        "description": "Returns statistics of auto-collecting: amount of bonuses collected, missed and number of tickets granted.",
+        "tags": ["Station"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Auto-collecting statistics",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "collected": {
+                      "type": "integer"
+                    },
+                    "missed": {
+                      "type": "integer"
+                    },
+                    "tickets": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": {
+                  "collected": 3425,
+                  "missed": 12,
+                  "tickets": 5
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/autocollect/history": {
+      "get": {
+        "summary": "Returns history of auto-collecting",
+        "description": "Returns last 10 events of auto-collecting: what was collected and from which player",
+        "tags": ["Station"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Auto-collecting history",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "date": {
+                        "type": "integer"
+                      },
+                      "player_id": {
+                        "type": "string"
+                      },
+                      "building_id": {
+                        "type": "integer"
+                      },
+                      "result": {
+                        "type": "boolean"
+                      },
+                      "ticket": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": [
+                  {
+                    "date": 145363654,
+                    "player_id": "d380ae53-932c-ad81-688b-46d471f133d7",
+                    "building_id": 7,
+                    "result": true,
+                    "ticket": false
+                  },
+                  {
+                    "date": 145363656,
+                    "player_id": "d380ae53-932c-ad81-688b-46d471f133d7",
+                    "building_id": 9,
+                    "result": true,
+                    "ticket": true
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
     }
 
   }
