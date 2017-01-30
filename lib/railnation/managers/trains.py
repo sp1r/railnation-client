@@ -34,5 +34,5 @@ class TrainsManager:
         pass
 
 
-Monitor(cherrypy.engine, TrainsManager.get_instance().refresh, frequency=10).subscribe()
+Monitor(cherrypy.engine, TrainsManager.get_instance().refresh, frequency=10, name='TrainsMonitor').subscribe()
 

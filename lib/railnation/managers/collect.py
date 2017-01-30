@@ -145,7 +145,7 @@ class CollectManager:
                 self.log.debug('Auto-collecting player: %s' % player)
                 self.collect_player(player)
             self.closest_production = min(self.schedule.keys())
-        self.log.debug('Closest production at: %s' % datetime.datetime.fromtimestamp(self.closest_production))
+            self.log.debug('Closest production at: %s' % datetime.datetime.fromtimestamp(self.closest_production))
 
     def _init_schedule(self):
         association = AssociationManager.get_instance().get_association()
@@ -181,4 +181,4 @@ class CollectManager:
     # def watch_second_video(self, player_id, building_id):
     #     pass
 
-Monitor(cherrypy.engine, CollectManager.get_instance().check, frequency=10).subscribe()
+Monitor(cherrypy.engine, CollectManager.get_instance().check, frequency=10, name='Auto-Collecting').subscribe()

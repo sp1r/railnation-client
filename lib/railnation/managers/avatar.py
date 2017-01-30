@@ -5,12 +5,12 @@ from railnation.core.common import log
 from railnation.core.server import server
 from railnation.core.errors import RailNationInitializationError
 from railnation.managers.resources import ResourcesManager
+from railnation.managers.tina import TinaManager
 
 
 class AvatarManager:
     """
     Representation of Rail-Nation player`s game avatar (game world main instance).
-
     """
 
     instance = None
