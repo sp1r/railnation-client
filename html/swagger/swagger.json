@@ -170,7 +170,7 @@
                 "message": "Auth success",
                 "data": [{
                   "avatarName": "Vasiya",
-                  "avatarId": "d380ae53-932c-ad81-688b-46d471f133d7",
+                  "avatarId": 3827534,
                   "country": "Ru_ru",
                   "isBanned": false,
                   "isSuspended": false,
@@ -941,7 +941,7 @@
                     "collected": {
                       "type": "integer"
                     },
-                    "missed": {
+                    "errors": {
                       "type": "integer"
                     },
                     "tickets": {
@@ -955,7 +955,7 @@
                 "message": "OK",
                 "data": {
                   "collected": 3425,
-                  "missed": 12,
+                  "errors": 0,
                   "tickets": 5
                 }
               }

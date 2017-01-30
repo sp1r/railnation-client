@@ -44,10 +44,11 @@ class CollectManager:
         self.closest_production = None
         self.stats = {
             'collected': 0,
-            'missed': 0,
+            'errors': 0,
             'tickets': 0
         }
         self.history = []
+        self.collect_delay = (3, 30)
 
     def collect_player(self, player_id=None):
         """
@@ -122,8 +123,8 @@ class CollectManager:
             self.stats['collected'] += 1
             self.log.debug('Bonus collected (%s total)' % self.stats['collected'])
         else:
-            self.stats['missed'] += 1
-            self.log.debug('Bonus missed (%s total)' % self.stats['missed'])
+            self.stats['errors'] += 1
+            self.log.debug('Collecting error (%s total)' % self.stats['errors'])
             return False
 
         if tickets_before < resources.free_tickets_count:
@@ -144,7 +145,7 @@ class CollectManager:
             for player in self.schedule.pop(self.closest_production):
                 self.log.debug('Auto-collecting player: %s' % player)
                 self.collect_player(player)
-            self.closest_production = min(self.schedule.keys())
+            self.closest_production = min(self.schedule.keys()) + random.randint(*self.collect_delay)
             self.log.debug('Closest production at: %s' % datetime.datetime.fromtimestamp(self.closest_production))
 
     def _init_schedule(self):
@@ -164,7 +165,7 @@ class CollectManager:
             except KeyError:
                 self.schedule[int(time.mktime(next_production.timetuple()))] = [player]
 
-        self.closest_production = min(self.schedule.keys())
+        self.closest_production = min(self.schedule.keys()) + random.randint(*self.collect_delay)
         self.log.debug('Closest production at: %s' % datetime.datetime.fromtimestamp(self.closest_production))
 
     # # interface=BuildingInterface&method=getIFrame
