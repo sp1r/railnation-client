@@ -92,6 +92,8 @@ $(document).on('ready',function(){
                 if(data.code === 0){
                     $('.world-box').addClass('active');
                     loadAutocollect();
+                    loadStation();
+
 
 
                 }else{
@@ -109,53 +111,11 @@ $(document).on('ready',function(){
 
     });
 
-    $('.world-menu .station').on('click', function(e){
-        e.preventDefault();
-
-        $.ajax({
-            url: '/api/v1/station/',
-            type: 'GET',
-            contentType: "application/json",
-            success: function (data) {
-                if(data.code === 0){
-                    var html = '';
-
-                    html += '<div class="title">Станция</div>';
-                    html += '<div class="table">';
-                    $.each(data.data, function(i, build){
-                        html += '<div class="build-row table-row">';
-                        html += '<div class="build-name">' + build.name + '</div>';
-                        html += '<div class="build-lvl">' + build.level + '</div>';
-
-                        if(build.build_in_progress){
-                            html += '<div class="build-progress">' + build.build_finish_at + '</div>';
-                        }else{
-                            html += '<div class="build-progress"></div>';
-                        }
-
-                        if(build.video_watched){
-                            html += '<div class="build-video-watched"><i class="fa fa-video-camera"></i></div>';
-                        }else{
-                            html += '<div class="build-video-watched"></div>';
-                        }
-
-                        html += '<div class="clear"></div>';
-                        html += '</div>';
-                    });
-                    html += '</div>';
-
-                    $('.station-box').html(html);
-
-                }else{
-                    alert(data.message);
-                }
-            },
-            error: function (data) {
-                alert('error station');
-                console.log(data);
-            }
-        });
-    });
+    // $('.world-menu .station').on('click', function(e){
+    //     e.preventDefault();
+    //
+    //
+    // });
 
     $('.autocollect-box .fa').on('click', function(e){
         e.preventDefault();
@@ -260,6 +220,71 @@ $(document).on('ready',function(){
             },
             error: function (data) {
                 alert('error loadAutocollect');
+                console.log(data);
+            }
+        });
+    }
+
+
+    function loadStation() {
+        $.ajax({
+            url: 'api/v1/autocollect/',
+            type: 'GET',
+            contentType: "application/json",
+            success: function (data) {
+                if(data.code === 0){
+                    var html = '<div class="title">Коллектор бонусов',
+                        selector = 'on',
+                        title = 'Включен';
+
+                    if(!data.data){
+                        title = 'Выключен';
+                        selector = 'off';
+                    }
+                    html += '</div><i class="toggle-autocollect fa fa-toggle-'+selector+'" title='+ title +'></i></div>';
+
+                    $('.autocollect-status-box').html(html).addClass(selector);
+                }
+            },$.ajax({
+            url: '/api/v1/station/',
+            type: 'GET',
+            contentType: "application/json",
+            success: function (data) {
+                if(data.code === 0){
+                    var html = '';
+
+                    html += '<div class="title">Станция</div>';
+                    html += '<div class="table">';
+                    $.each(data.data, function(i, build){
+                        html += '<div class="build-row table-row">';
+                        html += '<div class="build-name">' + build.name + '</div>';
+                        html += '<div class="build-lvl">' + build.level + '</div>';
+
+                        if(build.build_in_progress){
+                            html += '<div class="build-progress">' + build.build_finish_at + '</div>';
+                        }else{
+                            html += '<div class="build-progress"></div>';
+                        }
+
+                        if(build.video_watched){
+                            html += '<div class="build-video-watched"><i class="fa fa-video-camera"></i></div>';
+                        }else{
+                            html += '<div class="build-video-watched"></div>';
+                        }
+
+                        html += '<div class="clear"></div>';
+                        html += '</div>';
+                    });
+                    html += '</div>';
+
+                    $('.station-box').html(html);
+
+                }else{
+                    alert(data.message);
+                }
+            },
+            error: function (data) {
+                alert('error station');
                 console.log(data);
             }
         });
