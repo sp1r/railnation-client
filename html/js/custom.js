@@ -117,7 +117,7 @@ $(document).on('ready',function(){
     //
     // });
 
-    $('.autocollect-box .toggle-autocollect').on('click', function(e){
+    $(document).on('click', '.toggle-autocollect', function(e){
         e.preventDefault();
 
         var status = 'enable',
