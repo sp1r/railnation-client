@@ -164,15 +164,22 @@ button[type='submit']{
 .world-box .center-box{
     background: #6b6b6b;
     left: 50px;
-    right: 340px;
+    right: 400px;
+    padding: 40px;
 }
 
 .world-box .right-box{
-    width: 340px;
+    background: #bacce4;
+    width: 400px;
     left: auto;
     right: 0;
-
 }
+
+.world-box .right-box>*{
+    padding: 20px 30px;
+    border-bottom: 3px solid #4a5f79;
+}
+
 
 .world-menu{
 
@@ -221,15 +228,7 @@ button[type='submit']{
 
 
 .autocollect-box {
-    padding: 20px 30px;
-    background: #bacce4;
-}
 
-.autocollect-status-box{
-    font-size: 20px;
-    padding: 0 0 10px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #2f3f54;
 }
 
 .autocollect-status-box .fa{
@@ -265,7 +264,12 @@ button[type='submit']{
     padding: 5px 10px;
 }
 
-
+.title{
+    font-size: 20px;
+    padding: 0 0 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #2f3f54;
+}
 
 .clear {
     clear: both;

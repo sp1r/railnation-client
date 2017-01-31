@@ -118,7 +118,10 @@ $(document).on('ready',function(){
             contentType: "application/json",
             success: function (data) {
                 if(data.code === 0){
-                    var html = '<div class="station-box table">';
+                    var html = '';
+
+                    html += '<div class="title">Станция</div>';
+                    html += '<div class="table">';
                     $.each(data.data, function(i, build){
                         html += '<div class="build-row table-row">';
                         html += '<div class="build-name">' + build.name + '</div>';
@@ -139,8 +142,9 @@ $(document).on('ready',function(){
                         html += '<div class="clear"></div>';
                         html += '</div>';
                     });
+                    html += '</div>';
 
-                    $('.center-box').html(html);
+                    $('.station-box').html(html);
 
                 }else{
                     alert(data.message);
@@ -208,7 +212,7 @@ $(document).on('ready',function(){
             contentType: "application/json",
             success: function (data) {
                 if(data.code === 0){
-                    var html = 'Коллектор бонусов <div class="autocollect-status">',
+                    var html = '<div class="title">Коллектор бонусов',
                         selector = 'on',
                         title = 'Включен';
 
@@ -216,7 +220,7 @@ $(document).on('ready',function(){
                         title = 'Выключен';
                         selector = 'off';
                     }
-                    html += '</div><i class="toggle-autocollect fa fa-toggle-'+selector+'" title='+ title +'></i>';
+                    html += '</div><i class="toggle-autocollect fa fa-toggle-'+selector+'" title='+ title +'></i></div>';
 
                     $('.autocollect-status-box').html(html).addClass(selector);
                 }
@@ -235,18 +239,19 @@ $(document).on('ready',function(){
                 if(data.code === 0){
                     if(data.data){
 
-                        var html = '';
+                        var html = '<div class="table">';
                         $.each(data.data,function(n, val){
                             var name = '';
                             if(n == "collected"){name = 'Собрано'}
                             else if(n == "errors"){name = 'Ошибок'}
                             else if(n == "tickets"){ name = 'Билетов'}
 
-                            html += '<div class="table-row">';
-                            html += '<div class='+ n +'>' + name + '</div>';
+                            html += '<div class="table-row '+ n +'">';
+                            html += '<div>' + name + '</div>';
                             html += '<div class="value">' + val + '</div>';
                             html += '</div>';
                         });
+                        html += '</div>';
 
                         $('.autocollect-statistic-box').html(html);
                     }
