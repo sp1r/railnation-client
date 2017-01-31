@@ -143,7 +143,7 @@ class CollectManager:
 
         closest_production = min(self.schedule.keys())
         while closest_production <= time.time():
-            for player in self.schedule.pop(self.next_collection):
+            for player in self.schedule.pop(closest_production):
                 self.log.debug('Auto-collecting player: %s' % player)
                 self.collect_player(player)
             closest_production = min(self.schedule.keys())
