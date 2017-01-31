@@ -162,8 +162,8 @@ button[type='submit']{
 }
 
 .world-box .center-box{
-    background: #6b6b6b;
-    left: 50px;
+    background: #4a5f79;
+    left: 0;
     right: 400px;
     padding: 40px;
 }
@@ -181,16 +181,18 @@ button[type='submit']{
 }
 
 
-.world-menu{
-
+.world-box .world-menu{
+    padding: 0;
+    text-align: center;
 }
 
 .world-menu>div {
-    display: block;
+    display: inline-block;
     text-align: center;
-    height: 40px;
+    height: 45px;
+    width: 45px;
+    line-height: 45px;
     font-size: 24px;
-    line-height: 40px;
     color: #8db4e6;
     cursor: pointer;
     transition: background .2s ease;
@@ -265,10 +267,11 @@ button[type='submit']{
 }
 
 .title{
-    font-size: 20px;
     padding: 0 0 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     border-bottom: 1px solid #2f3f54;
+    font-size: 18px;
+    font-weight: bold;
 }
 
 .clear {
