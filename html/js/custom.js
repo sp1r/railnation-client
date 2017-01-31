@@ -228,24 +228,6 @@ $(document).on('ready',function(){
 
     function loadStation() {
         $.ajax({
-            url: 'api/v1/autocollect/',
-            type: 'GET',
-            contentType: "application/json",
-            success: function (data) {
-                if(data.code === 0){
-                    var html = '<div class="title">Коллектор бонусов',
-                        selector = 'on',
-                        title = 'Включен';
-
-                    if(!data.data){
-                        title = 'Выключен';
-                        selector = 'off';
-                    }
-                    html += '</div><i class="toggle-autocollect fa fa-toggle-'+selector+'" title='+ title +'></i></div>';
-
-                    $('.autocollect-status-box').html(html).addClass(selector);
-                }
-            },$.ajax({
             url: '/api/v1/station/',
             type: 'GET',
             contentType: "application/json",
