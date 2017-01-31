@@ -18,8 +18,6 @@ $(document).on('ready',function(){
             createCookie('p', password);
         }
 
-        return false;
-
         if(username && password){
             load.addClass('active');
         }
