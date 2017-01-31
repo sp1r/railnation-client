@@ -7,7 +7,7 @@ Console client to http://rail-nation.com browser game.
 from __future__ import print_function
 
 __appname__ = 'rail-nation-client'
-__version__ = '0.0.0'
+__version__ = '0.0.1'
 __author__ = 'V.Spiridonov <namelessorama@gmail.com>'
 
 
