@@ -93,8 +93,7 @@ $(document).on('ready',function(){
                     $('.world-box').addClass('active');
                     loadAutocollect();
                     loadStation();
-
-
+                    updateData();
 
                 }else{
                     alert(data.message);
@@ -166,6 +165,31 @@ $(document).on('ready',function(){
         return matches ? decodeURIComponent(matches[1]) : undefined;
     }
 
+    function updateData(){
+        setInterval(function(){
+            $.ajax({
+                url: 'api/v1/autocollect/stats',
+                type: 'GET',
+                contentType: "application/json",
+                success: function (data) {
+                    if(data.code === 0){
+                        if(data.data){
+                            var box = $('.autocollect-statistic-box');
+
+                            $.each(data.data,function(n, val){
+                                box.find('.'+n+ ' .value').text(val);
+                            });
+                        }
+                    }
+                },
+                error: function (data) {
+                    alert('error autocollect stats');
+                    console.log(data);
+                }
+            });
+        },10000);
+    }
+
     function loadAutocollect() {
         $.ajax({
             url: 'api/v1/autocollect/',
@@ -174,14 +198,12 @@ $(document).on('ready',function(){
             success: function (data) {
                 if(data.code === 0){
                     var html = '<div class="title">Коллектор бонусов',
-                        selector = 'on',
-                        title = 'Включен';
+                        selector = 'on';
 
                     if(!data.data){
-                        title = 'Выключен';
                         selector = 'off';
                     }
-                    html += '<i class="toggle-autocollect fa fa-toggle-'+selector+'" title='+ title +'></i></div>';
+                    html += '<i class="toggle-autocollect fa fa-toggle-'+selector+'"></i></div>';
 
                     $('.autocollect-status-box').html(html).addClass(selector);
                 }
