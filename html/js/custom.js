@@ -123,17 +123,22 @@ $(document).on('ready',function(){
                         html += '<div class="build-row table-row">';
                         html += '<div class="build-name">' + build.name + '</div>';
                         html += '<div class="build-lvl">' + build.level + '</div>';
+
                         if(build.build_in_progress){
                             html += '<div class="build-progress">' + build.build_finish_at + '</div>';
+                        }else{
+                            html += '<div class="build-progress"></div>';
                         }
+
                         if(build.video_watched){
                             html += '<div class="build-video-watched"><i class="fa fa-video-camera"></i></div>';
+                        }else{
+                            html += '<div class="build-video-watched"></div>';
                         }
+
                         html += '<div class="clear"></div>';
                         html += '</div>';
                     });
-
-                    console.log('click');
 
                     $('.center-box').html(html);
 
