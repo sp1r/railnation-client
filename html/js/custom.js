@@ -148,7 +148,7 @@ $(document).on('ready',function(){
         });
     });
 
-    $('.autocollect-status-box .fa').on('click', function(e){
+    $('.autocollect-box .fa').on('click', function(e){
         e.preventDefault();
 
         var selector = $(this).attr('class'),
@@ -204,15 +204,14 @@ $(document).on('ready',function(){
             success: function (data) {
                 if(data.code === 0){
                     var html = 'Коллектор бонусов <div class="autocollect-status">',
-                        selector = 'on';
+                        selector = 'on',
+                        title = 'Включен';
 
-                    if(data.data){
-                        html += 'Включен';
-                    }else{
-                        html += 'Выключен';
+                    if(!data.data){
+                        title = 'Выключен';
                         selector = 'off';
                     }
-                    html += '</div><i class="fa fa-toggle-'+selector+'"></i>';
+                    html += '</div><i class="toggle-autocollect fa fa-toggle-'+selector+'" title='+ title +'></i>';
 
                     $('.autocollect-status-box').html(html).addClass(selector);
                 }

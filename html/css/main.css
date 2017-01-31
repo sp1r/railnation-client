@@ -148,6 +148,7 @@ button[type='submit']{
 .world-box{
     display: none;
     z-index: 2;
+    background: #2f3f54;
 }
 
 .world-box.active{
