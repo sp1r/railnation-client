@@ -147,9 +147,8 @@ class CollectManager:
                 self.log.debug('Auto-collecting player: %s' % player)
                 self.collect_player(player)
             closest_production = min(self.schedule.keys())
-        else:
             self.next_collection = min(self.schedule.keys()) + random.randint(*self.collect_delay)
-            self.log.debug('Next collection at: %s' % datetime.datetime.fromtimestamp(self.next_collection))
+            self.log.debug('Next collecting at: %s' % datetime.datetime.fromtimestamp(self.next_collection))
 
     def _init_schedule(self):
         association = AssociationManager.get_instance().get_association()
