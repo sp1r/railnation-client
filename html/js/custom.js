@@ -117,17 +117,17 @@ $(document).on('ready',function(){
     //
     // });
 
-    $('.autocollect-box .fa').on('click', function(e){
+    $('.autocollect-box .toggle-autocollect').on('click', function(e){
         e.preventDefault();
 
-        var selector = $(this).attr('class'),
-            status = 'enable';
+        var status = 'enable',
+            selector = 'fa-toggle-on';
 
-        if(selector === 'fa fa-toggle-on'){
+        $(this).removeClass('fa-toggle-on fa-toggle-off');
+
+        if( $(this).hasClass('fa-toggle-on') ){
             status = 'disable';
-            selector = 'fa fa-toggle-off';
-        }else{
-            selector = 'fa fa-toggle-on';
+            selector = 'fa-toggle-off';
         }
 
         console.log(status, selector);
@@ -138,7 +138,7 @@ $(document).on('ready',function(){
             contentType: "application/json",
             success: function (data) {
                 if(data.code === 0){
-                    $(this).attr(selector);
+                    $(this).addClass(selector);
                 }else{
                     alert(data.message);
                 }
@@ -180,7 +180,7 @@ $(document).on('ready',function(){
                         title = 'Выключен';
                         selector = 'off';
                     }
-                    html += '</div><i class="toggle-autocollect fa fa-toggle-'+selector+'" title='+ title +'></i></div>';
+                    html += '<i class="toggle-autocollect fa fa-toggle-'+selector+'" title='+ title +'></i></div>';
 
                     $('.autocollect-status-box').html(html).addClass(selector);
                 }
