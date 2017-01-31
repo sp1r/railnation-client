@@ -121,11 +121,10 @@ $(document).on('ready',function(){
         e.preventDefault();
 
         var status = 'enable',
-            selector = 'fa-toggle-on';
+            selector = 'fa-toggle-on',
+            self = $(this);
 
-        $(this).removeClass('fa-toggle-on fa-toggle-off');
-
-        if( $(this).hasClass('fa-toggle-on') ){
+        if( self.hasClass('fa-toggle-on') ){
             status = 'disable';
             selector = 'fa-toggle-off';
         }
@@ -133,12 +132,14 @@ $(document).on('ready',function(){
         console.log(status, selector);
 
         $.ajax({
-            url: '/api/v1/autocollect/'+ status,
-            type: 'GET',
+            url: 'api/v1/autocollect/'+ status,
+            type: 'POST',
             contentType: "application/json",
             success: function (data) {
+                self.removeClass('fa-toggle-on fa-toggle-off');
+
                 if(data.code === 0){
-                    $(this).addClass(selector);
+                    self.addClass(selector);
                 }else{
                     alert(data.message);
                 }
