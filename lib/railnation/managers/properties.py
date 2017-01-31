@@ -16,6 +16,9 @@ class PropertiesManager:
 
     @staticmethod
     def get_instance():
+        """
+        :rtype: PropertiesManager
+        """
         if PropertiesManager.instance is None:
             PropertiesManager.instance = PropertiesManager()
 

@@ -28,8 +28,9 @@ session.headers.update({
 })
 
 json_communication = {
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/json; charset = utf-8',
     'Accept': 'application/json',
+    'X-Requested-With': 'ShockwaveFlash/18.0.0.209'
 }
 
 

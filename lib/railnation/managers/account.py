@@ -60,6 +60,9 @@ class AccountManager:
 
     @staticmethod
     def get_instance():
+        """
+        :rtype: AccountManager
+        """
         if AccountManager.instance is None:
             AccountManager.instance = AccountManager()
 

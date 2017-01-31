@@ -15,6 +15,9 @@ class TicketManager:
 
     @staticmethod
     def get_instance():
+        """
+        :rtype: TicketManager
+        """
         if TicketManager.instance is None:
             TicketManager.instance = TicketManager()
 
