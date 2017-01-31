@@ -34,7 +34,7 @@ class StationManager:
         if player_id is None:
             player_id = AvatarManager.get_instance().id
 
-        self.log.debug('Construction station of player: %s' % player_id)
+        self.log.debug('Constructing station of player: %s' % player_id)
 
         r = server.call('BuildingInterface', 'getBuildings', [player_id])
         now = datetime.datetime.now()
