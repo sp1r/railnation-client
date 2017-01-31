@@ -22,6 +22,15 @@ input, textarea, button{
     border: 1px solid white;
 }
 
+input[type=checkbox]{
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    line-height: 1em;
+    padding: 0;
+    margin: 0;
+}
+
 button[type='submit']{
     cursor: pointer;
 }
@@ -47,6 +56,16 @@ button[type='submit']{
 .login-box input{
     text-align: center;
 }
+
+.login-box label{
+    color: #b5b5b5;
+    display: block;
+}
+
+.login-box label input{
+    float: right;
+}
+
 
 .login-box button{
     background: #eaeaea;
@@ -136,20 +155,22 @@ button[type='submit']{
 }
 
 .world-box .left-box{
-    background: #27446b;
     width: 50px;
     right: auto;
+    display: table;
 }
 
 .world-box .center-box{
     background: #6b6b6b;
     left: 50px;
-    right: 25%;
+    right: 340px;
 }
 
 .world-box .right-box{
-    background: #808080;
-    left: 75%;
+    width: 340px;
+    left: auto;
+    right: 0;
+
 }
 
 .world-menu{
@@ -198,6 +219,32 @@ button[type='submit']{
 }
 
 
+.autocollect-box {
+    padding: 20px 30px;
+    background: #bacce4;
+}
+
+.autocollect-status-box{
+    font-size: 20px;
+    padding: 0 0 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #2f3f54;
+}
+
+.autocollect-status-box .fa{
+    color: #379c37;
+    cursor: pointer;
+    font-size: 26px;
+    float: right;
+}
+
+.autocollect-status-box .fa-toggle-off{
+    color: #d67272;
+}
+
+.world-box{
+    display: block !important;
+}
 
 
 
@@ -207,15 +254,21 @@ button[type='submit']{
 
 .table {
     display: table;
+    width: 100%;
 }
 
-.table-row {
+.table .table-row {
     display: table-row;
 }
 
-.table-row>* {
+.table .table-row:nth-child(even) {
+    background: #adbfd6;
+}
+
+.table .table-row>* {
     display: table-cell;
     vertical-align: middle;
+    padding: 5px 10px;
 }
 
 

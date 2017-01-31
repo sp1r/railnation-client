@@ -19,6 +19,10 @@
             </div>
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
+            <label>
+                Сохранить?
+                <input type="checkbox" name="save">
+            </label>
             <button type="submit">Enter</button>
         </form>
         <div class="worlds-list-box absolute">
@@ -44,9 +48,16 @@
             <div class="center-body"></div>
         </div>
         <div class="right-box absolute">
-            <div class="absolute">
-
+            <div class="autocollect-box">
+                <div class="autocollect-status-box"></div>
+                <div class="autocollect-statistic-box table"></div>
             </div>
+
+            <div class="autocollect-box">
+                <div class="autocollect-status-box on">Коллектор бонусов<i class="fa fa-toggle-on"></i></div>
+                <div class="autocollect-statistic-box table"><div class="table-row"><div class="collected">Собрано</div><div class="value">94</div></div><div class="table-row"><div class="tickets">Билетов</div><div class="value">1</div></div><div class="table-row"><div class="errors">Ошибок</div><div class="value">1</div></div></div>
+            </div>
+
         </div>
     </div>
 </body>

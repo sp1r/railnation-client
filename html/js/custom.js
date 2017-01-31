@@ -1,11 +1,24 @@
 $(document).on('ready',function(){
 
+    if(getCookie('n') && getCookie('p')){
+        $('.login-form [name=username]').val(getCookie('n'));
+        $('.login-form [name=password]').val(getCookie('p'))
+    }
+
     $('.login-form').on('submit', function(e){
         e.preventDefault();
         var username = $('input[name=username]').val(),
             password = $('input[name=password]').val(),
+            save = $('input[name=save]').val(),
             submit = $('button[type=submit]'),
             load =  $(this).find('.load-box');
+
+        if(save && username && password){
+            createCookie('n', username);
+            createCookie('p', password);
+        }
+
+        return false;
 
         if(username && password){
             load.addClass('active');
@@ -80,13 +93,18 @@ $(document).on('ready',function(){
             success: function (data) {
                 if(data.code === 0){
                     $('.world-box').addClass('active');
+                    loadAutocollect();
+
+
                 }else{
                     alert(data.message);
                 }
                 load.removeClass('active');
             },
             error: function (data) {
+                alert('error join');
                 console.log(data);
+                load.removeClass('active');
             }
         });
 
@@ -95,7 +113,6 @@ $(document).on('ready',function(){
 
     $('.world-menu .station').on('click', function(e){
         e.preventDefault();
-
 
         $.ajax({
             url: '/api/v1/station/',
@@ -120,18 +137,126 @@ $(document).on('ready',function(){
 
                     console.log('click');
 
-                    $('.center-body').html(html);
+                    $('.center-box').html(html);
 
                 }else{
                     alert(data.message);
                 }
             },
             error: function (data) {
+                alert('error station');
+                console.log(data);
+            }
+        });
+    });
+
+    $('.autocollect-status-box .fa').on('click', function(e){
+        e.preventDefault();
+
+        var selector = $(this).attr('class'),
+            status = 'enable';
+
+        if(selector === 'fa fa-toggle-on'){
+            status = 'disable';
+            selector = 'fa fa-toggle-off';
+        }else{
+            selector = 'fa fa-toggle-on';
+        }
+
+        console.log(status, selector);
+
+        $.ajax({
+            url: '/api/v1/autocollect/'+ status,
+            type: 'GET',
+            contentType: "application/json",
+            success: function (data) {
+                if(data.code === 0){
+                    $(this).attr(selector);
+                }else{
+                    alert(data.message);
+                }
+            },
+            error: function (data) {
+                alert('error autocollect status');
+                console.log(data);
+            }
+        });
+    });
+
+    function createCookie(name, val) {
+        if(val && name){
+            var cookieLiveTime = 60 * 60 * 24 * 30 * 1000;
+            var cookieDate = new Date(new Date().getTime() + cookieLiveTime);
+            document.cookie = name +"="+ val +"; path=/; expires=" + cookieDate.toUTCString();
+        }
+    }
+
+    function getCookie(name) {
+        var matches = document.cookie.match(new RegExp(
+            "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        ));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
+
+    function loadAutocollect() {
+        $.ajax({
+            url: 'api/v1/autocollect/',
+            type: 'GET',
+            contentType: "application/json",
+            success: function (data) {
+                if(data.code === 0){
+                    var html = 'Коллектор бонусов <div class="autocollect-status">',
+                        selector = 'on';
+
+                    if(data.data){
+                        html += 'Включен';
+                    }else{
+                        html += 'Выключен';
+                        selector = 'off';
+                    }
+                    html += '</div><i class="fa fa-toggle-'+selector+'"></i>';
+
+                    $('.autocollect-status-box').html(html).addClass(selector);
+                }
+            },
+            error: function (data) {
+                alert('error loadAutocollect');
                 console.log(data);
             }
         });
 
+        $.ajax({
+            url: 'api/v1/autocollect/stats',
+            type: 'GET',
+            contentType: "application/json",
+            success: function (data) {
+                if(data.code === 0){
+                    if(data.data){
 
-    });
+                        var html = '';
+                        $.each(data.data,function(n, val){
+                            var name = '';
+                            if(n == "collected"){name = 'Собрано'}
+                            else if(n == "errors"){name = 'Ошибок'}
+                            else if(n == "tickets"){ name = 'Билетов'}
+
+                            html += '<div class="table-row">';
+                            html += '<div class='+ n +'>' + name + '</div>';
+                            html += '<div class="value">' + val + '</div>';
+                            html += '</div>';
+                        });
+
+                        $('.autocollect-statistic-box').html(html);
+                    }
+                }
+                console.log(data.data);
+            },
+            error: function (data) {
+                alert('error loadAutocollect');
+                console.log(data);
+            }
+        });
+    }
+
 
 });
