@@ -213,7 +213,7 @@ class RailNationClientAPIv1:
                 'message': 'OK',
                 'data': {
                     'amount': manager.resources,
-                    'limit': manager.resources,
+                    'limit': manager.limits,
                 }
             }
 
