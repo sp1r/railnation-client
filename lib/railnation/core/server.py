@@ -14,7 +14,10 @@ from railnation.config import (
     MAX_RECONNECT,
     CONNECTION_TIMEOUT,
 )
-from railnation.core.errors import RailNationConnectionProblem
+from railnation.core.errors import (
+    RailNationConnectionProblem,
+    RailNationDoubleLogin
+)
 from railnation.core.common import log
 from railnation.managers.resources import ResourcesManager
 
@@ -155,7 +158,10 @@ class ServerCall:
 
     def _process_response(self, response):
         self.log.debug('Error code: %s' % response['Errorcode'])
-        if response['Errorcode'] != 0:
+        if response['Errorcode'] == 1:
+            self.log.error('Double login!')
+            raise RailNationDoubleLogin()
+        elif response['Errorcode'] != 0:
             self.log.error('Error message: ')  # todo: get example of error message and throw exception
 
         try:

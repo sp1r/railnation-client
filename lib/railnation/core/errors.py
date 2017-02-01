@@ -13,3 +13,7 @@ class RailNationInitializationError(RailNationClientError):
 class RailNationConnectionProblem(RailNationClientError):
     pass
 
+
+class RailNationDoubleLogin(RailNationClientError):
+    pass
+
