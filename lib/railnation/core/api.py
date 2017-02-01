@@ -34,10 +34,27 @@ class RailNationClientAPIv1:
 
     @cherrypy.tools.json_out()
     @cherrypy.expose
-    def login(self):
+    def login(self, action=None):
         self.log.debug('%s /login called' % cherrypy.request.method)
         if cherrypy.request.method == 'OPTIONS':
             return ''
+
+        if cherrypy.request.method == 'GET':
+            if action == 'status':
+                return {
+                    'code': 0,
+                    'message': 'OK',
+                    'data': {
+                        'logged_in': AccountManager.get_instance().authenticated,
+                        'playing_world': AccountManager.get_instance().current_world
+                    }
+                }
+            else:
+                return {
+                    'code': 1,
+                    'message': 'Bad request: GET /login/%s' % action,
+                    'data': None
+                }
 
         elif cherrypy.request.method != 'POST':
             raise cherrypy.HTTPError('405 Method Not Allowed')

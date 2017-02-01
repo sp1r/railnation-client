@@ -64,6 +64,55 @@
       }
     },
 
+    "/login/status": {
+      "get": {
+        "summary": "Returns authentication status",
+        "description": "Returns whether player is logged in to lobby and entered what world",
+        "tags": ["Pre-game"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Authentication status",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties":{
+                    "logged_in": {
+                      "type": "boolean"
+                    },
+                    "playing_world": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": {
+                  "logged_in": true,
+                  "playing_world": 1455
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
     "/worlds": {
       "get": {
         "summary": "List player`s worlds",
