@@ -358,7 +358,7 @@ class RailNationClientAPIv1:
                 return {
                     'code': 0,
                     'message': 'OK',
-                    'data': manager.history[-10:]
+                    'data': manager.history[-20:]
                 }
 
             else:

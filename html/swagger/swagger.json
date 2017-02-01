@@ -968,7 +968,7 @@
     "/autocollect/history": {
       "get": {
         "summary": "Returns history of auto-collecting",
-        "description": "Returns last 10 events of auto-collecting: what was collected and from which player",
+        "description": "Returns last 20 events of auto-collecting: what was collected and from which player",
         "tags": ["Station"],
         "produces": ["application/json"],
         "responses": {
@@ -999,8 +999,14 @@
                       "player_id": {
                         "type": "string"
                       },
+                      "player_name": {
+                        "type": "string"
+                      },
                       "building_id": {
                         "type": "integer"
+                      },
+                      "building_name": {
+                        "type": "string"
                       },
                       "result": {
                         "type": "boolean"
@@ -1019,14 +1025,18 @@
                   {
                     "date": 145363654,
                     "player_id": "d380ae53-932c-ad81-688b-46d471f133d7",
+                    "player_name": "Vasiya",
                     "building_id": 7,
+                    "building_name": "Bank",
                     "result": true,
                     "ticket": false
                   },
                   {
                     "date": 145363656,
                     "player_id": "d380ae53-932c-ad81-688b-46d471f133d7",
+                    "player_name": "Petiya",
                     "building_id": 9,
+                    "building_name": "Mall",
                     "result": true,
                     "ticket": true
                   }
