@@ -449,4 +449,63 @@ class RailNationClientAPIv1:
                 'data': None
             }
 
+    @cherrypy.tools.json_out()
+    @cherrypy.expose
+    def build(self, building_id):
+        self.log.debug('%s /build/%s called' % (cherrypy.request.method, building_id))
+        if cherrypy.request.method == 'OPTIONS':
+            return ''
+
+        elif cherrypy.request.method != 'POST':
+            raise cherrypy.HTTPError('405 Method Not Allowed')
+
+        if not building_id.isdigit() or int(building_id) not in range(10):
+            return {
+                'code': 1,
+                'message': 'Bad building ID: %s' % building_id,
+                'data': None
+            }
+
+        StationManager.get_instance().upgrade_building(building_id)
+        return {
+            'code': 0,
+            'message': 'OK',
+            'data': True
+        }
+
+    @cherrypy.tools.json_out()
+    @cherrypy.expose
+    def buildqueue(self, action=None):
+        self.log.debug('%s /buildqueue called' % cherrypy.request.method)
+        if cherrypy.request.method == 'OPTIONS':
+            return ''
+
+        elif cherrypy.request.method == 'GET':
+            manager = CollectManager.get_instance()
+            if action is None:
+                return {
+                    'code': 0,
+                    'message': 'OK',
+                    'data': StationManager.get_instance().build_queue
+                }
+
+            else:
+                return {
+                    'code': 1,
+                    'message': 'Bad request: GET /buildqueue/%s' % action,
+                    'data': None
+                }
+
+        elif cherrypy.request.method != 'POST':
+            raise cherrypy.HTTPError('405 Method Not Allowed')
+
+        if action == 'clear':
+            StationManager.get_instance().build_queue = []
+            return {
+                'code': 0,
+                'message': 'OK',
+                'data': StationManager.get_instance().build_queue
+            }
+
+
 

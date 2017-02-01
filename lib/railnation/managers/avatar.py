@@ -34,6 +34,23 @@ class AvatarManager:
         self.premium_features = {
             'plus_ends_at': datetime.datetime.now()
         }
+        self.era_number = None
+        self.era_ends_at = None
+
+    @property
+    def era(self):
+        if self.era_number is None or self.era_ends_at is None:
+            self._update_era()
+        elif self.era_ends_at < datetime.datetime.now():
+            self._update_era()
+            self.log.info('New era started: %s' % self.era_number)
+        return self.era_number
+
+    def _update_era(self):
+        r = server.call('EraInterface', 'getEraInfos', [])
+        now = datetime.datetime.now()
+        self.era_number = r['Era']
+        self.era_ends_at = now + datetime.timedelta(seconds=int(r['RemainingDuration']))
 
     def init(self, key):
         self.log.debug('Initializing...')
@@ -42,6 +59,8 @@ class AvatarManager:
         if not self.id:
             raise RailNationInitializationError('Avatar in not logged in.')
         self.log.debug('Player ID: %s' % self.id)
+
+        self._update_era()
 
         r = server.call('GUIInterface', 'getInitial', [])
         now = datetime.datetime.now()
@@ -58,6 +77,7 @@ class AvatarManager:
         for i in r['paymentAccounts']:
             if i['type'] == '0':
                 self.premium_features['plus_ends_at'] = now + datetime.timedelta(seconds=int(i['endTime']))
+                self.log.debug('Plus active. End: %s' % self.premium_features['plus_ends_at'])
 
     @property
     def has_plus(self):
