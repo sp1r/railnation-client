@@ -6,6 +6,10 @@ class RailNationClientError(Exception):
     pass
 
 
+class RailNationNotAuthenticated(RailNationClientError):
+    pass
+
+
 class RailNationInitializationError(RailNationClientError):
     pass
 

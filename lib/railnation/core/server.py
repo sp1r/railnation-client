@@ -16,7 +16,8 @@ from railnation.config import (
 )
 from railnation.core.errors import (
     RailNationConnectionProblem,
-    RailNationDoubleLogin
+    RailNationDoubleLogin,
+    RailNationNotAuthenticated,
 )
 from railnation.core.common import log
 from railnation.managers.resources import ResourcesManager
@@ -29,6 +30,18 @@ session.headers.update({
                   'Chrome/36.0.1985.125 Safari/537.36',
     'Accept-Language': 'en-US,en;q=0.8,ru;q=0.6',
 })
+
+
+def recreate_session():
+    global session
+    session = requests.Session()
+    session.headers.update({
+        'User-agent': 'Mozilla/5.0 (X11; Linux x86_64) '
+                      'AppleWebKit/537.36 (KHTML, like Gecko) '
+                      'Chrome/36.0.1985.125 Safari/537.36',
+        'Accept-Language': 'en-US,en;q=0.8,ru;q=0.6',
+    })
+
 
 json_communication = {
     'Content-Type': 'application/json; charset = utf-8',
@@ -77,6 +90,11 @@ class ServerCall:
         self.api_url = self.server_url + '/web/rpc/flash.php'
         self.log.debug('Base url for API calls: %s' % self.api_url)
 
+    def destroy(self):
+        self.log.debug('Destroying server config...')
+        self.server_url = None
+        self.api_url = None
+
     def get(self, path):
         """
         Load files from server.
@@ -116,7 +134,8 @@ class ServerCall:
         :return: server response as dict object (parsed from json)
         :rtype: dict
         """
-        assert self.api_url is not None
+        if self.api_url is None:
+            raise RailNationNotAuthenticated()
 
         self.log.debug('Requesting: %s %s' % (interface_name, method_name))
         self.log.debug('Params: %s' % data)

@@ -2,6 +2,7 @@
 # -*- coding:  utf-8 -*-
 
 import cherrypy
+from cherrypy import _cperror
 import json
 import time
 import datetime
@@ -11,7 +12,13 @@ from railnation.core.common import (
     IS_PY3
 )
 from railnation.core.errors import (
-    RailNationClientError
+    RailNationClientError,
+    RailNationDoubleLogin,
+    RailNationNotAuthenticated,
+)
+from railnation.core.server import (
+    server,
+    recreate_session
 )
 from railnation.managers.account import AccountManager
 from railnation.managers.avatar import AvatarManager
@@ -21,7 +28,53 @@ from railnation.managers.resources import ResourcesManager
 from railnation.managers.station import StationManager
 
 
+def process_error_500():
+    ex_type, ex_value, ex_traceback = _cperror._exc_info()
+    log.error('Exception path: %s' % ex_type)
+
+    if ex_type is RailNationDoubleLogin:
+        log.error('Double login detected. Invalidating this session.')
+        cherrypy.response.status = 200
+        cherrypy.response.body = json.dumps({
+            'code': 3,
+            'message': 'Double login. Session invalidated.',
+            'data': None
+        })
+        recreate_session()
+        server.destroy()
+        AccountManager.get_instance().authenticated = False
+        AccountManager.get_instance().in_game = False
+
+    elif ex_type is RailNationNotAuthenticated:
+        log.error('Session is not authenticated')
+        cherrypy.response.status = 200
+        cherrypy.response.body = json.dumps({
+            'code': 2,
+            'message': 'Not authenticated to process request.',
+            'data': None
+        })
+
+    elif ex_type is RailNationClientError:
+        log.error('Errors in client logic. Panicking.')
+        cherrypy.response.status = 500
+        cherrypy.response.body = json.dumps({
+            'code': 1,
+            'message': 'Internal error',
+            'data': None
+        })
+
+    else:
+        cherrypy.response.status = 500
+        cherrypy.response.body = json.dumps({
+            'code': 500,
+            'message': 'Internal error',
+            'data': None
+        })
+
+
 class RailNationClientAPIv1:
+
+    _cp_config = {'request.error_response': process_error_500}
 
     def __init__(self):
         self.log = log.getChild('APIv1')
