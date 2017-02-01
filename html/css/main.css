@@ -64,6 +64,8 @@ button[type='submit']{
 
 .login-box label input{
     float: right;
+    position: relative;
+    top: -2px;
 }
 
 
