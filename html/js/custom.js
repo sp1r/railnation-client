@@ -62,10 +62,12 @@ $(document).on('ready',function(){
                         },
                         error: function (data) {
                             console.log(data);
+                            load.removeClass('active');
                         }
                     });
                 }else{
                     console.log('error');
+                    load.removeClass('active');
                 }
             },
             error: function (data) {
