@@ -5,6 +5,22 @@ $(document).on('ready',function(){
         $('.login-form [name=password]').val(getCookie('p'))
     }
 
+    $.ajax({
+        url: 'api/v1/login/status',
+        type: 'GET',
+        contentType: "application/json",
+        success: function (data) {
+            if(data.code === 0){
+                if(data.data.logged_in){
+                    initWorld();
+                }
+            }
+        },
+        error: function (data) {
+            console.log('error login status');
+        }
+    });
+
     $('.login-form').on('submit', function(e){
         e.preventDefault();
         var username = $('input[name=username]').val(),
@@ -86,29 +102,7 @@ $(document).on('ready',function(){
         load.addClass('active');
         console.log('Click, world ID - ' + worldID);
 
-        $.ajax({
-            url: '/api/v1/join/'+worldID,
-            type: 'GET',
-            contentType: "application/json",
-            success: function (data) {
-                if(data.code === 0){
-                    $('.world-box').addClass('active');
-                    loadAutocollect();
-                    loadStation();
-                    updateData();
-
-                }else{
-                    alert(data.message);
-                }
-                load.removeClass('active');
-            },
-            error: function (data) {
-                alert('error join');
-                console.log(data);
-                load.removeClass('active');
-            }
-        });
-
+        joinWorld(worldID, load);
 
     });
 
@@ -297,5 +291,57 @@ $(document).on('ready',function(){
         });
     }
 
+
+    function joinWorld(id, load) {
+        $.ajax({
+            url: '/api/v1/join/'+id,
+            type: 'GET',
+            contentType: "application/json",
+            success: function (data) {
+                if(data.code === 0){
+                    initWorld();
+                }else{
+                    alert(data.message);
+                }
+                load.removeClass('active');
+            },
+            error: function (data) {
+                alert('error join');
+                console.log(data);
+                load.removeClass('active');
+            }
+        });
+    }
+
+    function loadResources() {
+        $.ajax({
+            url: 'api/v1/resources',
+            type: 'GET',
+            contentType: "application/json",
+            success: function (data) {
+                if(data.code === 0){
+                    var amount = data.data.amount;
+
+                    $('.resources-box .money .value').text(amount[0]);
+                    $('.resources-box .gold .value').text(amount[1]);
+                    $('.resources-box .prestige .value').text(amount[2]);
+                }else{
+                    alert(data.message);
+                }
+            },
+            error: function (data) {
+                alert('error resources');
+                console.log(data);
+            }
+        });
+    }
+
+    function initWorld() {
+        $('.world-box').addClass('active');
+        loadAutocollect();
+        loadStation();
+        loadResources();
+        updateData();
+    }
 
 });

@@ -211,6 +211,36 @@ button[type='submit']{
     background: none;
 }
 
+.world-box .right-box .resources-box {
+    background: #5c7390;
+    padding: 7px 30px;
+    color: #bacce4;
+}
+
+.resources-box .fa {
+    font-size: 18px;
+}
+
+.world-box  .resources-box .money {
+    color: #81c381;
+    text-align: left;
+    padding-left: 0;
+}
+
+.resources-box .gold {
+    color: #ceca4f;
+    text-align: center;
+}
+
+.world-box .resources-box .prestige {
+    color: #e29319;
+    text-align: right;
+    padding-right: 0;
+}
+
+.resources-box .value {
+    font-weight: bold;
+}
 
 
 .center-body {
