@@ -106,11 +106,10 @@ $(document).on('ready',function(){
 
     });
 
-    // $('.world-menu .station').on('click', function(e){
-    //     e.preventDefault();
-    //
-    //
-    // });
+    $('.world-menu .sign-out').on('click', function(e){
+        e.preventDefault();
+        $('.world-box').removeClass('active');
+    });
 
     $(document).on('click', '.toggle-autocollect', function(e){
         e.preventDefault();
