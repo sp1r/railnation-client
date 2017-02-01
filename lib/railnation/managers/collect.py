@@ -110,14 +110,26 @@ class CollectManager:
         if player_id is None:
             player_id = AvatarManager.get_instance().id
 
+        player_name = AvatarManager.get_instance().get_name(player_id)
+
         building_id = int(building_id)
 
         assert building_id in (7, 8, 9)
 
         resources = ResourcesManager.get_instance()
-        self.log.debug('Collecting from %s (owner: %s)' % (building_names[int(building_id)], player_id))
+        self.log.debug('Collecting from %s (owner: %s)' % (building_names[building_id], player_name))
         tickets_before = resources.free_tickets_count
-        r = server.call('BuildingInterface', 'collect', [int(building_id), player_id])
+        r = server.call('BuildingInterface', 'collect', [building_id, player_id])
+
+        result = {
+            "date": int(time.time()),
+            "player_id": player_id,
+            "player_name": player_name,
+            "building_id": building_id,
+            "building_name": building_names[building_id],
+            "result": False,
+            "ticket": False
+        }
 
         if 'productionTimeLeft' in r:
             self.stats['collected'] += 1
@@ -127,12 +139,17 @@ class CollectManager:
             self.log.debug('Collecting error (%s total)' % self.stats['errors'])
             return False
 
+        result['result'] = True
+
         if tickets_before < resources.free_tickets_count:
             self.stats['tickets'] += 1
             self.log.info('Got free ticket (%s total)' % self.stats['tickets'])
-            return True
-        else:
-            return True
+            result['ticket'] = True
+
+        if self.auto_collect:
+            self.history.append(result)
+
+        return True
 
     def check(self):
         if not self.auto_collect:
@@ -146,6 +163,7 @@ class CollectManager:
             for player in self.schedule.pop(closest_production):
                 self.log.debug('Auto-collecting player: %s' % player)
                 self.collect_player(player)
+                time.sleep(1)  # don`t ddos game server
             closest_production = min(self.schedule.keys())
             self.next_collection = min(self.schedule.keys()) + random.randint(*self.collect_delay)
             self.log.debug('Next collecting at: %s' % datetime.datetime.fromtimestamp(self.next_collection))

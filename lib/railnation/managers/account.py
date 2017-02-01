@@ -73,6 +73,7 @@ class AccountManager:
         self.log.debug('Initializing...')
         self.authenticated = False
         self.in_game = False
+        self.current_world = None
         self.mellon_config = {
             'url': 'https://mellon-rn.traviangames.com',
             'application': {
@@ -326,6 +327,8 @@ class AccountManager:
         if not self.authenticated:
             raise RailNationInitializationError('Cannot join worlds without authentication')
 
+        world_id = int(world_id)
+
         try:
             # only classic scenario for now
             world = self.worlds[int(world_id)]
@@ -383,6 +386,7 @@ class AccountManager:
 
         self.log.debug('Successful world join.')
         self.in_game = True
+        self.current_world = world_id
 
         world_key = {k: v for k, v in [x.split('=') for x in redirect_url.split('?')[1].split('&')]}['key']
         self.log.debug('World join key: %s' % world_key)

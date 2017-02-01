@@ -29,6 +29,7 @@ class AvatarManager:
         self.log = log.getChild('AvatarManager')
         self.id = None
         self.association_id = None
+        self.player_names = {}
 
     def init(self, key):
         self.log.debug('Initializing...')
@@ -48,3 +49,11 @@ class AvatarManager:
             self.association_id = r['corporation']['ID']
         except KeyError:
             pass
+
+    def get_name(self, player_id):
+        try:
+            return self.player_names[player_id]
+        except KeyError:
+            player = server.call('ProfileInterface', 'getProfile', [player_id])
+            self.player_names[player_id] = player['meta']['name']
+            return self.player_names[player_id]
