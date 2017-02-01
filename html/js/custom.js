@@ -16,7 +16,7 @@ $(document).on('ready',function(){
                 }
             }
         },
-        error: function (data) {
+        error: function () {
             console.log('error login status');
         }
     });
@@ -94,21 +94,21 @@ $(document).on('ready',function(){
 
     });
 
-    $('body').on('click', '.world-row', function(e){
+    $('.world-menu .sign-out').on('click', function(e){
+        e.preventDefault();
+        $('.world-box').removeClass('active');
+    });
+
+    $(document).on('click', '.world-row', function(e){
         e.preventDefault();
         var worldID = $(this).attr('data-id'),
             load = $('.worlds-list-box .load-box');
 
         load.addClass('active');
-        console.log('Click, world ID - ' + worldID);
+        console.log('world - ' + worldID);
 
         joinWorld(worldID, load);
 
-    });
-
-    $('.world-menu .sign-out').on('click', function(e){
-        e.preventDefault();
-        $('.world-box').removeClass('active');
     });
 
     $(document).on('click', '.toggle-autocollect', function(e){
@@ -145,44 +145,44 @@ $(document).on('ready',function(){
         });
     });
 
-    function createCookie(name, val) {
-        if(val && name){
-            var cookieLiveTime = 60 * 60 * 24 * 30 * 1000;
-            var cookieDate = new Date(new Date().getTime() + cookieLiveTime);
-            document.cookie = name +"="+ val +"; path=/; expires=" + cookieDate.toUTCString();
-        }
-    }
 
-    function getCookie(name) {
-        var matches = document.cookie.match(new RegExp(
-            "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-        ));
-        return matches ? decodeURIComponent(matches[1]) : undefined;
+
+
+
+    function initWorld() {
+        $('.world-box').addClass('active');
+        loadAutocollect();
+        loadStation();
+        loadResources();
+        updateData();
     }
 
     function updateData(){
         setInterval(function(){
-            $.ajax({
-                url: 'api/v1/autocollect/stats',
-                type: 'GET',
-                contentType: "application/json",
-                success: function (data) {
-                    if(data.code === 0){
-                        if(data.data){
-                            var box = $('.autocollect-statistic-box');
+            loadResources();
+            loadCollectStats();
+        },60000);
+    }
 
-                            $.each(data.data,function(n, val){
-                                box.find('.'+n+ ' .value').text(val);
-                            });
-                        }
-                    }
-                },
-                error: function (data) {
-                    alert('error autocollect stats');
-                    console.log(data);
+    function joinWorld(id, load) {
+        $.ajax({
+            url: '/api/v1/join/'+id,
+            type: 'GET',
+            contentType: "application/json",
+            success: function (data) {
+                if(data.code === 0){
+                    initWorld();
+                }else{
+                    alert(data.message);
                 }
-            });
-        },10000);
+                load.removeClass('active');
+            },
+            error: function (data) {
+                alert('error join');
+                console.log(data);
+                load.removeClass('active');
+            }
+        });
     }
 
     function loadAutocollect() {
@@ -243,7 +243,6 @@ $(document).on('ready',function(){
         });
     }
 
-
     function loadStation() {
         $.ajax({
             url: '/api/v1/station/',
@@ -290,28 +289,6 @@ $(document).on('ready',function(){
         });
     }
 
-
-    function joinWorld(id, load) {
-        $.ajax({
-            url: '/api/v1/join/'+id,
-            type: 'GET',
-            contentType: "application/json",
-            success: function (data) {
-                if(data.code === 0){
-                    initWorld();
-                }else{
-                    alert(data.message);
-                }
-                load.removeClass('active');
-            },
-            error: function (data) {
-                alert('error join');
-                console.log(data);
-                load.removeClass('active');
-            }
-        });
-    }
-
     function loadResources() {
         $.ajax({
             url: 'api/v1/resources',
@@ -321,9 +298,9 @@ $(document).on('ready',function(){
                 if(data.code === 0){
                     var amount = data.data.amount;
 
-                    $('.resources-box .money .value').text(amount[0]);
-                    $('.resources-box .gold .value').text(amount[1]);
-                    $('.resources-box .prestige .value').text(amount[2]);
+                    $('.resources-box .money .value').text(numberWithCommas(amount[0]));
+                    $('.resources-box .gold .value').text(numberWithCommas(amount[1]));
+                    $('.resources-box .prestige .value').text(numberWithCommas(amount[2]));
                 }else{
                     alert(data.message);
                 }
@@ -335,12 +312,48 @@ $(document).on('ready',function(){
         });
     }
 
-    function initWorld() {
-        $('.world-box').addClass('active');
-        loadAutocollect();
-        loadStation();
-        loadResources();
-        updateData();
+    function loadCollectStats() {
+        $.ajax({
+            url: 'api/v1/autocollect/stats',
+            type: 'GET',
+            contentType: "application/json",
+            success: function (data) {
+                if(data.code === 0){
+                    if(data.data){
+                        var box = $('.autocollect-statistic-box');
+
+                        $.each(data.data,function(n, val){
+                            box.find('.'+n+ ' .value').text(val);
+                        });
+                    }
+                }
+            },
+            error: function (data) {
+                alert('error autocollect stats');
+                console.log(data);
+            }
+        });
     }
+
+    function createCookie(name, val) {
+        if(val && name){
+            var cookieLiveTime = 60 * 60 * 24 * 30 * 1000;
+            var cookieDate = new Date(new Date().getTime() + cookieLiveTime);
+            document.cookie = name +"="+ val +"; path=/; expires=" + cookieDate.toUTCString();
+        }
+    }
+
+    function getCookie(name) {
+        var matches = document.cookie.match(new RegExp(
+            "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        ));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
+
+    function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+
 
 });
