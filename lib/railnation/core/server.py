@@ -62,14 +62,41 @@ class ServerCall:
     def __init__(self):
         self.log = log.getChild('ServerCall')
         self.log.debug('Initialization...')
+        self.server_url = None
         self.api_url = None
 
     def init(self, server_url):
         if server_url.startswith('http'):
-            self.api_url = '%s/web/rpc/flash.php' % server_url
+            self.server_url = server_url
         else:
-            self.api_url = 'http://%s/web/rpc/flash.php' % server_url
-        self.log.debug('Base url for calls: %s' % self.api_url)
+            self.server_url = 'http://' + server_url
+        self.log.debug('Server url: %s' % self.server_url)
+        self.api_url = self.server_url + '/web/rpc/flash.php'
+        self.log.debug('Base url for API calls: %s' % self.api_url)
+
+    def get(self, path):
+        """
+        Load files from server.
+        """
+        if not path.startswith('/'):
+            path = '/' + path
+        self.log.debug('Loading: %s' % path)
+        try:
+            r = session.get(self.server_url + path)
+
+            self.log.debug('Code: %s %s' % (r.status_code,
+                                            r.reason))
+
+        except requests.exceptions.ConnectionError as err:
+            self.log.error('Connection resulted in error: %s' % str(err))
+            time.sleep(0.25)
+
+        except requests.exceptions.Timeout as err:
+            self.log.error('Connection timeout: %s' % str(err))
+            pass
+
+        else:
+            return r.text
 
     def call(self, interface_name, method_name, data):
         """

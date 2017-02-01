@@ -28,6 +28,8 @@ class PropertiesManager:
         self.log = log.getChild('PropertiesManager')
         self.log.debug('Initializing...')
 
+        self.buildings = {}
+
         data = server.call('ServerInfoInterface', 'getInfo', [])
 
         self.config_path = data['config']
@@ -44,4 +46,8 @@ class PropertiesManager:
         self.log.debug('Game version: %s' % self.version)
         self.world_name = data['worldName']
         self.log.debug('World name: %s' % self.world_name)
+
+    def load_station_buildings(self):
+        pass
+
 

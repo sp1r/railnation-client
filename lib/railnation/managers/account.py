@@ -397,5 +397,5 @@ class AccountManager:
 
         self.log.info('Loading parameters...')
         params = PropertiesManager.get_instance()
-
+        params.load_station_buildings()
 

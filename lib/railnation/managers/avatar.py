@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding:  utf-8 -*-
 
+import datetime
+
 from railnation.core.common import log
 from railnation.core.server import server
 from railnation.core.errors import RailNationInitializationError
@@ -29,6 +31,9 @@ class AvatarManager:
         self.log = log.getChild('AvatarManager')
         self.id = None
         self.association_id = None
+        self.premium_features = {
+            'plus_ends_at': datetime.datetime.now()
+        }
 
     def init(self, key):
         self.log.debug('Initializing...')
@@ -39,6 +44,7 @@ class AvatarManager:
         self.log.debug('Player ID: %s' % self.id)
 
         r = server.call('GUIInterface', 'getInitial', [])
+        now = datetime.datetime.now()
 
         resources = ResourcesManager.get_instance()
         resources.resources = {int(i['resourceId']): int(i['amount']) for i in r['resources']}
@@ -48,3 +54,12 @@ class AvatarManager:
             self.association_id = r['corporation']['ID']
         except KeyError:
             pass
+
+        for i in r['paymentAccounts']:
+            if i['type'] == '0':
+                self.premium_features['plus_ends_at'] = now + datetime.timedelta(seconds=int(i['endTime']))
+
+    @property
+    def has_plus(self):
+        return self.premium_features['plus_ends_at'] > datetime.datetime.now()
+
