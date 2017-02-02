@@ -14,7 +14,11 @@ from railnation.config import (
     MAX_RECONNECT,
     CONNECTION_TIMEOUT,
 )
-from railnation.core.errors import RailNationConnectionProblem
+from railnation.core.errors import (
+    RailNationConnectionProblem,
+    RailNationDoubleLogin,
+    RailNationNotAuthenticated,
+)
 from railnation.core.common import log
 from railnation.managers.resources import ResourcesManager
 
@@ -26,6 +30,18 @@ session.headers.update({
                   'Chrome/36.0.1985.125 Safari/537.36',
     'Accept-Language': 'en-US,en;q=0.8,ru;q=0.6',
 })
+
+
+def recreate_session():
+    global session
+    session = requests.Session()
+    session.headers.update({
+        'User-agent': 'Mozilla/5.0 (X11; Linux x86_64) '
+                      'AppleWebKit/537.36 (KHTML, like Gecko) '
+                      'Chrome/36.0.1985.125 Safari/537.36',
+        'Accept-Language': 'en-US,en;q=0.8,ru;q=0.6',
+    })
+
 
 json_communication = {
     'Content-Type': 'application/json; charset = utf-8',
@@ -62,14 +78,46 @@ class ServerCall:
     def __init__(self):
         self.log = log.getChild('ServerCall')
         self.log.debug('Initialization...')
+        self.server_url = None
         self.api_url = None
 
     def init(self, server_url):
         if server_url.startswith('http'):
-            self.api_url = '%s/web/rpc/flash.php' % server_url
+            self.server_url = server_url
         else:
-            self.api_url = 'http://%s/web/rpc/flash.php' % server_url
-        self.log.debug('Base url for calls: %s' % self.api_url)
+            self.server_url = 'http://' + server_url
+        self.log.debug('Server url: %s' % self.server_url)
+        self.api_url = self.server_url + '/web/rpc/flash.php'
+        self.log.debug('Base url for API calls: %s' % self.api_url)
+
+    def destroy(self):
+        self.log.debug('Destroying server config...')
+        self.server_url = None
+        self.api_url = None
+
+    def get(self, path):
+        """
+        Load files from server.
+        """
+        if not path.startswith('/'):
+            path = '/' + path
+        self.log.debug('Loading: %s' % path)
+        try:
+            r = session.get(self.server_url + path)
+
+            self.log.debug('Code: %s %s' % (r.status_code,
+                                            r.reason))
+
+        except requests.exceptions.ConnectionError as err:
+            self.log.error('Connection resulted in error: %s' % str(err))
+            time.sleep(0.25)
+
+        except requests.exceptions.Timeout as err:
+            self.log.error('Connection timeout: %s' % str(err))
+            pass
+
+        else:
+            return r.text
 
     def call(self, interface_name, method_name, data):
         """
@@ -86,7 +134,8 @@ class ServerCall:
         :return: server response as dict object (parsed from json)
         :rtype: dict
         """
-        assert self.api_url is not None
+        if self.api_url is None:
+            raise RailNationNotAuthenticated()
 
         self.log.debug('Requesting: %s %s' % (interface_name, method_name))
         self.log.debug('Params: %s' % data)
@@ -128,7 +177,10 @@ class ServerCall:
 
     def _process_response(self, response):
         self.log.debug('Error code: %s' % response['Errorcode'])
-        if response['Errorcode'] != 0:
+        if response['Errorcode'] == 1:
+            self.log.error('Double login!')
+            raise RailNationDoubleLogin()
+        elif response['Errorcode'] != 0:
             self.log.error('Error message: ')  # todo: get example of error message and throw exception
 
         try:

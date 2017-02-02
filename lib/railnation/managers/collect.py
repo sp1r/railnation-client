@@ -9,11 +9,11 @@ from cherrypy.process.plugins import Monitor
 
 from railnation.core.common import log
 from railnation.core.server import server
-from railnation.core.const import building_names
 from railnation.managers.avatar import AvatarManager
 from railnation.managers.association import AssociationManager
 from railnation.managers.station import StationManager
 from railnation.managers.resources import ResourcesManager
+from railnation.managers.properties import PropertiesManager
 from railnation.managers.ticket import TicketManager
 
 
@@ -113,11 +113,11 @@ class CollectManager:
         player_name = AvatarManager.get_instance().get_name(player_id)
 
         building_id = int(building_id)
-
         assert building_id in (7, 8, 9)
+        building_name = PropertiesManager.get_instance().buildings[building_id]['name']
 
         resources = ResourcesManager.get_instance()
-        self.log.debug('Collecting from %s (owner: %s)' % (building_names[building_id], player_name))
+        self.log.debug('Collecting from %s (owner: %s)' % (building_name, player_name))
         tickets_before = resources.free_tickets_count
         r = server.call('BuildingInterface', 'collect', [building_id, player_id])
 
@@ -126,7 +126,7 @@ class CollectManager:
             "player_id": player_id,
             "player_name": player_name,
             "building_id": building_id,
-            "building_name": building_names[building_id],
+            "building_name": building_name,
             "result": False,
             "ticket": False
         }
