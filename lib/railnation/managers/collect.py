@@ -126,7 +126,7 @@ class CollectManager:
             "player_id": player_id,
             "player_name": player_name,
             "building_id": building_id,
-            "building_name": building_names[building_id],
+            "building_name": building_name,
             "result": False,
             "ticket": False
         }

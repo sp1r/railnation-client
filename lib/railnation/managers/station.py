@@ -7,7 +7,6 @@ from cherrypy.process.plugins import Monitor
 
 from railnation.core.common import log
 from railnation.core.server import server
-from railnation.core.const import building_names
 from railnation.managers.avatar import AvatarManager
 from railnation.managers.properties import PropertiesManager
 from railnation.managers.resources import ResourcesManager
