@@ -75,7 +75,11 @@ class StationManager:
             self.log.debug('%s is not being upgraded, cannot cancel.' % building_name)
             return False
 
-        return server.call('BuildingInterface', 'cancel', [building_id])
+        r = server.call('BuildingInterface', 'cancel', [building_id])
+
+        self.check_build_queue()
+
+        return r
 
     def check_build_queue(self):
         if len(self.build_queue) == 0:
