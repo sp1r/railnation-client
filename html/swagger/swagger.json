@@ -1095,6 +1095,177 @@
           }
         }
       }
+    },
+
+    "/buildqueue": {
+      "get": {
+        "summary": "Returns current build queue",
+        "description": "Returns id of buildings in build queue.",
+        "tags": ["Station"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Build queue",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": [7, 3, 3, 1]
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/buildqueue/clear": {
+      "post": {
+        "summary": "Remove everything from build queue",
+        "description": "Remove everything from build queue",
+        "tags": ["Station"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Build queue",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": []
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/build/{building_id}": {
+      "post": {
+        "summary": "Schedule an upgrade of building",
+        "description": "Add a building to a build queue and start build process if possible.",
+        "tags": ["Station"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "building_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scheduling result",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "boolean"
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": true
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Cancel an upgrade of building",
+        "description": "Stop upgrade of a building and return all money spent on it",
+        "tags": ["Station"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "building_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cancel result",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "boolean"
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": true
+              }
+            }
+          }
+        }
+      }
     }
 
   }

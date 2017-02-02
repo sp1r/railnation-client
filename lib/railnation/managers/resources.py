@@ -50,4 +50,5 @@ class ResourcesManager:
         except KeyError:
             return 0
 
-
+    def have_enough_money(self, amount):
+        return self.resources[0] >= amount

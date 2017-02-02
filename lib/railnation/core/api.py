@@ -2,6 +2,7 @@
 # -*- coding:  utf-8 -*-
 
 import cherrypy
+from cherrypy import _cperror
 import json
 import time
 import datetime
@@ -11,7 +12,13 @@ from railnation.core.common import (
     IS_PY3
 )
 from railnation.core.errors import (
-    RailNationClientError
+    RailNationClientError,
+    RailNationDoubleLogin,
+    RailNationNotAuthenticated,
+)
+from railnation.core.server import (
+    server,
+    recreate_session
 )
 from railnation.managers.account import AccountManager
 from railnation.managers.avatar import AvatarManager
@@ -21,7 +28,53 @@ from railnation.managers.resources import ResourcesManager
 from railnation.managers.station import StationManager
 
 
+def process_error_500():
+    ex_type, ex_value, ex_traceback = _cperror._exc_info()
+    log.error('Exception path: %s' % ex_type)
+
+    if ex_type is RailNationDoubleLogin:
+        log.error('Double login detected. Invalidating this session.')
+        cherrypy.response.status = 200
+        cherrypy.response.body = json.dumps({
+            'code': 3,
+            'message': 'Double login. Session invalidated.',
+            'data': None
+        })
+        recreate_session()
+        server.destroy()
+        AccountManager.get_instance().authenticated = False
+        AccountManager.get_instance().in_game = False
+
+    elif ex_type is RailNationNotAuthenticated:
+        log.error('Session is not authenticated')
+        cherrypy.response.status = 200
+        cherrypy.response.body = json.dumps({
+            'code': 2,
+            'message': 'Not authenticated to process request.',
+            'data': None
+        })
+
+    elif ex_type is RailNationClientError:
+        log.error('Errors in client logic. Panicking.')
+        cherrypy.response.status = 500
+        cherrypy.response.body = json.dumps({
+            'code': 1,
+            'message': 'Internal error',
+            'data': None
+        })
+
+    else:
+        cherrypy.response.status = 500
+        cherrypy.response.body = json.dumps({
+            'code': 500,
+            'message': 'Internal error',
+            'data': None
+        })
+
+
 class RailNationClientAPIv1:
+
+    _cp_config = {'request.error_response': process_error_500}
 
     def __init__(self):
         self.log = log.getChild('APIv1')
@@ -412,5 +465,78 @@ class RailNationClientAPIv1:
                 'message': 'Bad request: POST /autocollect/%s' % action,
                 'data': None
             }
+
+    @cherrypy.tools.json_out()
+    @cherrypy.expose
+    def build(self, building_id):
+        self.log.debug('%s /build/%s called' % (cherrypy.request.method, building_id))
+        if cherrypy.request.method == 'OPTIONS':
+            return ''
+
+        elif cherrypy.request.method == 'DELETE':
+            if not building_id.isdigit() or int(building_id) not in range(10):
+                return {
+                    'code': 1,
+                    'message': 'Bad building ID: %s' % building_id,
+                    'data': None
+                }
+            else:
+                return {
+                    'code': 0,
+                    'message': 'OK',
+                    'data': StationManager.get_instance().cancel_upgrade(building_id)
+                }
+
+        elif cherrypy.request.method != 'POST':
+            raise cherrypy.HTTPError('405 Method Not Allowed')
+
+        if not building_id.isdigit() or int(building_id) not in range(10):
+            return {
+                'code': 1,
+                'message': 'Bad building ID: %s' % building_id,
+                'data': None
+            }
+
+        StationManager.get_instance().upgrade_building(building_id)
+        return {
+            'code': 0,
+            'message': 'OK',
+            'data': True
+        }
+
+    @cherrypy.tools.json_out()
+    @cherrypy.expose
+    def buildqueue(self, action=None):
+        self.log.debug('%s /buildqueue called' % cherrypy.request.method)
+        if cherrypy.request.method == 'OPTIONS':
+            return ''
+
+        elif cherrypy.request.method == 'GET':
+            manager = CollectManager.get_instance()
+            if action is None:
+                return {
+                    'code': 0,
+                    'message': 'OK',
+                    'data': StationManager.get_instance().build_queue
+                }
+
+            else:
+                return {
+                    'code': 1,
+                    'message': 'Bad request: GET /buildqueue/%s' % action,
+                    'data': None
+                }
+
+        elif cherrypy.request.method != 'POST':
+            raise cherrypy.HTTPError('405 Method Not Allowed')
+
+        if action == 'clear':
+            StationManager.get_instance().build_queue = []
+            return {
+                'code': 0,
+                'message': 'OK',
+                'data': StationManager.get_instance().build_queue
+            }
+
 
 
