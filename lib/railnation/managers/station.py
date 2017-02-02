@@ -68,6 +68,16 @@ class StationManager:
         self.build_queue.append(building_id)
         self.check_build_queue()
 
+    def cancel_upgrade(self, building_id):
+        building_id = int(building_id)
+        building_name = PropertiesManager.get_instance().buildings[building_id]['name']
+        buildings = StationManager.get_instance().get_buildings()
+        if not buildings[building_id]['build_in_progress']:
+            self.log.debug('%s is not being upgraded, cannot cancel.' % building_name)
+            return False
+
+        return server.call('BuildingInterface', 'cancel', [building_id])
+
     def check_build_queue(self):
         if len(self.build_queue) == 0:
             return

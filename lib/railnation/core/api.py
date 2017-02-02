@@ -456,6 +456,20 @@ class RailNationClientAPIv1:
         if cherrypy.request.method == 'OPTIONS':
             return ''
 
+        elif cherrypy.request.method == 'DELETE':
+            if not building_id.isdigit() or int(building_id) not in range(10):
+                return {
+                    'code': 1,
+                    'message': 'Bad building ID: %s' % building_id,
+                    'data': None
+                }
+            else:
+                return {
+                    'code': 0,
+                    'message': 'OK',
+                    'data': StationManager.get_instance().cancel_upgrade(building_id)
+                }
+
         elif cherrypy.request.method != 'POST':
             raise cherrypy.HTTPError('405 Method Not Allowed')
 

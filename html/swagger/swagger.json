@@ -1163,6 +1163,49 @@
             }
           }
         }
+      },
+      "delete": {
+        "summary": "Cancel an upgrade of building",
+        "description": "Stop upgrade of a building and return all money spent on it",
+        "tags": ["Station"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "building_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cancel result",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "boolean"
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": true
+              }
+            }
+          }
+        }
       }
     }
 
