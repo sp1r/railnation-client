@@ -1,3 +1,48 @@
+var translate = {
+    Engine_house: {
+        text: 'Депо',
+        id: 0
+    },
+    Station: {
+        text: 'Вокзал',
+        id: 1
+    },
+    Maintenance_Hall: {
+        text: 'Рельсовый завод',
+        id: 2
+    },
+    Construction_yard: {
+        text: 'Стройплощадка',
+        id: 3
+    },
+    Bank: {
+        text: 'Банк',
+        id: 4
+    },
+    Licence: {
+        text: 'Отдел лицензий',
+        id: 5
+    },
+    Labor: {
+        text: 'Лаба',
+        id: 6
+    },
+    Hotel: {
+        text: 'Отель',
+        id: 7
+    },
+    Restaurant: {
+        text: 'Ресторан',
+        id: 8
+    },
+    Mall: {
+        text: 'Рынчик',
+        id: 9
+    }
+};
+
+
+
 $(document).on('ready',function(){
 
     if(getCookie('n') && getCookie('p')){
@@ -94,9 +139,54 @@ $(document).on('ready',function(){
 
     });
 
-    $('.world-menu .sign-out').on('click', function(e){
-        e.preventDefault();
+    $('.world-menu .sign-out').on('click', function(){
         $('.world-box').removeClass('active');
+    });
+
+
+    $(document).on('click', '.tab-title', function(){
+        if(!$(this).hasClass('active')){
+            var index = $(this).attr('data-index'),
+                body = $(this).closest('.tabs').find('.tab-body[data-index='+ index +']');
+
+            $(this).siblings().removeClass('active');
+            $(this).addClass('active');
+            body.siblings().removeClass('active');
+            body.addClass('active');
+        }
+
+    });
+
+    $(document).on('click', '.build-droid-add', function(){
+        var id = $('.build-droid-select').val(),
+            name = $('.build-droid-select option:selected').text(),
+            list = $('.build-droid-list');
+
+        $.ajax({
+            url: 'api/v1/build/'+ id,
+            type: 'POST',
+            contentType: "application/json",
+            success: function (data) {
+                if(data.code === 0){
+                    var html = '<div class="build" data-id="'+id+'">';
+                    html += '<span class="build-name">'+ name +'</i>';
+                    html += '<i class="build-delete fa fa-times"></i>';
+                    html += '</div>';
+
+                    list.append(html);
+                }else{
+                    alert(data.message);
+                }
+            },
+            error: function (data) {
+                alert('error autocollect status');
+                console.log(data);
+            }
+        });
+    });
+
+    $(document).on('click', '.build-delete', function(){
+
     });
 
     $(document).on('click', '.world-row', function(e){
@@ -250,30 +340,58 @@ $(document).on('ready',function(){
             contentType: "application/json",
             success: function (data) {
                 if(data.code === 0){
-                    var html = '';
+                    var html = '',
+                        i = 0;
 
-                    html += '<div class="title">Станция</div>';
+                    html += '<div class="tab-titles-box">';
+                    html += '<span class="tab-title active" data-index="0">Станция</span>';
+                    html += '<span class="tab-title" data-index="1">Билд дроид</span>';
+                    html += '</div>';
+
+                    html += '<div class="tab-body active" data-index="0">';
                     html += '<div class="table">';
                     $.each(data.data, function(i, build){
+                        var name = build.name,
+                            video = '';
+
+                        if(translate[build.name.replace(' ','_')]){
+                            name = translate[build.name.replace(' ','_')].text;
+                        }
+
                         html += '<div class="build-row table-row">';
-                        html += '<div class="build-name">' + build.name + '</div>';
+                        html += '<div class="build-name">' + name + '</div>';
                         html += '<div class="build-lvl">' + build.level + '</div>';
 
                         if(build.build_in_progress){
-                            html += '<div class="build-progress">' + build.build_finish_at + '</div>';
+                            html += '<div class="build-progress"><i class="fa fa-wrench"></i></div>';
                         }else{
                             html += '<div class="build-progress"></div>';
                         }
 
                         if(build.video_watched){
-                            html += '<div class="build-video-watched"><i class="fa fa-video-camera"></i></div>';
-                        }else{
-                            html += '<div class="build-video-watched"></div>';
+                            if(build.name === 'Hotel' ||build.name === 'Hotel' ||build.name === 'Hotel' ){
+                                video = '<i class="fa fa-video-camera"></i>';
+                            }
                         }
+                        html += '<div class="build-video-watched">'+ video +'</div>';
 
-                        html += '<div class="clear"></div>';
+                        //html += '<div class="clear"></div>';
                         html += '</div>';
                     });
+                    html += '</div>';
+                    html += '</div>';
+
+                    html += '<div class="tab-body build-droid-box" data-index="1">';
+
+                    html += '<select class="build-droid-select">';
+                    $.each(translate, function(name, val){
+                        html += '<option value='+ i +'>'+ val.text +'</option>';
+                        i++;
+                    });
+                    html += '</select>';
+                    html += '<span class="build-droid-add"><i class="fa fa-plus"></i></span>';
+                    html += '<div class="build-droid-list"></div>';
+
                     html += '</div>';
 
                     $('.station-box').html(html);

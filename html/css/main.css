@@ -260,6 +260,10 @@ button[type='submit']{
     color: white;
 }
 
+.station-box .tab-body {
+    height: 280px;
+}
+
 
 .autocollect-box {
 
@@ -275,6 +279,55 @@ button[type='submit']{
 .autocollect-status-box .fa-toggle-off{
     color: #d67272;
 }
+
+.build-droid-box>* {
+    padding: 5px 10px;
+    border: 1px solid #5c7390;
+    height: 34px;
+    line-height: 34px;
+    float: left;
+}
+
+.build-droid-box .build-droid-add {
+    width: 40px;
+    text-align: center;
+    background: #5c7390;
+    color: #bacce4;
+    cursor: pointer;
+}
+
+.build-droid-box .build-droid-add .fa{
+    line-height: 22px;
+}
+
+.build-droid-list {
+    height: 235px;
+    float: left;
+    width: 100%;
+    margin-top: 10px;
+    border: 1px solid #8b9fba;
+    overflow: auto;
+}
+
+.build-droid-list .build {
+    display: block;
+    width: 100%;
+    padding: 5px 13px;
+}
+
+.build-droid-list .build:nth-child(event) {
+    border-top: 1px solid #8b9fba;
+}
+
+.build-droid-list .build-delete{
+    color: #bacce4;
+    float: right;
+    padding: 4px 6px;
+    background: #cc6565;
+    position: relative;
+    top: -3px;
+}
+
 
 
 
@@ -304,6 +357,43 @@ button[type='submit']{
     border-bottom: 1px solid #2f3f54;
     font-size: 18px;
     font-weight: bold;
+}
+
+.tabs{
+
+}
+
+.tabs .tab-titles-box {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #2f3f54;
+}
+
+.tabs .tab-title{
+    font-size: 16px;
+    font-weight: bold;
+    display: inline-block;
+    padding: 8px 15px;
+    cursor: pointer;
+    background: #5c7390;
+    color: #bacce4;
+    opacity: 0.5;
+}
+
+.tabs .tab-title.active{
+    opacity: 1;
+    cursor: auto;
+}
+
+.tabs .tab-body{
+    display: none;
+}
+
+.tabs .tab-body{
+    display: none;
+}
+
+.tabs .tab-body.active{
+    display: block;
 }
 
 .clear {
