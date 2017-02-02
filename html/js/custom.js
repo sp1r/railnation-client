@@ -169,8 +169,7 @@ $(document).on('ready',function(){
             success: function (data) {
                 if(data.code === 0){
                     var html = '<div class="build" data-id="'+id+'">';
-                    html += '<span class="build-name">'+ name +'</i>';
-                    html += '<i class="build-delete fa fa-times"></i>';
+                    html += '<span class="build-name">'+ name +'</span>';
                     html += '</div>';
 
                     list.append(html);
@@ -179,14 +178,29 @@ $(document).on('ready',function(){
                 }
             },
             error: function (data) {
-                alert('error autocollect status');
+                alert('error add build');
                 console.log(data);
             }
         });
     });
 
-    $(document).on('click', '.build-delete', function(){
-
+    $(document).on('click', '.build-droid-remove-all', function(){
+        $.ajax({
+            url: 'api/v1/buildqueue/clear',
+            type: 'POST',
+            contentType: "application/json",
+            success: function (data) {
+                if(data.code === 0){
+                    $('.build-droid-list').text('');
+                }else{
+                    alert(data.message);
+                }
+            },
+            error: function (data) {
+                alert('error buildqueue clear');
+                console.log(data);
+            }
+        });
     });
 
     $(document).on('click', '.world-row', function(e){
@@ -390,6 +404,7 @@ $(document).on('ready',function(){
                     });
                     html += '</select>';
                     html += '<span class="build-droid-add"><i class="fa fa-plus"></i></span>';
+                    html += '<span class="build-droid-remove-all"><i class="fa fa fa-times"></i></span>';
                     html += '<div class="build-droid-list"></div>';
 
                     html += '</div>';

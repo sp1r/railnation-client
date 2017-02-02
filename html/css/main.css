@@ -285,11 +285,11 @@ button[type='submit']{
     padding: 5px 10px;
     border: 1px solid #5c7390;
     height: 34px;
-    line-height: 34px;
+    line-height: 24px;
     float: left;
 }
 
-.build-droid-box .build-droid-add {
+.build-droid-box .build-droid-add, .build-droid-box  .build-droid-remove-all {
     width: 40px;
     text-align: center;
     background: #5c7390;
@@ -297,7 +297,13 @@ button[type='submit']{
     cursor: pointer;
 }
 
-.build-droid-box .build-droid-add .fa{
+.build-droid-box  .build-droid-remove-all {
+    float: right;
+    background: #cc6363;
+    border: none;
+}
+
+.build-droid-box .build-droid-add .fa, .build-droid-box .build-droid-remove-all .fa{
     line-height: 22px;
 }
 
@@ -306,27 +312,33 @@ button[type='submit']{
     float: left;
     width: 100%;
     margin-top: 10px;
-    border: 1px solid #8b9fba;
+    padding: 0;
+    border: none;
     overflow: auto;
 }
 
 .build-droid-list .build {
     display: block;
     width: 100%;
-    padding: 5px 13px;
+    padding: 5px 10px;
 }
 
-.build-droid-list .build:nth-child(event) {
-    border-top: 1px solid #8b9fba;
+.build-droid-list .build:nth-child(even) {
+    background: #adbfd6;
 }
 
 .build-droid-list .build-delete{
-    color: #bacce4;
+    color: #cc6363;
     float: right;
     padding: 4px 6px;
-    background: #cc6565;
     position: relative;
     top: -3px;
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.build-droid-list .build-delete:hover{
+    opacity: 1;
 }
 
 
