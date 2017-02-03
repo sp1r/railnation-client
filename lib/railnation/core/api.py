@@ -538,5 +538,39 @@ class RailNationClientAPIv1:
                 'data': StationManager.get_instance().build_queue
             }
 
+    @cherrypy.tools.json_out()
+    @cherrypy.expose
+    def watch(self, user_id=None, building_id=None):
+        self.log.debug('%s /watch/%s/%s called' % (cherrypy.request.method, building_id, user_id))
+        if cherrypy.request.method == 'OPTIONS':
+            return ''
+
+        elif cherrypy.request.method != 'POST':
+            raise cherrypy.HTTPError('405 Method Not Allowed')
+
+        if building_id is not None and int(building_id) not in (7, 8, 9):
+            error_msg = 'Can only watch video on building_ids: 7, 8, 9. Requested: %s' % building_id
+            self.log.error(error_msg)
+            return {'code': 1, 'message': error_msg, 'data': None}
+
+        manager = CollectManager.get_instance()
+        try:
+            if building_id is None:
+                r = manager.watch_video(user_id, building_id)
+            else:
+                r = manager.watch_video(user_id, building_id)
+        except RailNationClientError as err:
+            self.log.error('Error: %s' % str(err))
+            return {
+                'code': 1,
+                'message': str(err),
+                'data': None
+            }
+        else:
+            return {
+                'code': 0,
+                'message': 'OK',
+                'data': r
+            }
 
 
