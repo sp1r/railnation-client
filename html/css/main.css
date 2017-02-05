@@ -250,10 +250,15 @@ button[type='submit']{
     padding: 50px;
 }
 
-
-.center-body .build-row {
-
+.build-row .build-progress {
+    padding-left: 5px;
+    color: #3677ca;
 }
+
+.build-row .build-finish-at {
+    padding-left: 5px;
+}
+
 
 .center-body .station-box .table-row>* {
     padding: 0 20px;
@@ -340,7 +345,6 @@ button[type='submit']{
 .build-droid-list .build-delete:hover{
     opacity: 1;
 }
-
 
 
 

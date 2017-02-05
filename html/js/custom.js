@@ -368,6 +368,7 @@ $(document).on('ready',function(){
                     $.each(data.data, function(i, build){
                         var name = build.name,
                             video = '';
+                            nextLvl = build.level+1;
 
                         if(translate[build.name.replace(' ','_')]){
                             name = translate[build.name.replace(' ','_')].text;
@@ -375,11 +376,12 @@ $(document).on('ready',function(){
 
                         html += '<div class="build-row table-row">';
                         html += '<div class="build-name">' + name + '</div>';
-                        html += '<div class="build-lvl">' + build.level + '</div>';
 
                         if(build.build_in_progress){
+                            html += '<div class="build-lvl">' + build.level + '>'+ nextLvl +'</div>';
                             html += '<div class="build-progress"><i class="fa fa-wrench"></i><span class="build-finish-at">'+ dateConverter(build.build_finish_at) +'</span></div>';
                         }else{
+                            html += '<div class="build-lvl">' + build.level + '</div>';
                             html += '<div class="build-progress"></div>';
                         }
 
@@ -411,6 +413,38 @@ $(document).on('ready',function(){
                     html += '</div>';
 
                     $('.station-box').html(html);
+
+                    $.ajax({
+                        url: '/api/v1/buildqueue',
+                        type: 'GET',
+                        contentType: "application/json",
+                        success: function (data) {
+                            if(data.code === 0){
+                                var html = '';
+
+                                $.each(data.data, function(i, id){
+                                    var name = '';
+                                    $.each(translate, function(x, build){
+                                        if(id === build.id){
+                                            name = build.text;
+                                        }
+                                    });
+
+                                    html += '<div class="build" data-id="'+id+'">';
+                                    html += '<span class="build-name">'+ name +'</span>';
+                                    html += '</div>';
+                                });
+
+                                $('.station-box .build-droid-list').html(html);
+                            }else{
+                                alert(data.message);
+                            }
+                        },
+                        error: function (data) {
+                            alert('error buildqueue');
+                            console.log(data);
+                        }
+                    });
 
                 }else{
                     alert(data.message);
@@ -489,8 +523,10 @@ $(document).on('ready',function(){
     }
 
     function dateConverter(time) {
-        var date = new Date(time*1000);
-        return date.getHours() + ':' + date.getMinutes();
+        var seconds = parseInt(time - Date.now()/1000),
+            date = new Date(1970,0,1);
+        date.setSeconds(seconds);
+        return date.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1").substring(0,5);
     }
 
 
