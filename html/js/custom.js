@@ -265,6 +265,7 @@ $(document).on('ready',function(){
         setInterval(function(){
             loadResources();
             loadCollectStats();
+            loadStation();
         },60000);
     }
 
@@ -377,12 +378,12 @@ $(document).on('ready',function(){
                         html += '<div class="build-lvl">' + build.level + '</div>';
 
                         if(build.build_in_progress){
-                            html += '<div class="build-progress"><i class="fa fa-wrench"></i></div>';
+                            html += '<div class="build-progress"><i class="fa fa-wrench"></i><span class="build-finish-at">'+ dateConverter(build.build_finish_at) +'</span></div>';
                         }else{
                             html += '<div class="build-progress"></div>';
                         }
 
-                        if(build.video_watched){
+                        if(!build.video_watched){
                             if(build.name === 'Hotel' ||build.name === 'Hotel' ||build.name === 'Hotel' ){
                                 video = '<i class="fa fa-video-camera"></i>';
                             }
@@ -487,6 +488,10 @@ $(document).on('ready',function(){
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
+    function dateConverter(time) {
+        var date = new Date(time*1000);
+        return date.getHours() + ':' + date.getMinutes();
+    }
 
 
 });
