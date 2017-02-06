@@ -14,7 +14,6 @@ from railnation.managers.association import AssociationManager
 from railnation.managers.station import StationManager
 from railnation.managers.resources import ResourcesManager
 from railnation.managers.properties import PropertiesManager
-from railnation.managers.ticket import TicketManager
 
 
 class CollectManager:
@@ -38,7 +37,7 @@ class CollectManager:
         self.log = log.getChild('CollectManager')
         self.log.debug('Initializing...')
         self.auto_collect = False
-        self.auto_open_tickets = False
+        self.auto_open_tickets = True
         self.auto_watch = False
         self.schedule = {}
         self.next_collection = None
@@ -48,6 +47,7 @@ class CollectManager:
             'tickets': 0
         }
         self.history = []
+        self.ticket_history = []
         self.collect_delay = (3, 30)
 
     def collect_player(self, player_id=None):
@@ -116,9 +116,7 @@ class CollectManager:
         assert building_id in (7, 8, 9)
         building_name = PropertiesManager.get_instance().buildings[building_id]['name']
 
-        resources = ResourcesManager.get_instance()
         self.log.debug('Collecting from %s (owner: %s)' % (building_name, player_name))
-        tickets_before = resources.free_tickets_count
         r = server.call('BuildingInterface', 'collect', [building_id, player_id])
 
         result = {
@@ -141,15 +139,35 @@ class CollectManager:
 
         result['result'] = True
 
-        if tickets_before < resources.free_tickets_count:
-            self.stats['tickets'] += 1
-            self.log.info('Got free ticket (%s total)' % self.stats['tickets'])
-            result['ticket'] = True
+        if self.auto_open_tickets:
+            while ResourcesManager.get_instance().free_tickets_count > 0:
+                self.stats['tickets'] += 1
+                self.log.info('Got free ticket (%s total)' % self.stats['tickets'])
+                result['ticket'] = True
+                self.open_ticket()
 
         if self.auto_collect:
             self.history.append(result)
 
         return True
+
+    def open_ticket(self):
+        self.log.debug('Opening lottery ticket...')
+        r = server.call('LotteryInterface', 'getScreen', [])
+        if int(r['freeUsages']) == 0:
+            self.log.error('Have not free tickets. Will not buy anything here.')
+            return
+        r = server.call('LotteryInterface', 'playPackage', [-1])
+        self.log.info('Lottery reward: %s' % r)
+        self.ticket_history.append(
+            {
+                "date": int(time.time()),
+                "reward": r
+            }
+        )
+        r = server.call('LotteryInterface', 'redeem', [])
+        if r:
+            self.log.debug('Ticket opened correctly')
 
     def check(self):
         if not self.auto_collect:
