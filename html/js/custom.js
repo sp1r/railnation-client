@@ -521,17 +521,15 @@ $(document).on('ready',function(){
             type: 'GET',
             contentType: "application/json",
             success: function (data) {
-                if(data.code === 0){
-                    if(data.data){
-                        var html = '<div class="table">';
-                        $.each(data.data, function(n, val){
-                            html += '<div class="table-row"><span class="ticket-open-date">'+ unixDateToDate(val.date) +'</span><span class="ticket-reward">'+ val.reward +'</span></div>'
-                        });
-                        html += '<i class="fa fa-close popup-close"></i>';
-                        html += '</div>';
+                if(data){
+                    var html = '<div class="table">';
+                    $.each(data, function(n, val){
+                        html += '<div class="table-row"><span class="ticket-open-date">'+ unixDateToDate(val.date) +'</span><span class="ticket-reward">'+ val.reward +'</span></div>'
+                    });
+                    html += '<i class="fa fa-close popup-close"></i>';
+                    html += '</div>';
 
-                        $('.tickets-history-box').html(html);
-                    }
+                    $('.tickets-history-box').html(html);
                 }
             },
             error: function (data) {
