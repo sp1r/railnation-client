@@ -538,5 +538,23 @@ class RailNationClientAPIv1:
                 'data': StationManager.get_instance().build_queue
             }
 
+    @cherrypy.tools.json_out()
+    @cherrypy.expose
+    def ticket(self, action=None):
+        self.log.debug('%s /ticket/%s called' % (cherrypy.request.method, action))
+        if cherrypy.request.method == 'OPTIONS':
+            return ''
 
+        elif cherrypy.request.method == 'GET':
+            if action == 'history':
+                return CollectManager.get_instance().ticket_history[-20:]
+            else:
+                return {
+                    'code': 1,
+                    'message': 'Bad request: GET /history/%s' % action,
+                    'data': None
+                }
+
+        else:
+            raise cherrypy.HTTPError('405 Method Not Allowed')
 

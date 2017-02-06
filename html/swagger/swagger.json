@@ -1266,6 +1266,64 @@
           }
         }
       }
+    },
+
+    "/ticket/history": {
+      "get": {
+        "summary": "Returns rewards of ticket opening",
+        "description": "Returns last 20 rewards got by ticket opening",
+        "tags": ["Station"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Ticket rewards history",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "date": {
+                        "type": "integer"
+                      },
+                      "reward": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": [
+                  {
+                    "date": 145363654,
+                    "reward": "MONEY_200000"
+                  },
+                  {
+                    "date": 145363656,
+                    "reward": "MECHANIC"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
     }
 
   }
