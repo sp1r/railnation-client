@@ -58,7 +58,7 @@ class CollectManager:
             'tickets': 0
         }
         self.history = []
-        self.collect_delay = (3, 30)
+        self.collect_delay = 60
 
     def collect_player(self, player_id=None):
         """
@@ -175,7 +175,7 @@ class CollectManager:
                 self.collect_player(player)
                 time.sleep(1)  # don`t ddos game server
             closest_production = min(self.schedule.keys())
-            self.next_collection = min(self.schedule.keys()) + random.randint(*self.collect_delay)
+            self.next_collection = min(self.schedule.keys()) + self.collect_delay
             self.log.debug('Next collecting at: %s' % datetime.datetime.fromtimestamp(self.next_collection))
 
     def _init_schedule(self):
@@ -195,7 +195,7 @@ class CollectManager:
             except KeyError:
                 self.schedule[int(time.mktime(next_production.timetuple()))] = [player]
 
-        self.next_collection = min(self.schedule.keys()) + random.randint(*self.collect_delay)
+        self.next_collection = min(self.schedule.keys()) + self.collect_delay
         self.log.debug('Next collection at: %s' % datetime.datetime.fromtimestamp(self.next_collection))
 
     def watch_video(self, player_id, building_id):
