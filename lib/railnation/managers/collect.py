@@ -292,6 +292,7 @@ class CollectManager:
         if r == 'LOTTERY':
             self.stats['tickets'] += 1
             self.log.info('Got free ticket (%s total)' % self.stats['tickets'])
+            self.open_ticket()
 
         return r
         #
@@ -509,4 +510,4 @@ class CollectManager:
                 self.log.error('Response: %s' % r.text)
 
 Monitor(cherrypy.engine, CollectManager.get_instance().check, frequency=10, name='Auto-Collecting').subscribe()
-Monitor(cherrypy.engine, CollectManager.get_instance().watch, frequency=10, name='Auto-Watching').subscribe()
+Monitor(cherrypy.engine, CollectManager.get_instance().watch, frequency=60, name='Auto-Watching').subscribe()
