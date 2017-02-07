@@ -250,8 +250,12 @@ $(document).on('ready',function(){
         });
     });
 
-    $(document).on('click', '.show-ticket-history', function(){
-        $(this).closest('.autocollect-box').find('.popup-box').addClass('active');
+    $(document).on('click', '.show-tickets-history', function(){
+        $('.tickets-history-box').addClass('active');
+    });
+
+    $(document).on('click', '.show-watch_rewards-history', function(){
+        $('.video-rewards-history-box').addClass('active');
     });
 
     $(document).on('click', '.popup-close', function(){
@@ -336,6 +340,8 @@ $(document).on('ready',function(){
                             if(n == "collected"){name = 'Собрано'}
                             else if(n == "errors"){name = 'Ошибок'}
                             else if(n == "tickets"){ name = 'Билетов'}
+                            else if(n == "watch_rewards"){ name = 'Бонусы с просмотров'}
+                            else if(n == "watched"){ name = 'Просмотрено видео'}
 
                             html += '<div class="table-row '+ n +'">';
                             html += '<div>' + name + '</div>';
@@ -500,9 +506,10 @@ $(document).on('ready',function(){
 
                         $.each(data.data,function(n, val){
                             box.find('.'+n+ ' .value').text(val);
-                            if(n === 'tickets' && val > 0){
-                                box.find('.'+n+ ' .value').append('<i class="fa fa-gift show-ticket-history"></i>');
+                            if(n === 'tickets' && val > 0 || n === 'watch_rewards' && val > 0){
+                                box.find('.'+n+ ' .value').append('<i class="fa fa-gift show-'+ n +'-history"></i>');
                                 loadTicketHistory();
+                                loadVideoRewardsHistory();
                             }
                         });
                     }
@@ -524,12 +531,34 @@ $(document).on('ready',function(){
                 if(data){
                     var html = '<div class="table">';
                     $.each(data, function(n, val){
-                        html += '<div class="table-row"><span class="ticket-open-date">'+ unixDateToDate(val.date) +'</span><span class="ticket-reward">'+ val.reward +'</span></div>'
+                        html += '<div class="table-row"><span class="date">'+ unixDateToDate(val.date) +'</span><span class="reward">'+ val.reward +'</span></div>'
                     });
                     html += '<i class="fa fa-close popup-close"></i>';
                     html += '</div>';
 
                     $('.tickets-history-box').html(html);
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+    function loadVideoRewardsHistory() {
+        $.ajax({
+            url: 'api/v1/autowatch/rewards',
+            type: 'GET',
+            contentType: "application/json",
+            success: function (data) {
+                if(data){
+                    var html = '<div class="table">';
+                    $.each(data, function(n, val){
+                        html += '<div class="table-row"><span class="date">'+ unixDateToDate(val.date) +'</span><span class="-reward">'+ val.reward +'</span></div>'
+                    });
+                    html += '<i class="fa fa-close popup-close"></i>';
+                    html += '</div>';
+
+                    $('.video-rewards-history-box').html(html);
                 }
             },
             error: function (data) {
