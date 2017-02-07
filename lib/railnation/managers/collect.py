@@ -393,7 +393,7 @@ class CollectManager:
                 self.log.error('Some shit happened, but we will try to continue')
                 self.log.error('Response: %s' % r.text)
 
-            if 'media.oadts' not in vast['url']:
+            if 'media.oadts' not in vast['url'] and 'sspicy' not in vast['url']:
                 self.log.debug('Skipping url: %s' % vast['url'])
                 continue
 
