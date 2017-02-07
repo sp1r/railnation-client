@@ -7,7 +7,6 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     background: none;
-    font: normal 16px arial;
     max-width: 100%;
 }
 
@@ -33,6 +32,10 @@ input[type=checkbox]{
 
 button[type='submit']{
     cursor: pointer;
+}
+
+body{
+    font: normal 16px arial;
 }
 
 .absolute{
@@ -306,6 +309,8 @@ button[type='submit']{
     bottom: 0;
     background: #bacce4;
     padding: 20px 30px;
+    overflow: auto;
+    font-size: 12px;
 }
 
 .build-droid-box>* {
@@ -454,4 +459,5 @@ button[type='submit']{
     padding: 10px;
     color: #c35959;
     cursor: pointer;
+    font-size: 16px;
 }
