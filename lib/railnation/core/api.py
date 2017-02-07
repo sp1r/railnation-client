@@ -468,6 +468,96 @@ class RailNationClientAPIv1:
 
     @cherrypy.tools.json_out()
     @cherrypy.expose
+    def watch(self, user_id, building_id):
+        self.log.debug('%s /watch/%s/%s called' % (cherrypy.request.method, building_id, user_id))
+        if cherrypy.request.method == 'OPTIONS':
+            return ''
+
+        elif cherrypy.request.method != 'POST':
+            raise cherrypy.HTTPError('405 Method Not Allowed')
+
+        if int(building_id) not in (7, 8, 9):
+            error_msg = 'Can only watch video on building_ids: 7, 8, 9. Requested: %s' % building_id
+            self.log.error(error_msg)
+            return {'code': 1, 'message': error_msg, 'data': None}
+
+        manager = CollectManager.get_instance()
+        try:
+            r = manager.watch_video(user_id, building_id)
+        except RailNationClientError as err:
+            self.log.error('Error: %s' % str(err))
+            return {
+                'code': 1,
+                'message': str(err),
+                'data': None
+            }
+        else:
+            return {
+                'code': 0,
+                'message': 'OK',
+                'data': r
+            }
+
+    @cherrypy.tools.json_out()
+    @cherrypy.expose
+    def autowatch(self, action=None):
+        self.log.debug('%s /autowatch/%s called' % (cherrypy.request.method, action))
+        if cherrypy.request.method == 'OPTIONS':
+            return ''
+
+        elif cherrypy.request.method == 'GET':
+            manager = CollectManager.get_instance()
+            if action is None:
+                return {
+                    'code': 0,
+                    'message': 'OK',
+                    'data': manager.auto_watch
+                }
+
+            elif action == 'rewards':
+                return {
+                    'code': 0,
+                    'message': 'OK',
+                    'data': manager.watch_rewards[-20:]
+                }
+
+            else:
+                return {
+                    'code': 1,
+                    'message': 'Bad request: GET /autowatch/%s' % action,
+                    'data': None
+                }
+
+        elif cherrypy.request.method != 'POST':
+            raise cherrypy.HTTPError('405 Method Not Allowed')
+
+        if action == 'enable':
+            manager = CollectManager.get_instance()
+            manager.auto_watch = True
+            return {
+                'code': 0,
+                'message': 'OK',
+                'data': manager.auto_watch
+            }
+
+        elif action == 'disable':
+            manager = CollectManager.get_instance()
+            manager.auto_watch = False
+            return {
+                'code': 0,
+                'message': 'OK',
+                'data': manager.auto_watch
+            }
+
+        else:
+            return {
+                'code': 1,
+                'message': 'Bad request: POST /autowatch/%s' % action,
+                'data': None
+            }
+
+    @cherrypy.tools.json_out()
+    @cherrypy.expose
     def build(self, building_id):
         self.log.debug('%s /build/%s called' % (cherrypy.request.method, building_id))
         if cherrypy.request.method == 'OPTIONS':

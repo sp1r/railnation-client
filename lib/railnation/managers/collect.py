@@ -50,13 +50,17 @@ class CollectManager:
         self.auto_open_tickets = False
         self.auto_watch = False
         self.schedule = {}
+        self.watch_queue = []
         self.next_collection = None
         self.stats = {
             'collected': 0,
             'errors': 0,
-            'tickets': 0
+            'tickets': 0,
+            'watched': 0,
+            'watch_rewards': 0
         }
         self.history = []
+        self.watch_rewards = []
         self.collect_delay = 60
 
     def collect_player(self, player_id=None):
@@ -149,6 +153,7 @@ class CollectManager:
             return False
 
         result['result'] = True
+        self.watch_queue.append(player_id)
 
         if tickets_before < resources.free_tickets_count:
             self.stats['tickets'] += 1
@@ -184,18 +189,41 @@ class CollectManager:
         else:
             collect_targets = [AvatarManager.get_instance().id]
 
-        for player in collect_targets:
-            station = StationManager.get_instance().get_buildings(player)
+        for player_id in collect_targets:
+            station = StationManager.get_instance().get_buildings(player_id)
             next_production = min(
                 [station[i]['production_at'] for i in (7, 8, 9)]
             )
             try:
-                self.schedule[int(time.mktime(next_production.timetuple()))].append(player)
+                self.schedule[int(time.mktime(next_production.timetuple()))].append(player_id)
             except KeyError:
-                self.schedule[int(time.mktime(next_production.timetuple()))] = [player]
+                self.schedule[int(time.mktime(next_production.timetuple()))] = [player_id]
+            have_something_to_watch = sum([station[i]['video_watched'] for i in (7, 8, 9)]) < 3
+            if have_something_to_watch:
+                self.watch_queue.append(player_id)
 
         self.next_collection = min(self.schedule.keys()) + self.collect_delay
         self.log.debug('Next collection at: %s' % datetime.datetime.fromtimestamp(self.next_collection))
+
+    def watch(self):
+        """
+        Monitor method to auto-watch videos.
+        """
+        if not self.auto_watch:
+            return
+
+        if len(self.watch_queue) == 0:
+            return
+
+        # TODO: ensure thread safety during read/write to this queue
+        players_list = set(self.watch_queue)
+        self.watch_queue = []
+        for player_id in players_list:
+            station = StationManager.get_instance().get_buildings(player_id)
+            for building_id in (7, 8, 9):
+                if not station[building_id]['video_watched']:
+                    self.watch_video(player_id, building_id)
+            time.sleep(1)  # never ddos noone
 
     def watch_video(self, player_id, building_id):
         building_id = int(building_id)
@@ -221,6 +249,8 @@ class CollectManager:
             key, sign
         ])
 
+        self.stats['watched'] += 1
+
         if not r:
             self.log.debug('Video watched')
             return None
@@ -234,6 +264,15 @@ class CollectManager:
 
         r = server.call('BuildingInterface', 'secondWatch', [key, sign])
         self.log.info('Got reward for video watching: %s' % r)
+
+        self.stats['watch_rewards'] += 1
+        self.watch_rewards.append({
+            'date': int(time.time()),
+            'reward': r
+        })
+        if r == 'LOTTERY':
+            self.stats['tickets'] += 1
+            self.log.info('Got free ticket (%s total)' % self.stats['tickets'])
 
         return r
         #
@@ -455,3 +494,4 @@ class CollectManager:
 
 
 Monitor(cherrypy.engine, CollectManager.get_instance().check, frequency=10, name='Auto-Collecting').subscribe()
+Monitor(cherrypy.engine, CollectManager.get_instance().watch, frequency=10, name='Auto-Watching').subscribe()
