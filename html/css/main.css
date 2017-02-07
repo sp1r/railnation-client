@@ -287,7 +287,7 @@ body{
     color: #d67272;
 }
 
-.autocollect-statistic-box .show-tickets-history {
+.autocollect-statistic-box .show-tickets-history, .autocollect-statistic-box .show-watch_rewards-history{
     font-size: 20px;
     line-height: 15px;
     margin-left: 15px;
