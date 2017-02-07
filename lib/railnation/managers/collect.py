@@ -24,7 +24,6 @@ from railnation.managers.association import AssociationManager
 from railnation.managers.station import StationManager
 from railnation.managers.resources import ResourcesManager
 from railnation.managers.properties import PropertiesManager
-from railnation.managers.ticket import TicketManager
 
 
 class CollectManager:
