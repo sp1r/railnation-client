@@ -50,7 +50,7 @@ class AvatarManager:
     def _update_era(self):
         r = server.call('EraInterface', 'getEraInfos', [])
         now = datetime.datetime.now()
-        self.era_number = r['Era']
+        self.era_number = r['Era'] + 1  # human-counting (starting at 1)
         self.era_ends_at = now + datetime.timedelta(seconds=int(r['RemainingDuration']))
 
     def init(self, key):
@@ -73,6 +73,8 @@ class AvatarManager:
         try:
             self.association_id = r['corporation']['ID']
         except KeyError:
+            pass
+        except TypeError:
             pass
 
         for i in r['paymentAccounts']:
