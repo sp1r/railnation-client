@@ -133,6 +133,8 @@ $(document).on('ready',function(){
             },
             error: function (data) {
                 console.log(data);
+                alert('Ошибка входа, смотреть консоль');
+                load.removeClass('active');
             }
         });
 
@@ -142,7 +144,6 @@ $(document).on('ready',function(){
     $('.world-menu .sign-out').on('click', function(){
         $('.world-box').removeClass('active');
     });
-
 
     $(document).on('click', '.tab-title', function(){
         if(!$(this).hasClass('active')){
@@ -174,11 +175,11 @@ $(document).on('ready',function(){
 
                     list.append(html);
                 }else{
-                    alert(data.message);
+                    console.log(data.message);
                 }
             },
             error: function (data) {
-                alert('error add build');
+                console.log('error add build');
                 console.log(data);
             }
         });
@@ -193,11 +194,11 @@ $(document).on('ready',function(){
                 if(data.code === 0){
                     $('.build-droid-list').text('');
                 }else{
-                    alert(data.message);
+                    console.log(data.message);
                 }
             },
             error: function (data) {
-                alert('error buildqueue clear');
+                console.log('error buildqueue clear');
                 console.log(data);
             }
         });
@@ -239,16 +240,27 @@ $(document).on('ready',function(){
                 if(data.code === 0){
                     self.addClass(selector);
                 }else{
-                    alert(data.message);
+                    console.log(data.message);
                 }
             },
             error: function (data) {
-                alert('error autocollect status');
+                console.log('error autocollect status');
                 console.log(data);
             }
         });
     });
 
+    $(document).on('click', '.show-tickets-history', function(){
+        $('.tickets-history-box').addClass('active');
+    });
+
+    $(document).on('click', '.show-watch_rewards-history', function(){
+        $('.video-rewards-history-box').addClass('active');
+    });
+
+    $(document).on('click', '.popup-close', function(){
+        $(this).closest('.popup-box').removeClass('active');
+    });
 
 
 
@@ -278,12 +290,12 @@ $(document).on('ready',function(){
                 if(data.code === 0){
                     initWorld();
                 }else{
-                    alert(data.message);
+                    console.log(data.message);
                 }
                 load.removeClass('active');
             },
             error: function (data) {
-                alert('error join');
+                console.log('error join');
                 console.log(data);
                 load.removeClass('active');
             }
@@ -309,7 +321,7 @@ $(document).on('ready',function(){
                 }
             },
             error: function (data) {
-                alert('error loadAutocollect');
+                console.log('error loadAutocollect');
                 console.log(data);
             }
         });
@@ -328,6 +340,8 @@ $(document).on('ready',function(){
                             if(n == "collected"){name = 'Собрано'}
                             else if(n == "errors"){name = 'Ошибок'}
                             else if(n == "tickets"){ name = 'Билетов'}
+                            else if(n == "watch_rewards"){ name = 'Бонусы с просмотров'}
+                            else if(n == "watched"){ name = 'Просмотрено видео'}
 
                             html += '<div class="table-row '+ n +'">';
                             html += '<div>' + name + '</div>';
@@ -342,7 +356,7 @@ $(document).on('ready',function(){
                 console.log(data.data);
             },
             error: function (data) {
-                alert('error loadAutocollect');
+                console.log('error loadAutocollect');
                 console.log(data);
             }
         });
@@ -379,7 +393,7 @@ $(document).on('ready',function(){
 
                         if(build.build_in_progress){
                             html += '<div class="build-lvl">' + build.level + '>'+ nextLvl +'</div>';
-                            html += '<div class="build-progress"><i class="fa fa-wrench"></i><span class="build-finish-at">'+ dateConverter(build.build_finish_at) +'</span></div>';
+                            html += '<div class="build-progress"><i class="fa fa-wrench"></i><span class="build-finish-at">'+ unixDateToDateLeft(build.build_finish_at) +'</span></div>';
                         }else{
                             html += '<div class="build-lvl">' + build.level + '</div>';
                             html += '<div class="build-progress"></div>';
@@ -437,21 +451,21 @@ $(document).on('ready',function(){
 
                                 $('.station-box .build-droid-list').html(html);
                             }else{
-                                alert(data.message);
+                                console.log(data.message);
                             }
                         },
                         error: function (data) {
-                            alert('error buildqueue');
+                            console.log('error buildqueue');
                             console.log(data);
                         }
                     });
 
                 }else{
-                    alert(data.message);
+                    console.log(data.message);
                 }
             },
             error: function (data) {
-                alert('error station');
+                console.log('error station');
                 console.log(data);
             }
         });
@@ -470,11 +484,11 @@ $(document).on('ready',function(){
                     $('.resources-box .gold .value').text(numberWithCommas(amount[1]));
                     $('.resources-box .prestige .value').text(numberWithCommas(amount[2]));
                 }else{
-                    alert(data.message);
+                    console.log(data.message);
                 }
             },
             error: function (data) {
-                alert('error resources');
+                console.log('error resources');
                 console.log(data);
             }
         });
@@ -492,12 +506,62 @@ $(document).on('ready',function(){
 
                         $.each(data.data,function(n, val){
                             box.find('.'+n+ ' .value').text(val);
+                            if(n === 'tickets' && val > 0 || n === 'watch_rewards' && val > 0){
+                                box.find('.'+n+ ' .value').append('<i class="fa fa-gift show-'+ n +'-history"></i>');
+                                loadTicketHistory();
+                                loadVideoRewardsHistory();
+                            }
                         });
                     }
                 }
             },
             error: function (data) {
-                alert('error autocollect stats');
+                console.log('error autocollect stats');
+                console.log(data);
+            }
+        });
+    }
+
+    function loadTicketHistory() {
+        $.ajax({
+            url: 'api/v1/ticket/history',
+            type: 'GET',
+            contentType: "application/json",
+            success: function (data) {
+                if(data){
+                    var html = '<div class="table">';
+                    $.each(data, function(n, val){
+                        html += '<div class="table-row"><span class="date">'+ unixDateToDate(val.date) +'</span><span class="reward">'+ val.reward +'</span></div>'
+                    });
+                    html += '<i class="fa fa-close popup-close"></i>';
+                    html += '</div>';
+
+                    $('.tickets-history-box').html(html);
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+    function loadVideoRewardsHistory() {
+        $.ajax({
+            url: 'api/v1/autowatch/rewards',
+            type: 'GET',
+            contentType: "application/json",
+            success: function (data) {
+                if(data){
+                    var html = '<div class="table">';
+                    $.each(data, function(n, val){
+                        html += '<div class="table-row"><span class="date">'+ unixDateToDate(val.date) +'</span><span class="-reward">'+ val.reward +'</span></div>'
+                    });
+                    html += '<i class="fa fa-close popup-close"></i>';
+                    html += '</div>';
+
+                    $('.video-rewards-history-box').html(html);
+                }
+            },
+            error: function (data) {
                 console.log(data);
             }
         });
@@ -522,12 +586,15 @@ $(document).on('ready',function(){
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
-    function dateConverter(time) {
+    function unixDateToDateLeft(time) {
         var seconds = parseInt(time - Date.now()/1000),
             date = new Date(1970,0,1);
         date.setSeconds(seconds);
         return date.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1").substring(0,5);
     }
 
+    function unixDateToDate(time) {
+        return dateFormat(new Date(time*1000), 'dd.mm.yyyy - HH:MM');
+    }
 
 });
