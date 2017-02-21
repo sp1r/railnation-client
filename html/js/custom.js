@@ -65,6 +65,7 @@ $(document).on('ready',function(){
             console.log('error login status');
         }
     });
+    loadTechnologies();
 
     $('.login-form').on('submit', function(e){
         e.preventDefault();
@@ -145,10 +146,19 @@ $(document).on('ready',function(){
         $('.world-box').removeClass('active');
     });
 
-    $(document).on('click', '.tab-title', function(){
+    $('.world-menu .fa').on('click', function(){
+        var tab = $(this).data('tab');
+
+        if(tab){
+            $(this).addClass('active').siblings().removeClass('active');
+            $('.'+tab +'-box').addClass('active').siblings().removeClass('active');
+        }
+    });
+
+    $(document).on('click', '.tab-button', function(){
         if(!$(this).hasClass('active')){
             var index = $(this).attr('data-index'),
-                body = $(this).closest('.tabs').find('.tab-body[data-index='+ index +']');
+                body = $(this).closest('.tabs-box').find('.tab-content-box[data-index='+ index +']');
 
             $(this).siblings().removeClass('active');
             $(this).addClass('active');
@@ -372,12 +382,12 @@ $(document).on('ready',function(){
                     var html = '',
                         i = 0;
 
-                    html += '<div class="tab-titles-box">';
-                    html += '<span class="tab-title active" data-index="0">Станция</span>';
-                    html += '<span class="tab-title" data-index="1">Билд дроид</span>';
+                    html += '<div class="tab-buttons-box">';
+                    html += '<span class="tab-button active" data-index="0">Станция</span>';
+                    html += '<span class="tab-button" data-index="1">Билд дроид</span>';
                     html += '</div>';
 
-                    html += '<div class="tab-body active" data-index="0">';
+                    html += '<div class="tab-content-box active" data-index="0">';
                     html += '<div class="table">';
                     $.each(data.data, function(i, build){
                         var name = build.name,
@@ -412,7 +422,7 @@ $(document).on('ready',function(){
                     html += '</div>';
                     html += '</div>';
 
-                    html += '<div class="tab-body build-droid-box" data-index="1">';
+                    html += '<div class="tab-content-box build-droid-box" data-index="1">';
 
                     html += '<select class="build-droid-select">';
                     $.each(translate, function(name, val){
@@ -544,6 +554,111 @@ $(document).on('ready',function(){
             }
         });
     }
+
+    function loadTechnologies() {
+        $.ajax({
+            url: 'api/v1/technologies',
+            type: 'GET',
+            contentType: "application/json",
+            success: function (data) {
+                if(data.code === 0){
+                    if(data.data){
+                        createTabs('.research-box.active', 6, 1);
+                        for(var i = 1; i <= 6; i++){
+                            var html = '<div class="table">';
+                            html += '<div class="table-row">';
+                            html += '<span class="name"></span>';
+                            html += '<span class="speed">Поинты</span>';
+                            html += '<span class="speed">Цена</span>';
+                            html += '<span class="speed">Вагонов</span>';
+                            html += '<span class="speed">Скорость</span>';
+                            html += '<span class="speed">Ускорение</span>';
+                            html += '<span class="speed">Жизни</span>';
+                            html += '</div>';
+
+                            $.each(data.data, function(n, val){
+                                if(i === val.era){
+                                    if(val.speed){
+                                        var upWaggons = '',
+                                            upAcceleration = '',
+                                            upEndurance = '',
+                                            upSpeed = '';
+
+                                        if(val.upgrades){
+                                            $.each(val.upgrades, function(g, update){
+                                                console.log(update);
+                                                switch (update.type) {
+                                                    case 'waggons':
+                                                        upWaggons += '<span class="update" data-id="'+ g +'">+'+ update.effect +'</span>';
+                                                        break;
+                                                    case 'acceleration':
+                                                        upAcceleration += '<span class="update"  data-id="'+ g +'">+'+ update.effect +'</span>';
+                                                        break;
+                                                    case 'speed':
+                                                        upSpeed += '<span class="update" data-id="'+ g +'">+'+ update.effect +'</span>';
+                                                        break;
+                                                    case 'endurance':
+                                                        upEndurance += '<span class="update" data-id="'+ g +'">+'+ update.effect +'</span>';
+                                                        break;
+                                                }
+                                            });
+                                        }
+
+                                        html += '<div class="table-row research" data-id="'+ n +'">';
+                                        html += '<span class="name">'+ val.name +'</span>';
+                                        html += '<span class="research_cost"><span class="value">'+ val.research_cost +'</span></span>';
+                                        html += '<span class="price"><span class="value">'+ val.price / 1000 + ' к' +'</span></span>';
+                                        html += '<span class="waggons"><span class="value">'+ val.waggons + '</span>' + upWaggons + '</span>';
+                                        html += '<span class="speed"><span class="value">'+ val.speed + '</span>' + upSpeed +'</span>';
+                                        html += '<span class="acceleration"><span class="value">'+ val.acceleration + '</span>' + upAcceleration + '</span>';
+                                        html += '<span class="endurance"><span class="value">'+ val.endurance + '</span>' + upEndurance + '</span>';
+                                        html += '</div>';
+                                    }else{
+                                        if(val.name.indexOf('соединение') !== -1){
+                                            val.name = 'Сцепка';
+                                        }
+
+                                        html += '<div class="table-row">';
+                                        html += '<span class="name">'+ val.name +'</span>';
+                                        html += '<span class="research_cost"><span class="value">'+ val.research_cost +'</span></span>';
+                                        html += '<span></span>';
+                                        html += '<span></span>';
+                                        html += '<span></span>';
+                                        html += '<span></span>';
+                                        html += '<span></span>';
+                                        html += '</div>';
+                                    }
+                                }
+                            });
+
+                            html += '</div>';
+                            $('.research-box.active .tab-content-box[data-index='+ i +']').append(html);
+                        }
+                    }
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+
+    function loadTechnologiePoints() {
+        $.ajax({
+            url: 'api/v1/technologies/points',
+            type: 'GET',
+            contentType: "application/json",
+            success: function (data) {
+                if(data){
+                    console.log(data);
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+
     function loadVideoRewardsHistory() {
         $.ajax({
             url: 'api/v1/autowatch/rewards',
@@ -597,4 +712,31 @@ $(document).on('ready',function(){
         return dateFormat(new Date(time*1000), 'dd.mm.yyyy - HH:MM');
     }
 
+    function createTabs(cl, n, active){
+        var html = '<div class="tabs-box">',
+            buttonHtml = '<div class="tab-buttons-box">',
+            contentHtml = '';
+
+        for(var i = 1; i <= n; i++){
+            var buttonCl = 'tab-button',
+                contentCl = 'tab-content-box';
+
+            if(active != undefined){
+                if(i === active){
+                    buttonCl += ' active';
+                    contentCl += ' active';
+                }
+            }
+
+            buttonHtml += '<div class="'+ buttonCl +'" data-index="'+ i +'">'+ i +'</div>';
+            contentHtml += '<div class="'+ contentCl +'" data-index="'+ i +'"></div>';
+        }
+        buttonHtml += '</div>';
+
+        html += buttonHtml;
+        html += contentHtml;
+        html += '</div>';
+
+        $(cl).append(html);
+    }
 });

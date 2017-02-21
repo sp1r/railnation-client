@@ -48,6 +48,123 @@ body{
     z-index: 1;
 }
 
+
+.table {
+    display: table;
+    width: 100%;
+}
+
+.table .table-row {
+    display: table-row;
+}
+
+.table .table-row:nth-child(even) {
+    background: #adbfd6;
+}
+
+.table .table-row>* {
+    display: table-cell;
+    vertical-align: middle;
+    padding: 5px 10px;
+}
+
+.title{
+    padding: 0 0 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #2f3f54;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.tabs-box{
+
+}
+
+.tabs-box .tab-buttons-box {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #2f3f54;
+}
+
+.tabs-box .tab-button{
+    font-size: 16px;
+    font-weight: bold;
+    display: inline-block;
+    padding: 8px 15px;
+    cursor: pointer;
+    background: #5c7390;
+    color: #bacce4;
+    opacity: 0.5;
+}
+
+.tabs-box .tab-button.active{
+    opacity: 1;
+    cursor: auto;
+}
+
+.tabs-box .tab-content-box{
+    display: none;
+}
+
+.tabs-box .tab-content-box{
+    display: none;
+}
+
+.tabs-box .tab-content-box.active{
+    display: block;
+}
+
+
+.tabs-box{
+
+}
+
+.tabs-box .tab-button{
+
+}
+
+.tabs-box .tab-button.active{
+
+}
+
+.tabs-box .tab-content-box{
+    display: none
+}
+
+.tabs-box .tab-content-box.active{
+    display: block
+}
+
+.clear {
+    clear: both;
+}
+
+.popup-box{
+    display: none;
+}
+
+.popup-box.active{
+    display: block;
+}
+
+.popup-close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 10px;
+    color: #c35959;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+
+
+
+
+
+
+
+
+
 .home-page{
     background: #2f3f54;
 }
@@ -174,6 +291,14 @@ body{
     padding: 40px;
 }
 
+.world-box .center-box>div{
+    display: none;
+}
+
+.world-box .center-box>.active{
+    display: block;
+}
+
 .world-box .right-box{
     background: #bacce4;
     width: 400px;
@@ -204,8 +329,9 @@ body{
     transition: background .2s ease;
 }
 
-.world-menu>div:hover {
-    background: #405f88;
+.world-menu>div.active, .world-menu>div:hover {
+    background: #5c7390;
+    color: #bacce4;
 }
 
 .world-menu>div.disabled {
@@ -268,7 +394,7 @@ body{
     color: white;
 }
 
-.station-box .tab-body {
+.station-box .tab-content-box {
     height: 280px;
 }
 
@@ -373,91 +499,44 @@ body{
     opacity: 1;
 }
 
-
-
-
-.table {
-    display: table;
-    width: 100%;
+.research-box {
+    padding: 20px 30px;
+    background: #bacce4;
 }
 
-.table .table-row {
-    display: table-row;
-}
-
-.table .table-row:nth-child(even) {
-    background: #adbfd6;
-}
-
-.table .table-row>* {
-    display: table-cell;
-    vertical-align: middle;
-    padding: 5px 10px;
-}
-
-.title{
-    padding: 0 0 10px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #2f3f54;
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.tabs{
-
-}
-
-.tabs .tab-titles-box {
-    margin-bottom: 10px;
-    border-bottom: 1px solid #2f3f54;
-}
-
-.tabs .tab-title{
-    font-size: 16px;
-    font-weight: bold;
+.research-box .update {
     display: inline-block;
-    padding: 8px 15px;
+    background: #8da3bf;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 4px;
+    width: 36px;
+    height: 24px;
+    margin-left: 5px;
+    text-align: center;
     cursor: pointer;
-    background: #5c7390;
-    color: #bacce4;
-    opacity: 0.5;
 }
 
-.tabs .tab-title.active{
-    opacity: 1;
-    cursor: auto;
+.research-box .update:hover, .research-box .update.active {
+    background: #5f82b1;
 }
 
-.tabs .tab-body{
-    display: none;
-}
-
-.tabs .tab-body{
-    display: none;
-}
-
-.tabs .tab-body.active{
-    display: block;
-}
-
-.clear {
-    clear: both;
-}
-
-.popup-box{
-    display: none;
-}
-
-.popup-box.active{
-    display: block;
-}
-
-.popup-close {
-    position: absolute;
-    right: 0;
-    top: 0;
-    padding: 10px;
-    color: #c35959;
-    cursor: pointer;
+.research-box .value {
+    display: inline-block;
+    min-width: 30px;
+    font-weight: bold;
+    color: #325077;
     font-size: 16px;
 }
+
+.research-box .table-row>* {
+    padding: 8px 10px;
+    font-size: 18px;
+    text-align: center;
+}
+.research-box .table-row>*+* {
+    border-left: 1px solid #adbfd6;
+}
+
+
