@@ -26,6 +26,9 @@ from railnation.managers.association import AssociationManager
 from railnation.managers.collect import CollectManager
 from railnation.managers.resources import ResourcesManager
 from railnation.managers.station import StationManager
+from railnation.managers.sciense import ScienceManager
+from railnation.managers.properties import PropertiesManager
+from railnation.managers.trains import TrainsManager
 
 
 def process_error_500():
@@ -468,6 +471,96 @@ class RailNationClientAPIv1:
 
     @cherrypy.tools.json_out()
     @cherrypy.expose
+    def watch(self, user_id, building_id):
+        self.log.debug('%s /watch/%s/%s called' % (cherrypy.request.method, building_id, user_id))
+        if cherrypy.request.method == 'OPTIONS':
+            return ''
+
+        elif cherrypy.request.method != 'POST':
+            raise cherrypy.HTTPError('405 Method Not Allowed')
+
+        if int(building_id) not in (7, 8, 9):
+            error_msg = 'Can only watch video on building_ids: 7, 8, 9. Requested: %s' % building_id
+            self.log.error(error_msg)
+            return {'code': 1, 'message': error_msg, 'data': None}
+
+        manager = CollectManager.get_instance()
+        try:
+            r = manager.watch_video(user_id, building_id)
+        except RailNationClientError as err:
+            self.log.error('Error: %s' % str(err))
+            return {
+                'code': 1,
+                'message': str(err),
+                'data': None
+            }
+        else:
+            return {
+                'code': 0,
+                'message': 'OK',
+                'data': r
+            }
+
+    @cherrypy.tools.json_out()
+    @cherrypy.expose
+    def autowatch(self, action=None):
+        self.log.debug('%s /autowatch/%s called' % (cherrypy.request.method, action))
+        if cherrypy.request.method == 'OPTIONS':
+            return ''
+
+        elif cherrypy.request.method == 'GET':
+            manager = CollectManager.get_instance()
+            if action is None:
+                return {
+                    'code': 0,
+                    'message': 'OK',
+                    'data': manager.auto_watch
+                }
+
+            elif action == 'rewards':
+                return {
+                    'code': 0,
+                    'message': 'OK',
+                    'data': manager.watch_rewards[-20:]
+                }
+
+            else:
+                return {
+                    'code': 1,
+                    'message': 'Bad request: GET /autowatch/%s' % action,
+                    'data': None
+                }
+
+        elif cherrypy.request.method != 'POST':
+            raise cherrypy.HTTPError('405 Method Not Allowed')
+
+        if action == 'enable':
+            manager = CollectManager.get_instance()
+            manager.auto_watch = True
+            return {
+                'code': 0,
+                'message': 'OK',
+                'data': manager.auto_watch
+            }
+
+        elif action == 'disable':
+            manager = CollectManager.get_instance()
+            manager.auto_watch = False
+            return {
+                'code': 0,
+                'message': 'OK',
+                'data': manager.auto_watch
+            }
+
+        else:
+            return {
+                'code': 1,
+                'message': 'Bad request: POST /autowatch/%s' % action,
+                'data': None
+            }
+
+    @cherrypy.tools.json_out()
+    @cherrypy.expose
     def build(self, building_id):
         self.log.debug('%s /build/%s called' % (cherrypy.request.method, building_id))
         if cherrypy.request.method == 'OPTIONS':
@@ -538,5 +631,195 @@ class RailNationClientAPIv1:
                 'data': StationManager.get_instance().build_queue
             }
 
+    @cherrypy.tools.json_out()
+    @cherrypy.expose
+    def ticket(self, action=None):
+        self.log.debug('%s /ticket/%s called' % (cherrypy.request.method, action))
+        if cherrypy.request.method == 'OPTIONS':
+            return ''
+
+        elif cherrypy.request.method == 'GET':
+            if action == 'history':
+                return CollectManager.get_instance().ticket_history[-20:]
+            else:
+                return {
+                    'code': 1,
+                    'message': 'Bad request: GET /history/%s' % action,
+                    'data': None
+                }
+
+        else:
+            raise cherrypy.HTTPError('405 Method Not Allowed')
+
+    ####################################################################################################################
+    #
+    # Research methods
+    #
+    ####################################################################################################################
+    @cherrypy.tools.json_out()
+    @cherrypy.expose
+    def technologies(self, action=None, tech_id=None):
+        self.log.debug('%s /technologies/%s/%s called' %
+                       (cherrypy.request.method, action, tech_id))
+        if cherrypy.request.method == 'OPTIONS':
+            return ''
+
+        elif cherrypy.request.method != 'GET':
+            raise cherrypy.HTTPError('405 Method Not Allowed')
+
+        if action is None:
+            research_manager = ScienceManager.get_instance()
+            train_manager = TrainsManager.get_instance()
+            params = PropertiesManager.get_instance()
+
+            result = {}
+
+            for tech_id, tech_data in sorted(research_manager.tech.items()):
+                if tech_data['type'] == 'train':
+                    train = train_manager.train_types[tech_id]
+                    result[tech_id] = {
+                        'name': params.get_tech_name(tech_id),
+                        'upgrades': {},
+                        'era': tech_data['era'],
+                        'research_cost': tech_data['cost'],
+                        'speed': train['speed'],
+                        'acceleration': train['acc'],
+                        'endurance': train['endurance'],
+                        'price': train['price'],
+                        'waggons': train['waggons'],
+                        'slots': train['slots'],
+                        'is_passenger': train['passenger'],
+                    }
+                elif tech_data['type'] == 'upgrade':
+                    upgrade = train_manager.train_upgrades[tech_id]
+                    result[tech_data['parent']]['upgrades'][tech_id] = {
+                        'name': params.get_tech_name(tech_id),
+                        'type': upgrade['type_string'],
+                        'effect': upgrade['effect'],
+                        'price': upgrade['cost'],
+                        'research_cost': tech_data['cost'],
+                    }
+                elif tech_data['type'] == 'coupling':
+                    result[tech_id] = {
+                        'name': params.get_tech_name(tech_id),
+                        'era': tech_data['era'],
+                        'research_cost': tech_data['cost'],
+                    }
+
+            return {
+                'code': 0,
+                'message': 'OK',
+                'data': result
+            }
+
+        elif action == 'points':
+            research_manager = ScienceManager.get_instance()
+            result = {}
+            for tech_id, tech_data in research_manager.tech.items():
+                result[tech_id] = tech_data['spent']
+            del result['000000']
+            return {
+                'code': 0,
+                'message': 'OK',
+                'data': result
+            }
+
+        elif action == 'path':
+            manager = ScienceManager.get_instance()
+
+            if str(tech_id) not in manager.tech.keys():
+                error_msg = 'Unknown technology ID: %s' % tech_id
+                self.log.error(error_msg)
+                return {'code': 1, 'message': error_msg, 'data': None}
+
+            try:
+                r = manager.path_to(tech_id)
+            except RailNationClientError as err:
+                self.log.error('Error: %s' % str(err))
+                return {
+                    'code': 1,
+                    'message': str(err),
+                    'data': None
+                }
+            else:
+                return {
+                    'code': 0,
+                    'message': 'OK',
+                    'data': r
+                }
+
+        else:
+            return {
+                'code': 1,
+                'message': 'Unknown request: /technologies/%s' % action,
+                'data': None
+            }
+
+    @cherrypy.tools.json_out()
+    @cherrypy.expose
+    def research(self, tech_id, amount=None):
+        self.log.debug('%s /research/%s/%s called' % (cherrypy.request.method, tech_id, amount))
+        if cherrypy.request.method == 'OPTIONS':
+            return ''
+
+        elif cherrypy.request.method != 'POST':
+            raise cherrypy.HTTPError('405 Method Not Allowed')
+
+        manager = ScienceManager.get_instance()
+
+        if str(tech_id) not in manager.tech.keys():
+            error_msg = 'Unknown technology ID: %s' % tech_id
+            self.log.error(error_msg)
+            return {'code': 1, 'message': error_msg, 'data': None}
+
+        try:
+            r = manager.research(tech_id, amount)
+        except RailNationClientError as err:
+            self.log.error('Error: %s' % str(err))
+            return {
+                'code': 1,
+                'message': str(err),
+                'data': None
+            }
+        else:
+            return {
+                'code': 0,
+                'message': 'OK',
+                'data': r
+            }
+
+    @cherrypy.tools.json_out()
+    @cherrypy.expose
+    def autoresearch(self, tech_id=None):
+        self.log.debug('%s /autoresearch/%s called' % (cherrypy.request.method, tech_id))
+        if cherrypy.request.method == 'OPTIONS':
+            return ''
+
+        elif cherrypy.request.method == 'GET':
+            r = ScienceManager.get_instance().research_path
+            return {
+                'code': 0,
+                'message': 'OK',
+                'data': r
+            }
+
+        elif cherrypy.request.method == 'POST':
+            r = ScienceManager.get_instance().schedule_researching(tech_id)
+            return {
+                'code': 0,
+                'message': 'OK',
+                'data': r
+            }
+
+        elif cherrypy.request.method == 'DELETE':
+            r = ScienceManager.get_instance().cancel_researching()
+            return {
+                'code': 0,
+                'message': 'OK',
+                'data': r
+            }
+
+        else:
+            raise cherrypy.HTTPError('405 Method Not Allowed')
 
 

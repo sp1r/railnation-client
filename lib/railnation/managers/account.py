@@ -23,6 +23,8 @@ from railnation.core.errors import (
 
 from railnation.managers.avatar import AvatarManager
 from railnation.managers.properties import PropertiesManager
+from railnation.managers.sciense import ScienceManager
+from railnation.managers.trains import TrainsManager
 
 
 msid_chars = ('1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -402,4 +404,16 @@ class AccountManager:
         self.log.info('Loading parameters...')
         params = PropertiesManager.get_instance()
         params.load_station_buildings()
+
+        self.log.info('Loading technologies...')
+        ScienceManager.get_instance().load_tech_tree()
+
+        trains_manager = TrainsManager.get_instance()
+        self.log.info('Loading train types...')
+        trains_manager.load_train_types()
+        self.log.info('Loading train upgrades...')
+        trains_manager.load_train_upgrades()
+
+        self.log.info('Loading language data...')
+        params.load_language_data()
 

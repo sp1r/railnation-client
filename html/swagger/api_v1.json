@@ -995,6 +995,12 @@
                     },
                     "tickets": {
                       "type": "integer"
+                    },
+                    "watched": {
+                      "type": "integer"
+                    },
+                    "watch_rewards": {
+                      "type": "integer"
                     }
                   }
                 }
@@ -1005,7 +1011,9 @@
                 "data": {
                   "collected": 3425,
                   "errors": 0,
-                  "tickets": 5
+                  "tickets": 5,
+                  "watched": 934,
+                  "watch_rewards": 73
                 }
               }
             }
@@ -1261,6 +1269,646 @@
                 "code": 0,
                 "message": "OK",
                 "data": true
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/ticket/history": {
+      "get": {
+        "summary": "Returns rewards of ticket opening",
+        "description": "Returns last 20 rewards got by ticket opening",
+        "tags": ["Station"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Ticket rewards history",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "date": {
+                        "type": "integer"
+                      },
+                      "reward": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": [
+                  {
+                    "date": 145363654,
+                    "reward": "MONEY_200000"
+                  },
+                  {
+                    "date": 145363656,
+                    "reward": "MECHANIC"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/autowatch/": {
+      "get": {
+        "summary": "Returns auto-watching status (enabled/disabled)",
+        "description": "Returns auto-watching status (enabled/disabled)",
+        "tags": ["Station"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Auto-watching status",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "boolean"
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": true
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/autowatch/enable": {
+      "post": {
+        "summary": "Turns on auto-watching of videos",
+        "description": "Turns on auto-watching of videos",
+        "tags": ["Station"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Auto-watching status",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "boolean"
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": true
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/autowatch/disable": {
+      "post": {
+        "summary": "Turns off auto-watching of videos",
+        "description": "Turns off auto-watching of videos",
+        "tags": ["Station"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Auto-watching status",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "boolean"
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": true
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/autowatch/rewards": {
+      "get": {
+        "summary": "Returns history of auto-watching rewards",
+        "description": "Returns last 20 rewards for watching second videos",
+        "tags": ["Station"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Auto-watch rewards",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "date": {
+                        "type": "integer"
+                      },
+                      "reward": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": [
+                  {
+                    "date": 145363654,
+                    "reward": "VAGON_VOUCHERS_3"
+                  },
+                  {
+                    "date": 145363656,
+                    "reward": "LOTTERY_TICKET"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    
+    "/technologies": {
+      "get": {
+        "summary": "All technologies for all eras",
+        "description": "Returns full description of all available in-game technologies",
+        "tags": ["Research"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Technologies",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "train_id": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "upgrades": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            },
+                            "type": {
+                              "type": "string"
+                            },
+                            "effect": {
+                              "type": "integer"
+                            },
+                            "price": {
+                              "type": "integer"
+                            },
+                            "research_cost": {
+                              "type": "integer"
+                            }
+                          }
+                        },
+                        "era": {
+                          "type": "integer"
+                        },
+                        "research_cost": {
+                          "type": "integer"
+                        },
+                        "speed": {
+                          "type": "integer"
+                        }, 
+                        "acceleration": {
+                          "type": "integer"
+                        }, 
+                        "endurance": {
+                          "type": "integer"
+                        }, 
+                        "price": {
+                          "type": "integer"
+                        }, 
+                        "waggons": {
+                          "type": "integer"
+                        }, 
+                        "slots": {
+                          "type": "integer"
+                        }, 
+                        "is_passenger": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": {
+                  "120300": {
+                    "name": "Lynx",
+                    "upgrades": {
+                      "220301": {
+                        "name": "Useful shit",
+                        "type": "waggons",
+                        "effect": "2",
+                        "price": 500000,
+                        "research_cost": 15
+                      }
+                    },
+                    "era": 2,
+                    "research_cost": 30,
+                    "speed": 150,
+                    "acceleration": 5,
+                    "endurance": 60,
+                    "price": 500000,
+                    "waggons": 3,
+                    "slots": 1,
+                    "is_passenger": false
+                  },
+                  "110001": {
+                    "name": "Era 1 coupling",
+                    "era": 1,
+                    "research_cost": 40
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/technologies/points": {
+      "get": {
+        "summary": "Points spent on technologies",
+        "description": "Returns all spent points in research tree",
+        "tags": ["Research"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Research points spent",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "tech_id": {
+                      "type": "integer"
+                    },
+                    "other_tech_id": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": {
+                  "110100": 10,
+                  "210103": 4,
+                  "320402": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/technologies/path/{tech_id}": {
+      "get": {
+        "summary": "Research path to technology",
+        "description": "Returns list of technologies to be researched to get to specified one",
+        "tags": ["Research"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "tech_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Research path",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": [
+                  "210100",
+                  "210101",
+                  "210102",
+                  "210200"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/research/{tech_id}": {
+      "get": {
+        "summary": "Research technology",
+        "description": "Add points to technology",
+        "tags": ["Research"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "tech_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Research result",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "boolean"
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": true
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/autoresearch": {
+      "get": {
+        "summary": "Display research schedule",
+        "description": "Returns technologies currently in research schedule",
+        "tags": ["Research"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Research schedule",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": [
+                  "210100",
+                  "210101",
+                  "210102",
+                  "210200"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Clear research schedule",
+        "description": "Returns technologies currently in research schedule (after deleting)",
+        "tags": ["Research"],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Research schedule",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": []
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/autoresearch/{tech_id}": {
+      "post": {
+        "summary": "Schedule researching of technology",
+        "description": "Research technology in background waiting for required science points",
+        "tags": ["Research"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "tech_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Research schedule",
+            "schema": {
+              "type": "object",
+              "required": [
+                "code",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "code": 0,
+                "message": "OK",
+                "data": [
+                  "210100",
+                  "210101",
+                  "210102",
+                  "210200"
+                ]
               }
             }
           }

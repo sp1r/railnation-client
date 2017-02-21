@@ -95,7 +95,7 @@ class ServerCall:
         self.server_url = None
         self.api_url = None
 
-    def get(self, path):
+    def get(self, path, raw=False):
         """
         Load files from server.
         """
@@ -117,7 +117,10 @@ class ServerCall:
             pass
 
         else:
-            return r.text
+            if raw:
+                return r.content
+            else:
+                return r.text
 
     def call(self, interface_name, method_name, data):
         """

@@ -7,7 +7,6 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     background: none;
-    font: normal 16px arial;
     max-width: 100%;
 }
 
@@ -33,6 +32,10 @@ input[type=checkbox]{
 
 button[type='submit']{
     cursor: pointer;
+}
+
+body{
+    font: normal 16px arial;
 }
 
 .absolute{
@@ -181,8 +184,8 @@ button[type='submit']{
 .world-box .right-box>*{
     padding: 20px 30px;
     border-bottom: 3px solid #4a5f79;
+    position: relative;
 }
-
 
 .world-box .world-menu{
     padding: 0;
@@ -245,7 +248,6 @@ button[type='submit']{
     font-weight: bold;
 }
 
-
 .center-body {
     padding: 50px;
 }
@@ -270,7 +272,6 @@ button[type='submit']{
     height: 280px;
 }
 
-
 .autocollect-box {
 
 }
@@ -284,6 +285,32 @@ button[type='submit']{
 
 .autocollect-status-box .fa-toggle-off{
     color: #d67272;
+}
+
+.autocollect-statistic-box .show-tickets-history, .autocollect-statistic-box .show-watch_rewards-history{
+    font-size: 20px;
+    line-height: 15px;
+    margin-left: 15px;
+    color: #3677ca;
+    position: relative;
+    top: 1px;
+    cursor: pointer;
+}
+
+.autocollect-statistic-box .table-row .value {
+    width: 100px;
+}
+
+.autocollect-box .tickets-history-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #bacce4;
+    padding: 20px 30px;
+    overflow: auto;
+    font-size: 12px;
 }
 
 .build-droid-box>* {
@@ -415,4 +442,22 @@ button[type='submit']{
 
 .clear {
     clear: both;
+}
+
+.popup-box{
+    display: none;
+}
+
+.popup-box.active{
+    display: block;
+}
+
+.popup-close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 10px;
+    color: #c35959;
+    cursor: pointer;
+    font-size: 16px;
 }

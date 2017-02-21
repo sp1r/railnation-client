@@ -50,5 +50,12 @@ class ResourcesManager:
         except KeyError:
             return 0
 
+    @property
+    def science_points(self):
+        try:
+            return self.resources[3]
+        except KeyError:
+            return 0
+
     def have_enough_money(self, amount):
         return self.resources[0] >= amount
